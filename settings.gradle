@@ -1,1 +1,1 @@
-include ':opensrp-reporting'
+include ':opensrp-reporting', ':sample'
