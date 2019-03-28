@@ -1,13 +1,17 @@
 package org.smartregister.sample;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ReportActivity extends AppCompatActivity {
+import org.smartregister.reporting.Activity.ReportsActivity;
+
+public class SampleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.sample_activity);
+        startActivity(new Intent(this, ReportsActivity.class));
     }
 }
