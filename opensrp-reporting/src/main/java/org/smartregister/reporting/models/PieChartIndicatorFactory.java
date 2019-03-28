@@ -1,13 +1,18 @@
 package org.smartregister.reporting.models;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import org.smartregister.reporting.R;
 import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
@@ -18,7 +23,13 @@ public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
     public View getIndicatorView(ReportingIndicatorData data, Context context) {
 
         PieChartIndicatorData indicatorData = (PieChartIndicatorData) data;
-        PieChartView pieChartView = new PieChartView(context);
+
+        LinearLayout rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
+
+        TextView chartLabelTextView = rootLayout.findViewById(R.id.pie_indicator_label);
+        chartLabelTextView.setText(indicatorData.getIndicatorLabel());
+
+        PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
 
         List<SliceValue> values = new ArrayList<>();
 
@@ -29,13 +40,15 @@ public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
         values.add(noValue);
 
         PieChartData chartData = new PieChartData(values);
-        // TODO :: Make this configurable
+        // TODO :: Defaults -> Make this configurable?
         chartData.setHasLabels(true);
         chartData.setHasLabelsOutside(true);
         chartData.setHasCenterCircle(false);
+        pieChartView.setChartRotationEnabled(false);
+        pieChartView.setCircleFillRatio(0.7f);
         // TODO :: Handle adding listener
         pieChartView.setPieChartData(chartData);
 
-        return pieChartView;
+        return rootLayout;
     }
 }
