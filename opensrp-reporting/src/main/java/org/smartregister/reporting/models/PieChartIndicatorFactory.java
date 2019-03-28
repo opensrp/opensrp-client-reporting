@@ -7,12 +7,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
+import org.smartregister.reporting.interfaces.CommonReportingVisualisationListener;
 import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
@@ -20,7 +20,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
     @Override
-    public View getIndicatorView(ReportingIndicatorData data, Context context) {
+    public View getIndicatorView(ReportingIndicatorData data, Context context, CommonReportingVisualisationListener listener) {
 
         PieChartIndicatorData indicatorData = (PieChartIndicatorData) data;
 
@@ -39,15 +39,15 @@ public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
         values.add(yesValue);
         values.add(noValue);
 
+        // TODO :: Defaults -> Does this need configurability
         PieChartData chartData = new PieChartData(values);
-        // TODO :: Defaults -> Make this configurable?
         chartData.setHasLabels(true);
         chartData.setHasLabelsOutside(true);
         chartData.setHasCenterCircle(false);
         pieChartView.setChartRotationEnabled(false);
         pieChartView.setCircleFillRatio(0.7f);
-        // TODO :: Handle adding listener
         pieChartView.setPieChartData(chartData);
+        pieChartView.setOnValueTouchListener(listener);
 
         return rootLayout;
     }

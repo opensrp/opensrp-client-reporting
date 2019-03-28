@@ -6,5 +6,5 @@ import android.view.View;
 import org.smartregister.reporting.models.ReportingIndicatorData;
 
 public interface IndicatorVisualisationFactory {
-    View getIndicatorView(ReportingIndicatorData data, Context context);
+    View getIndicatorView(ReportingIndicatorData data, Context context, CommonReportingVisualisationListener listener);
 }
