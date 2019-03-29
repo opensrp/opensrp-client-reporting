@@ -7,12 +7,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.interfaces.CommonReportingVisualisationListener;
 import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
+
+/**
+ * The NumericIndicatorFactory provides functionality to generate views that display a numeric indicator
+ *
+ * @author allan
+ */
 
 public class NumericIndicatorFactory implements IndicatorVisualisationFactory {
     @Override
-    public View getIndicatorView(ReportingIndicatorVisualization data, Context context, CommonReportingVisualisationListener listener) {
+    public View getIndicatorView(ReportingIndicatorVisualization data, Context context) {
         NumericIndicatorVisualization indicatorData = (NumericIndicatorVisualization) data;
 
         ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.numeric_indicator_view, null);

@@ -1,5 +1,16 @@
 package org.smartregister.reporting.models;
 
+/**
+ * The ReportingIndicatorVisualization base class models reporting indicator visualizations with
+ * common properties.
+ * For instance, the different visualizations will always have a label (description)
+ * of the specific chart.
+ * The different custom indicator visualizations extend this class to define their custom properties.
+ *
+ * @author allan
+ *
+ */
+
 public class ReportingIndicatorVisualization {
     private String indicatorLabel;
 
