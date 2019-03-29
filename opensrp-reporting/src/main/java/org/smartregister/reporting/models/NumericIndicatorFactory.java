@@ -12,8 +12,8 @@ import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
 
 public class NumericIndicatorFactory implements IndicatorVisualisationFactory {
     @Override
-    public View getIndicatorView(ReportingIndicatorData data, Context context, CommonReportingVisualisationListener listener) {
-        NumericIndicatorData indicatorData = (NumericIndicatorData) data;
+    public View getIndicatorView(ReportingIndicatorVisualization data, Context context, CommonReportingVisualisationListener listener) {
+        NumericIndicatorVisualization indicatorData = (NumericIndicatorVisualization) data;
 
         ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.numeric_indicator_view, null);
 

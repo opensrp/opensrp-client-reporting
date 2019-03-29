@@ -7,16 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.interfaces.CommonReportingVisualisationListener;
-import org.smartregister.reporting.models.NumericIndicatorData;
+import org.smartregister.reporting.models.NumericIndicatorVisualization;
 import org.smartregister.reporting.models.NumericIndicatorFactory;
-import org.smartregister.reporting.models.PieChartIndicatorData;
+import org.smartregister.reporting.models.PieChartIndicatorVisualization;
 import org.smartregister.reporting.models.PieChartIndicatorFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 
@@ -55,13 +58,31 @@ public class ReportsActivity extends AppCompatActivity {
         // TODO :: Use dummy data instead
 
         // Generate pie chart
-        PieChartIndicatorData pieChartIndicatorData = new PieChartIndicatorData(
-                getResources().getString(R.string.num_of_lieterate_children_0_60_label), 58, 42);
+        PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization();
+        pieChartIndicatorVisualization.setIndicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label));
+
+        PieChartData chartData = new PieChartData();
+        chartData.setHasLabels(true);
+        chartData.setHasLabelsOutside(true);
+        chartData.setHasCenterCircle(false);
+
+        List<SliceValue> slices = new ArrayList<>();
+
+        SliceValue yesSlice = new SliceValue(58, ChartUtils.COLOR_GREEN);
+        SliceValue noSlice = new SliceValue(42, ChartUtils.COLOR_RED);
+
+        slices.add(yesSlice);
+        slices.add(noSlice);
+
+        chartData.setValues(slices);
+
+        pieChartIndicatorVisualization.setChartData(chartData);
+
         pieChartFactory = new PieChartIndicatorFactory();
-        pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorData, this, new PieChartOnValueTouchListener());
+        pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, this, new PieChartOnValueTouchListener());
 
         // Generate numeric indicator
-        NumericIndicatorData numericIndicatorData = new NumericIndicatorData(
+        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(
                 getResources().getString(R.string.total_under_5_count), 199);
 
         numericIndicatorFactory = new NumericIndicatorFactory();

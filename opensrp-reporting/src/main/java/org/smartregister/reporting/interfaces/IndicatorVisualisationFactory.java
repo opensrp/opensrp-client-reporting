@@ -3,8 +3,8 @@ package org.smartregister.reporting.interfaces;
 import android.content.Context;
 import android.view.View;
 
-import org.smartregister.reporting.models.ReportingIndicatorData;
+import org.smartregister.reporting.models.ReportingIndicatorVisualization;
 
 public interface IndicatorVisualisationFactory {
-    View getIndicatorView(ReportingIndicatorData data, Context context, CommonReportingVisualisationListener listener);
+    View getIndicatorView(ReportingIndicatorVisualization data, Context context, CommonReportingVisualisationListener listener);
 }

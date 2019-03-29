@@ -1,11 +1,15 @@
 package org.smartregister.reporting.models;
 
-public class NumericIndicatorData extends ReportingIndicatorData {
+public class NumericIndicatorVisualization extends ReportingIndicatorVisualization {
     private int value;
 
-    public NumericIndicatorData(String indicatorLabel, int value) {
+    public NumericIndicatorVisualization(String indicatorLabel, int value) {
         super(indicatorLabel);
         this.value = value;
+    }
+
+    public NumericIndicatorVisualization() {
+
     }
 
     public int getValue() {

@@ -1,9 +1,11 @@
 package org.smartregister.reporting.models;
 
-public class ReportingIndicatorData {
+public class ReportingIndicatorVisualization {
     private String indicatorLabel;
 
-    public ReportingIndicatorData(String indicatorLabel) {
+    public ReportingIndicatorVisualization() {}
+
+    public ReportingIndicatorVisualization(String indicatorLabel) {
         this.indicatorLabel = indicatorLabel;
     }
 
