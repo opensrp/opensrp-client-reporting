@@ -1,4 +1,4 @@
-package org.smartregister.reporting.models;
+package org.smartregister.reporting.model;
 
 
 public class PieChartSlice {
@@ -8,6 +8,10 @@ public class PieChartSlice {
     public PieChartSlice(float value, int color) {
         this.value = value;
         this.color = color;
+    }
+
+    public PieChartSlice() {
+
     }
 
     public float getValue() {

@@ -1,4 +1,4 @@
-package org.smartregister.reporting.models;
+package org.smartregister.reporting.model;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
@@ -10,12 +10,12 @@ import org.smartregister.reporting.R;
 import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
 
 /**
- * The NumericIndicatorFactory provides functionality to generate views that display a numeric indicator
+ * The NumericDisplayFactory provides functionality to generate views that display a numeric indicator
  *
  * @author allan
  */
 
-public class NumericIndicatorFactory implements IndicatorVisualisationFactory {
+public class NumericDisplayFactory implements IndicatorVisualisationFactory {
     @Override
     public View getIndicatorView(ReportingIndicatorVisualization data, Context context) {
         NumericIndicatorVisualization indicatorData = (NumericIndicatorVisualization) data;

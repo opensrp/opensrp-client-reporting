@@ -19,12 +19,12 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
 
 /**
- * The PieChartIndicatorFactory provides functionality to generate views that display a pie chart indicator
+ * The PieChartFactory provides functionality to generate views that display a pie chart indicator
  *
  * @author allan
  */
 
-public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
+public class PieChartFactory implements IndicatorVisualisationFactory {
     @Override
     public View getIndicatorView(ReportingIndicatorVisualization visualization, Context context) {
 

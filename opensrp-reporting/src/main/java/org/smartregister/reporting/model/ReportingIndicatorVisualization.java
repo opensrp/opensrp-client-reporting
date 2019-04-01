@@ -1,4 +1,4 @@
-package org.smartregister.reporting.models;
+package org.smartregister.reporting.model;
 
 /**
  * The ReportingIndicatorVisualization base class models reporting indicator visualizations with

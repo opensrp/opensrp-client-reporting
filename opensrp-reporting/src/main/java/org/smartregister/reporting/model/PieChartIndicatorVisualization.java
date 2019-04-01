@@ -1,4 +1,4 @@
-package org.smartregister.reporting.models;
+package org.smartregister.reporting.model;
 
 /**
  * PieChartIndicatorVisualization is the base class for indicator visualizations that display

@@ -1,18 +1,19 @@
 package org.smartregister.sample;
 
-import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import org.smartregister.reporting.models.NumericIndicatorFactory;
-import org.smartregister.reporting.models.NumericIndicatorVisualization;
-import org.smartregister.reporting.models.PieChartIndicatorData;
-import org.smartregister.reporting.models.PieChartIndicatorFactory;
-import org.smartregister.reporting.models.PieChartIndicatorVisualization;
-import org.smartregister.reporting.models.PieChartSlice;
+import org.smartregister.reporting.interfaces.PieChartSelectListener;
+import org.smartregister.reporting.model.NumericDisplayFactory;
+import org.smartregister.reporting.model.NumericIndicatorVisualization;
+import org.smartregister.reporting.model.PieChartIndicatorData;
+import org.smartregister.reporting.model.PieChartFactory;
+import org.smartregister.reporting.model.PieChartIndicatorVisualization;
+import org.smartregister.reporting.model.PieChartSlice;
+import org.smartregister.sample.utils.ChartUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,25 +48,37 @@ public class SampleActivity extends AppCompatActivity {
 
         List<PieChartSlice> slices = new ArrayList<>();
 
-
-        PieChartSlice yesSlice = new PieChartSlice(58, Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPieChartGreen))));
-        PieChartSlice noSlice = new PieChartSlice(42, Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(getApplicationContext(), R.color.colorPieChartRed))));
+        int yesColor = ChartUtil.YES_GREEN_SLICE_COLOR;
+        int noColor = ChartUtil.NO_RED_SLICE_COLOR;
+        PieChartSlice yesSlice = new PieChartSlice(58, yesColor);
+        PieChartSlice noSlice = new PieChartSlice(42, noColor);
 
         slices.add(yesSlice);
         slices.add(noSlice);
 
         chartData.setSlices(slices);
+        chartData.setListener(new ChartListener());
 
         pieChartIndicatorVisualization.setChartData(chartData);
 
-        PieChartIndicatorFactory pieChartFactory = new PieChartIndicatorFactory();
+        PieChartFactory pieChartFactory = new PieChartFactory();
         pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, this);
 
         // Generate numeric indicator
         NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(
                 getResources().getString(R.string.total_under_5_count), 199);
 
-        NumericIndicatorFactory numericIndicatorFactory = new NumericIndicatorFactory();
+        NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
         numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, this);
     }
+
+    private class ChartListener implements PieChartSelectListener {
+
+        @Override
+        public void handleOnSelectEvent(PieChartSlice sliceValue) {
+            Toast.makeText(getApplicationContext(), ChartUtil.getPieSelectionValue(sliceValue, getApplicationContext()), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }
