@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sample</string>
+    <string name="app_name">Sample Dashboard</string>
     <string name="num_of_lieterate_children_0_60_label">Number of literate children 0 &#8211; 60 months</string>
     <string name="total_under_5_count">Total U5 children</string>
     <string name="yes_slice_label">Yes</string>
