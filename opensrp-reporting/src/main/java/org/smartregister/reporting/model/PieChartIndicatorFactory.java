@@ -1,4 +1,4 @@
-package org.smartregister.reporting.models;
+package org.smartregister.reporting.model;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
@@ -8,10 +8,12 @@ import android.widget.TextView;
 
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
+import org.smartregister.reporting.interfaces.PieChartSelectListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
@@ -56,8 +58,29 @@ public class PieChartIndicatorFactory implements IndicatorVisualisationFactory {
         pieChartView.setChartRotationEnabled(false);
         pieChartView.setCircleFillRatio(0.8f);
         pieChartView.setPieChartData(chartData);
-        // pieChartView.setOnValueTouchListener(listener);
+        pieChartView.setOnValueTouchListener(new ChartValueSelectListener(chartConfiguration.getListener()));
 
         return rootLayout;
+    }
+
+    private class ChartValueSelectListener implements PieChartOnValueSelectListener {
+        private PieChartSelectListener listener;
+
+        private ChartValueSelectListener(PieChartSelectListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onValueSelected(int arcIndex, SliceValue value) {
+            PieChartSlice sliceValue = new PieChartSlice();
+            sliceValue.setColor(value.getColor());
+            sliceValue.setValue(value.getValue());
+            listener.handleOnSelectEvent(sliceValue);
+        }
+
+        @Override
+        public void onValueDeselected() {
+
+        }
     }
 }

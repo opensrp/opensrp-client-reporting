@@ -1,5 +1,7 @@
 package org.smartregister.reporting.models;
 
+import org.smartregister.reporting.interfaces.VisualisationSelectListener;
+
 import java.util.List;
 
 public class PieChartIndicatorData {
@@ -7,6 +9,7 @@ public class PieChartIndicatorData {
     private boolean hasLabelsOutside;
     private boolean hasCenterCircle;
     private List<PieChartSlice> slices;
+    private VisualisationSelectListener listener;
 
     public PieChartIndicatorData(boolean hasLabels, boolean hasLabelsOutside, boolean hasCenterCircle, List<PieChartSlice> slices) {
         this.hasLabels = hasLabels;
@@ -47,5 +50,13 @@ public class PieChartIndicatorData {
 
     public void setSlices(List<PieChartSlice> slices) {
         this.slices = slices;
+    }
+
+    public VisualisationSelectListener getListener() {
+        return listener;
+    }
+
+    public void setListener(VisualisationSelectListener listener) {
+        this.listener = listener;
     }
 }
