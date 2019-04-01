@@ -80,7 +80,8 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
 
         @Override
         public void onValueDeselected() {
-
+            // Handle deselection.
+            // No action required for now
         }
     }
 }
