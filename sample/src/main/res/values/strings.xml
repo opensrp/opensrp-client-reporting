@@ -4,4 +4,8 @@
     <string name="total_under_5_count">Total U5 children</string>
     <string name="yes_slice_label">Yes</string>
     <string name="no_slice_label">No</string>
+    <string name="toolbar_title">Sample</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
