@@ -7,10 +7,11 @@ import android.content.Context;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
+ * The specific task will be to build the indicator data
  *
  * @author allan
  */
-public class IndicatorGeneratorIntentService extends IntentService {
+public class IndicatorGeneratorIntentService extends IntentService { // Should be abstract
 
     public IndicatorGeneratorIntentService() {
         super("IndicatorGeneratorIntentService");

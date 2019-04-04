@@ -2,12 +2,14 @@ package org.smartregister.reporting.contract;
 
 public interface IndicatorGeneratorContract {
 
-    interface View {
+    interface View { // AbstractView?
         // init Presenter
-        void onResume(); // Refresh data
+        // Refresh data for specific indicators
+        void onResume();
     }
 
     interface Presenter {
+        // Return a list of request indicator data
         // List getIndicatorValues(List interestedIndicators)
     }
 
