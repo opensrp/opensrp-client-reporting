@@ -9,12 +9,14 @@ import org.smartregister.reporting.model.ReportIndicator;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a IndicatorRepository class to allow storing and retrieval of details for a defined indicator.
  * The details includes the ReportIndicator description and KEY/CODE
  *
  * @author allan
- *
  */
 
 public class IndicatorRepository extends BaseRepository {
@@ -55,14 +57,25 @@ public class IndicatorRepository extends BaseRepository {
 
         Cursor cursor = database.query(INDICATOR_TABLE, columns, selection, selectionArgs, null, null, null, null);
 
-        return buildIndicatorFromCursor(cursor);
+        return buildReportIndicatorsFromCursor(cursor).get(0); // We're expecting only one
     }
 
-    public ReportIndicator buildIndicatorFromCursor(Cursor cursor) {
-        ReportIndicator indicator = new ReportIndicator();
+    public List<ReportIndicator> getAllIndicators() {
+        List<ReportIndicator> indicators = new ArrayList<>();
+
+        SQLiteDatabase database = getReadableDatabase();
+        Cursor cursor = database.query(INDICATOR_TABLE, null, null, null, null, null, null, null);
+
+        return buildReportIndicatorsFromCursor(cursor);
+    }
+
+    public List<ReportIndicator> buildReportIndicatorsFromCursor(Cursor cursor) {
+
+        List<ReportIndicator> reportIndicators = new ArrayList<>();
 
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
+                ReportIndicator indicator = new ReportIndicator();
                 indicator.setId(cursor.getLong(cursor.getColumnIndex(ID)));
                 indicator.setKey(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
                 indicator.setDescription(cursor.getString(cursor.getColumnIndex(INDICATOR_DESCRIPTION)));
@@ -70,7 +83,7 @@ public class IndicatorRepository extends BaseRepository {
             }
         }
 
-        return indicator;
+        return reportIndicators;
     }
 
     public ContentValues createContentValues(ReportIndicator indicator) {
