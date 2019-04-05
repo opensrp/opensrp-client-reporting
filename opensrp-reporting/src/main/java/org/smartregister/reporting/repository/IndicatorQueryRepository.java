@@ -42,13 +42,13 @@ public class IndicatorQueryRepository extends BaseRepository {
         indicatorQuery.setId(database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery)));
     }
 
-    public String findQueryByIndicatorId(String indicatorKey) {
+    public String findQueryByIndicatorCode(String indicatorCode) {
 
         SQLiteDatabase database = getReadableDatabase();
         String indicatorQuery = "";
         String[] columns = {QUERY};
         String selection = QUERY + " = ?";
-        String[] selectionArgs = {indicatorKey};
+        String[] selectionArgs = {indicatorCode};
 
         Cursor cursor = database.query(INDICATOR_QUERY_TABLE, columns, selection, selectionArgs, null, null, null, null);
 
