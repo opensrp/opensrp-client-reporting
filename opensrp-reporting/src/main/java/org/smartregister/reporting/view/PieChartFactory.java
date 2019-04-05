@@ -1,4 +1,4 @@
-package org.smartregister.reporting.model;
+package org.smartregister.reporting.view;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
@@ -7,8 +7,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.interfaces.IndicatorVisualisationFactory;
-import org.smartregister.reporting.interfaces.PieChartSelectListener;
+import org.smartregister.reporting.model.PieChartIndicatorData;
+import org.smartregister.reporting.model.PieChartIndicatorVisualization;
+import org.smartregister.reporting.model.PieChartSlice;
+import org.smartregister.reporting.model.ReportingIndicatorVisualization;
+import org.smartregister.reporting.view.IndicatorVisualisationFactory;
+import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.ArrayList;
 import java.util.List;

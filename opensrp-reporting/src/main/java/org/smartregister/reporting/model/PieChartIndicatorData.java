@@ -1,6 +1,6 @@
 package org.smartregister.reporting.model;
 
-import org.smartregister.reporting.interfaces.PieChartSelectListener;
+import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.List;
 

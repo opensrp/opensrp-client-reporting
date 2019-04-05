@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.smartregister.reporting.interfaces.PieChartSelectListener;
-import org.smartregister.reporting.model.NumericDisplayFactory;
+import org.smartregister.reporting.listener.PieChartSelectListener;
+import org.smartregister.reporting.view.NumericDisplayFactory;
 import org.smartregister.reporting.model.NumericIndicatorVisualization;
-import org.smartregister.reporting.model.PieChartFactory;
+import org.smartregister.reporting.view.PieChartFactory;
 import org.smartregister.reporting.model.PieChartIndicatorData;
 import org.smartregister.reporting.model.PieChartIndicatorVisualization;
 import org.smartregister.reporting.model.PieChartSlice;

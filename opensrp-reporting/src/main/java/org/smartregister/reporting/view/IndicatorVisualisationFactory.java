@@ -1,4 +1,4 @@
-package org.smartregister.reporting.interfaces;
+package org.smartregister.reporting.view;
 
 import android.content.Context;
 import android.view.View;

@@ -14,6 +14,6 @@ public interface IndicatorGeneratorContract {
     }
 
     interface Model {
-        // Repository.fetchIndicatorData(Map<> indicators)
+        // interactor.fetchIndicatorData(List<ReportIndicator> indicators)
     }
 }

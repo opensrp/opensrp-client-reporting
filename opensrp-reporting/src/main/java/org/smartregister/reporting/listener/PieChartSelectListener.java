@@ -1,4 +1,4 @@
-package org.smartregister.reporting.interfaces;
+package org.smartregister.reporting.listener;
 
 import org.smartregister.reporting.model.PieChartSlice;
 
