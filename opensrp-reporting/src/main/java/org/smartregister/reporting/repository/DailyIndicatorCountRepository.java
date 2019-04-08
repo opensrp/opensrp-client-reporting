@@ -49,15 +49,13 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
-    public List<IndicatorTally> getDailyTalliesForIndicator(String indicatorCode) {
+    public List<IndicatorTally> getIndicatorsDailyTallies() {
         List<IndicatorTally> tallies = new ArrayList<>();
 
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, DAY};
-        String selection = INDICATOR_CODE + " = ?";
-        String[] selectionArgs = {indicatorCode};
 
-        Cursor cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, selection, selectionArgs, null, null, null, null);
+        Cursor cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

@@ -3,12 +3,13 @@ package org.smartregister.reporting.dao;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.reporting.model.IndicatorTally;
+
 import java.util.List;
-import java.util.Map;
 
 public interface ReportIndicatorDao {
 
-    List<Map<String, Integer>> getIndicatorsDailyTallies();
+    List<IndicatorTally> getIndicatorsDailyTallies();
 
     void generateDailyIndicatorTallies(SQLiteDatabase database, String lastProcessedDate); // For all persisted indicators
 }

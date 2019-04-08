@@ -40,9 +40,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public List<Map<String, Integer>> getIndicatorsDailyTallies() {
-        List<Map<String, Integer>> talliesList = new ArrayList<>();
-        return talliesList;
+    public List<IndicatorTally> getIndicatorsDailyTallies() {
+        return dailyIndicatorCountRepository.getIndicatorsDailyTallies();
     }
 
     @Override
