@@ -45,7 +45,6 @@ public class IndicatorRepository extends BaseRepository {
 
         SQLiteDatabase database = getWritableDatabase();
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
-
     }
 
     public ReportIndicator getIndicatorByCode(String code) {

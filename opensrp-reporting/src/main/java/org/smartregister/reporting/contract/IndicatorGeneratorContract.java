@@ -14,6 +14,7 @@ public interface IndicatorGeneratorContract {
     }
 
     interface Model {
-        // interactor.fetchIndicatorData(List<ReportIndicator> indicators)
+        // lastProcessedDate -> From preferences
+        // List<Map<String, Integer>> getIndicatorsDailyTallies(String lastProcessedDate) // this will in turn call the dao
     }
 }

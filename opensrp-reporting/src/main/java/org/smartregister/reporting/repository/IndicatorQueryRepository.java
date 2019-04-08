@@ -9,6 +9,11 @@ import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Repository for the different indicators. The repository will store and allow retrieval of a query associated
  * with an ReportIndicator
@@ -40,6 +45,19 @@ public class IndicatorQueryRepository extends BaseRepository {
         }
         SQLiteDatabase database = getWritableDatabase();
         indicatorQuery.setId(database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery)));
+    }
+
+    public Map<String, String> getAllIndicatorQueries() {
+        Map<String, String> queries = new HashMap<>();
+        SQLiteDatabase database = getReadableDatabase();
+        String[] columns = {INDICATOR_CODE, QUERY};
+        Cursor cursor = database.query(INDICATOR_QUERY_TABLE, columns, null, null, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                queries.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), cursor.getString(cursor.getColumnIndex(QUERY)));
+            }
+        }
+        return queries;
     }
 
     public String findQueryByIndicatorCode(String indicatorCode) {
