@@ -1,6 +1,5 @@
 package org.smartregister.reporting;
 
-
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
