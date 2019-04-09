@@ -9,9 +9,7 @@ import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

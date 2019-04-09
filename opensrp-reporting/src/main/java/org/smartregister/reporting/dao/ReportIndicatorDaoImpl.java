@@ -111,4 +111,16 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         }
         return count;
     }
+
+    public void setIndicatorQueryRepository(IndicatorQueryRepository indicatorQueryRepository) {
+        this.indicatorQueryRepository = indicatorQueryRepository;
+    }
+
+    public void setDailyIndicatorCountRepository(DailyIndicatorCountRepository dailyIndicatorCountRepository) {
+        this.dailyIndicatorCountRepository = dailyIndicatorCountRepository;
+    }
+
+    public void setIndicatorRepository(IndicatorRepository indicatorRepository) {
+        this.indicatorRepository = indicatorRepository;
+    }
 }
