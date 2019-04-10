@@ -9,6 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import org.smartregister.sample.view.DashboardFragment;
+import org.smartregister.sample.view.ResourcesFragment;
+
 public class SampleActivity extends AppCompatActivity {
 
     @Override

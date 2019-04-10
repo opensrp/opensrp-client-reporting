@@ -3,7 +3,9 @@ package org.smartregister.reporting.dao;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
+import org.smartregister.reporting.model.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -12,7 +14,6 @@ import org.smartregister.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +42,17 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public List<IndicatorTally> getIndicatorsDailyTallies() {
+    public void addReportIndicator(ReportIndicator indicator) {
+        indicatorRepository.add(indicator);
+    }
+
+    @Override
+    public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
+        indicatorQueryRepository.add(indicatorQuery);
+    }
+
+    @Override
+    public Map<String, IndicatorTally> getIndicatorsDailyTallies() {
         return dailyIndicatorCountRepository.getIndicatorsDailyTallies();
     }
 

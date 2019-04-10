@@ -1,8 +1,10 @@
 package org.smartregister.reporting.contract;
 
+import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
+import org.smartregister.reporting.model.ReportIndicator;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Contract defining common methods that should be implemented when working with this
@@ -18,11 +20,22 @@ public interface ReportIndicatorGeneratorContract {
     }
 
     interface Presenter {
+
         void onResume(); // Update UI when this happens
+
+        Map<String, IndicatorTally> fetchIndicatorsDailytallies();
+
+        void initialiseIndicator(ReportIndicator indicator);
+
+        void initialiseIndicatorQuery(IndicatorQuery indicatorQuery);
     }
 
     interface Model {
-        // Should use the Dao
-        List<IndicatorTally> getIndicatorsDailyTallies();
+
+        void addIndicator(ReportIndicator indicator);
+
+        void addIndicatorQuery(IndicatorQuery indicatorQuery);
+
+        Map<String, IndicatorTally> getIndicatorsDailyTallies();
     }
 }
