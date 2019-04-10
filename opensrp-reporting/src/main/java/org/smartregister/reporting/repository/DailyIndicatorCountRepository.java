@@ -10,9 +10,9 @@ import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This DailyIndicatorCountRepository class handles saving daily computed indicator values
@@ -49,8 +49,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
-    public List<IndicatorTally> getIndicatorsDailyTallies() {
-        List<IndicatorTally> tallies = new ArrayList<>();
+    public Map<String, IndicatorTally> getIndicatorsDailyTallies() {
+        Map<String, IndicatorTally> indicatorTallies = new HashMap<>();
 
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, DAY};
@@ -64,10 +64,10 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                 indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
                 indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
                 indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
-                tallies.add(indicatorTally);
+                indicatorTallies.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
             }
         }
-        return tallies;
+        return indicatorTallies;
     }
 
     public ContentValues createContentValues(IndicatorTally indicatorTally) {
