@@ -14,6 +14,7 @@ import org.smartregister.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,8 +53,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public Map<String, IndicatorTally> getIndicatorsDailyTallies() {
-        return dailyIndicatorCountRepository.getIndicatorsDailyTallies();
+    public List<Map<String, IndicatorTally>> getIndicatorsDailyTallies() {
+        return dailyIndicatorCountRepository.getAllDailyTallies();
     }
 
     @Override

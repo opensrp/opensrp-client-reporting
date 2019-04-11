@@ -4,6 +4,7 @@ import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.model.ReportIndicator;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public interface ReportIndicatorGeneratorContract {
 
         void onResume(); // Update UI when this happens
 
-        Map<String, IndicatorTally> fetchIndicatorsDailytallies();
+        List<Map<String, IndicatorTally>> fetchIndicatorsDailytallies();
 
         void initialiseIndicator(ReportIndicator indicator);
 
@@ -36,6 +37,6 @@ public interface ReportIndicatorGeneratorContract {
 
         void addIndicatorQuery(IndicatorQuery indicatorQuery);
 
-        Map<String, IndicatorTally> getIndicatorsDailyTallies();
+        List<Map<String, IndicatorTally>> getIndicatorsDailyTallies();
     }
 }

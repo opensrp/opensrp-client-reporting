@@ -2,13 +2,13 @@ package org.smartregister.reporting.model;
 
 public class IndicatorQuery {
     private Long id;
-    private String indicatoryCode;
+    private String indicatorCode;
     private String query;
     private int dbVersion;
 
-    public IndicatorQuery(Long id, String indicatoryCode, String query, int dbVersion) {
+    public IndicatorQuery(Long id, String indicatorCode, String query, int dbVersion) {
         this.id = id;
-        this.indicatoryCode = indicatoryCode;
+        this.indicatorCode = indicatorCode;
         this.query = query;
         this.dbVersion = dbVersion;
     }
@@ -25,11 +25,11 @@ public class IndicatorQuery {
     }
 
     public String getIndicatorCode() {
-        return indicatoryCode;
+        return indicatorCode;
     }
 
     public void setIndicatorCode(String indicatorCode) {
-        this.indicatoryCode = indicatoryCode;
+        this.indicatorCode = indicatorCode;
     }
 
     public String getQuery() {

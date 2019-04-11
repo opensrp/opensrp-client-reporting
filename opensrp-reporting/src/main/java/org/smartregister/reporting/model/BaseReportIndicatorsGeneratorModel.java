@@ -7,6 +7,7 @@ import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 
+import java.util.List;
 import java.util.Map;
 
 public class BaseReportIndicatorsGeneratorModel implements ReportIndicatorGeneratorContract.Model {
@@ -32,7 +33,7 @@ public class BaseReportIndicatorsGeneratorModel implements ReportIndicatorGenera
     }
 
     @Override
-    public Map<String, IndicatorTally> getIndicatorsDailyTallies() {
+    public List<Map<String, IndicatorTally>> getIndicatorsDailyTallies() {
         return dao.getIndicatorsDailyTallies();
     }
 

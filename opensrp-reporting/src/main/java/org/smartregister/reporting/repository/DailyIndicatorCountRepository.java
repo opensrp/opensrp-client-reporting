@@ -10,8 +10,10 @@ import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,8 +51,9 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
-    public Map<String, IndicatorTally> getIndicatorsDailyTallies() {
-        Map<String, IndicatorTally> indicatorTallies = new HashMap<>();
+    public List<Map<String, IndicatorTally>> getAllDailyTallies() {
+        List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
+        Map<String, IndicatorTally> tallyMap;
 
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, DAY};
@@ -59,12 +62,14 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
+                tallyMap = new HashMap<>();
                 IndicatorTally indicatorTally = new IndicatorTally();
                 indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
                 indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
                 indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
                 indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
-                indicatorTallies.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
+                tallyMap.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
+                indicatorTallies.add(tallyMap);
             }
         }
         return indicatorTallies;
