@@ -1,6 +1,7 @@
 package org.smartregister.sample;
 
 import org.smartregister.Context;
+import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
@@ -18,12 +19,8 @@ public class SampleApplication extends DrishtiApplication {
         context = Context.getInstance();
 
         context.updateApplicationContext(getApplicationContext());
+        CoreLibrary.init(context);
         ReportingLibrary.init(Context.getInstance(), getRepository(), null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
-    }
-
-    @Override
-    public void logoutCurrentUser() {
-
     }
 
     public Repository getRepository() {
@@ -40,5 +37,11 @@ public class SampleApplication extends DrishtiApplication {
 
     public static synchronized SampleApplication getInstance() {
         return (SampleApplication) mInstance;
+    }
+
+
+    @Override
+    public void logoutCurrentUser() {
+
     }
 }
