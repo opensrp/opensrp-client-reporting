@@ -7,6 +7,7 @@ import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.model.ReportIndicator;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Map;
 
 public class SamplePresenter implements ReportIndicatorGeneratorContract.Presenter {
@@ -25,7 +26,7 @@ public class SamplePresenter implements ReportIndicatorGeneratorContract.Present
     }
 
     @Override
-    public Map<String, IndicatorTally> fetchIndicatorsDailytallies() {
+    public List<Map<String, IndicatorTally>> fetchIndicatorsDailytallies() {
         return model.getIndicatorsDailyTallies();
     }
 
