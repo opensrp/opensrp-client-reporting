@@ -13,10 +13,10 @@ import java.util.Map;
  *
  * @author allan
  */
-public interface ReportIndicatorGeneratorContract {
+public interface ReportContract {
 
     interface View {
-        // Refresh data for specific indicators
+        // Refresh UI to display latest indicator data
         void refreshUI();
     }
 
@@ -26,9 +26,9 @@ public interface ReportIndicatorGeneratorContract {
 
         List<Map<String, IndicatorTally>> fetchIndicatorsDailytallies();
 
-        void initialiseIndicator(ReportIndicator indicator);
+        void addIndicators(List<ReportIndicator> indicators);
 
-        void initialiseIndicatorQuery(IndicatorQuery indicatorQuery);
+        void addIndicatorQueries(List<IndicatorQuery> indicatorQueries);
     }
 
     interface Model {

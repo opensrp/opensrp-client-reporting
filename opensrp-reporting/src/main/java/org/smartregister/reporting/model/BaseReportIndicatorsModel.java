@@ -1,7 +1,7 @@
 package org.smartregister.reporting.model;
 
 import org.smartregister.reporting.ReportingLibrary;
-import org.smartregister.reporting.contract.ReportIndicatorGeneratorContract;
+import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
@@ -10,14 +10,14 @@ import org.smartregister.reporting.repository.IndicatorRepository;
 import java.util.List;
 import java.util.Map;
 
-public class BaseReportIndicatorsGeneratorModel implements ReportIndicatorGeneratorContract.Model {
+public class BaseReportIndicatorsModel implements ReportContract.Model {
 
     private IndicatorRepository indicatorRepository;
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private ReportIndicatorDaoImpl dao;
 
-    public BaseReportIndicatorsGeneratorModel() {
+    public BaseReportIndicatorsModel() {
         initialiseRepositories();
         dao = new ReportIndicatorDaoImpl(indicatorQueryRepository, dailyIndicatorCountRepository, indicatorRepository);
     }
