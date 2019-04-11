@@ -27,8 +27,8 @@ public class IndicatorRepository extends BaseRepository {
     public static String INDICATOR_TYPE = "type";
     public static String INDICATOR_TABLE = "indicators";
 
-    public static String CREATE_TABLE_INDICATOR = "CREATE TABLE " + INDICATOR_TABLE + " (" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-            INDICATOR_CODE + "TEXT NOT NULL, " + INDICATOR_DESCRIPTION + " TEXT," + INDICATOR_TYPE + " TEXT)";
+    public static String CREATE_TABLE_INDICATOR = "CREATE TABLE " + INDICATOR_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_DESCRIPTION + " TEXT, " + INDICATOR_TYPE + " TEXT)";
 
     public IndicatorRepository(Repository repository) {
         super(repository);

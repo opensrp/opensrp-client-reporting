@@ -26,8 +26,8 @@ public class IndicatorQueryRepository extends BaseRepository {
     public static String DB_VERSION = "db_version";
     public static String INDICATOR_QUERY_TABLE = "indicator_queries";
 
-    public static String CREATE_TABLE_INDICATOR_QUERY = "CREATE TABLE " + INDICATOR_QUERY_TABLE + " (" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-            QUERY + "TEXT NOT NULL, " + INDICATOR_CODE + "INTEGER NOT NULL, " + DB_VERSION + " INTEGER)";
+    public static String CREATE_TABLE_INDICATOR_QUERY = "CREATE TABLE " + INDICATOR_QUERY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+            QUERY + " TEXT NOT NULL, " + INDICATOR_CODE + " TEXT NOT NULL, " + DB_VERSION + " INTEGER)";
 
     public IndicatorQueryRepository(Repository repository) {
         super(repository);

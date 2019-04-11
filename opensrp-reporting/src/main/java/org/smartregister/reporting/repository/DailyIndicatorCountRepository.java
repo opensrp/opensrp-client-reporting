@@ -29,8 +29,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public static String DAY = "day";
     public static String INDICATOR_DAILY_TALLY_TABLE = "indicator_daily_tally";
 
-    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + " (" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER NOT NULL, " + DAY + "DATETIME NOT NULL DEFAULT (DATETIME('now')))";
+    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER NOT NULL, " + DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
     public DailyIndicatorCountRepository(Repository repository) {
         super(repository);
