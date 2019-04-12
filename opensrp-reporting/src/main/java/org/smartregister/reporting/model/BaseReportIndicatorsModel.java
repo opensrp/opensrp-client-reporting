@@ -1,5 +1,7 @@
 package org.smartregister.reporting.model;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
@@ -24,12 +26,12 @@ public class BaseReportIndicatorsModel implements ReportContract.Model {
 
     @Override
     public void addIndicator(ReportIndicator indicator) {
-        dao.addReportIndicator(indicator);
+        dao.addReportIndicator(indicator, null);
     }
 
     @Override
     public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
-        dao.addIndicatorQuery(indicatorQuery);
+        dao.addIndicatorQuery(indicatorQuery, null);
     }
 
     @Override

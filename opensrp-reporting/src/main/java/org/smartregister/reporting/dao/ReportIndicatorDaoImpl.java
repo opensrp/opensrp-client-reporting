@@ -43,13 +43,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public void addReportIndicator(ReportIndicator indicator) {
-        indicatorRepository.add(indicator);
+    public void addReportIndicator(ReportIndicator indicator, SQLiteDatabase database) {
+        indicatorRepository.add(indicator, database);
     }
 
     @Override
-    public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
-        indicatorQueryRepository.add(indicatorQuery);
+    public void addIndicatorQuery(IndicatorQuery indicatorQuery, SQLiteDatabase database) {
+        indicatorQueryRepository.add(indicatorQuery, database);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 tally = new IndicatorTally();
                 tally.setIndicatorCode(entry.getKey());
                 tally.setCount(count);
-                dailyIndicatorCountRepository.add(tally);
+                dailyIndicatorCountRepository.add(tally, db);
             }
         }
     }

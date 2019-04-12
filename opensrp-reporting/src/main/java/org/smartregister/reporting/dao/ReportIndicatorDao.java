@@ -12,9 +12,9 @@ import java.util.Map;
 
 public interface ReportIndicatorDao {
 
-    void addReportIndicator(ReportIndicator indicator);
+    void addReportIndicator(ReportIndicator indicator, SQLiteDatabase database);
 
-    void addIndicatorQuery(IndicatorQuery indicatorQuery);
+    void addIndicatorQuery(IndicatorQuery indicatorQuery, SQLiteDatabase database);
 
     List<Map<String, IndicatorTally>> getIndicatorsDailyTallies();
 
