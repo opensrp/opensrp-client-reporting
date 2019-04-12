@@ -82,7 +82,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public ContentValues createContentValues(IndicatorTally indicatorTally) {
         ContentValues values = new ContentValues();
         values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
-        values.put(INDICATOR_VALUE, indicatorTally.getIndicatorCode());
+        values.put(INDICATOR_VALUE, indicatorTally.getCount());
         values.put(DAY, Calendar.getInstance().getTimeInMillis());
         return values;
     }

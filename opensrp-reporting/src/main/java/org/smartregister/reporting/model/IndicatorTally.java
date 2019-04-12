@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class IndicatorTally {
     private Long id;
-    private int count;
+    private int count = 0;
     private String indicatorCode;
     private Date createdAt;
 
