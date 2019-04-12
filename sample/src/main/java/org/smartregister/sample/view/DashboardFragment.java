@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.smartregister.reporting.contract.ReportIndicatorGeneratorContract;
+import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.listener.PieChartSelectListener;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.view.NumericDisplayFactory;
@@ -25,17 +25,19 @@ import org.smartregister.reporting.model.PieChartSlice;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
 import org.smartregister.sample.utils.ChartUtil;
+import org.smartregister.sample.utils.SampleDataDBUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DashboardFragment extends Fragment implements ReportIndicatorGeneratorContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
+public class DashboardFragment extends Fragment implements ReportContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
 
     private ViewGroup visualizationsViewGroup;
     private View pieChartView;
     private View numericIndicatorView;
-    private static ReportIndicatorGeneratorContract.Presenter presenter;
+    private static ReportContract.Presenter presenter;
     private List<Map<String, IndicatorTally>> indicatorTallies;
 
     public DashboardFragment() {
@@ -82,6 +84,33 @@ public class DashboardFragment extends Fragment implements ReportIndicatorGenera
 
     private void buildVisualisations() {
 
+        if (indicatorTallies == null) {
+            return;
+        }
+        // Aggregate values for display
+        Map<String, IndicatorTally> numericIndicatorValue = new HashMap<>();
+        Map<String, IndicatorTally> pieChartYesValue = new HashMap<>();
+        Map<String, IndicatorTally> pieChartNoValue = new HashMap<>();
+
+        for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {
+            if (indicatorTallyMap.containsKey(SampleDataDBUtil.numericIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, numericIndicatorValue, SampleDataDBUtil.numericIndicatorKey);
+            }
+            if (indicatorTallyMap.containsKey(SampleDataDBUtil.pieChartYesIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, pieChartYesValue, SampleDataDBUtil.pieChartYesIndicatorKey);
+            }
+
+            if (indicatorTallyMap.containsKey(SampleDataDBUtil.pieChartNoIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, pieChartNoValue, SampleDataDBUtil.pieChartNoIndicatorKey);
+            }
+        }
+
+        // Generate numeric indicator visualization
+        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(SampleDataDBUtil.numericIndicatorKey).getCount());
+
+        NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
+        numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, getContext());
+
         // Generate pie chart
         PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization();
         pieChartIndicatorVisualization.setIndicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label));
@@ -95,8 +124,8 @@ public class DashboardFragment extends Fragment implements ReportIndicatorGenera
 
         int yesColor = ChartUtil.YES_GREEN_SLICE_COLOR;
         int noColor = ChartUtil.NO_RED_SLICE_COLOR;
-        PieChartSlice yesSlice = new PieChartSlice(58, yesColor);
-        PieChartSlice noSlice = new PieChartSlice(42, noColor);
+        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(SampleDataDBUtil.pieChartYesIndicatorKey).getCount(), yesColor);
+        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(SampleDataDBUtil.pieChartNoIndicatorKey).getCount(), noColor);
 
         slices.add(yesSlice);
         slices.add(noSlice);
@@ -109,12 +138,17 @@ public class DashboardFragment extends Fragment implements ReportIndicatorGenera
         PieChartFactory pieChartFactory = new PieChartFactory();
         pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
 
-        // Generate numeric indicator
-        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(
-                getResources().getString(R.string.total_under_5_count), 199);
+    }
 
-        NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
-        numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, getContext());
+    private void updateTotalTally(Map<String, IndicatorTally> indicatorTallyMap, Map<String, IndicatorTally> currentIndicatorValueMap, String indicatorKey) {
+        int count, currentValue;
+        count = indicatorTallyMap.get(indicatorKey).getCount();
+        if (currentIndicatorValueMap.get(indicatorKey) == null) {
+            currentIndicatorValueMap.put(indicatorKey, new IndicatorTally(null, count, indicatorKey, null));
+            return;
+        }
+        currentValue = currentIndicatorValueMap.get(indicatorKey).getCount();
+        currentIndicatorValueMap.get(indicatorKey).setCount(count + currentValue);
     }
 
     @Override
@@ -132,7 +166,7 @@ public class DashboardFragment extends Fragment implements ReportIndicatorGenera
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Map<String, IndicatorTally>>> loader, List<Map<String, IndicatorTally>> indicatorTallies) {
-        indicatorTallies = indicatorTallies;
+        this.indicatorTallies = indicatorTallies;
         refreshUI();
     }
 

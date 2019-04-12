@@ -46,7 +46,7 @@ public class SampleRepository extends Repository {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // TODO
     }
 
     @Override
