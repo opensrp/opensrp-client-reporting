@@ -1,7 +1,7 @@
 package org.smartregister.sample.presenter;
 
-import org.smartregister.reporting.contract.ReportIndicatorGeneratorContract;
-import org.smartregister.reporting.model.BaseReportIndicatorsGeneratorModel;
+import org.smartregister.reporting.contract.ReportContract;
+import org.smartregister.reporting.model.BaseReportIndicatorsModel;
 import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.model.ReportIndicator;
@@ -10,14 +10,14 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
-public class SamplePresenter implements ReportIndicatorGeneratorContract.Presenter {
+public class SamplePresenter implements ReportContract.Presenter {
 
-    private WeakReference<ReportIndicatorGeneratorContract.View> viewWeakReference;
-    private ReportIndicatorGeneratorContract.Model model;
+    private WeakReference<ReportContract.View> viewWeakReference;
+    private ReportContract.Model model;
 
-    public SamplePresenter(ReportIndicatorGeneratorContract.View view) {
+    public SamplePresenter(ReportContract.View view) {
         this.viewWeakReference = new WeakReference<>(view);
-        this.model = new BaseReportIndicatorsGeneratorModel();
+        this.model = new BaseReportIndicatorsModel();
     }
 
     @Override
@@ -31,17 +31,21 @@ public class SamplePresenter implements ReportIndicatorGeneratorContract.Present
     }
 
     @Override
-    public void initialiseIndicator(ReportIndicator indicator) {
-        model.addIndicator(indicator);
+    public void addIndicators(List<ReportIndicator> indicators) {
+        for (ReportIndicator indicator : indicators) {
+            model.addIndicator(indicator);
+        }
     }
 
     @Override
-    public void initialiseIndicatorQuery(IndicatorQuery indicatorQuery) {
-        model.addIndicatorQuery(indicatorQuery);
+    public void addIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
+        for (IndicatorQuery indicatorQuery : indicatorQueries) {
+            model.addIndicatorQuery(indicatorQuery);
+        }
     }
 
 
-    public ReportIndicatorGeneratorContract.View getView() {
+    public ReportContract.View getView() {
         if (viewWeakReference != null) {
             return viewWeakReference.get();
         }

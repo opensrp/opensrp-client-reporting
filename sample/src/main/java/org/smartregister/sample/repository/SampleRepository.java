@@ -6,11 +6,13 @@ import android.util.Log;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.AllConstants;
+import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
+import org.smartregister.sample.utils.SampleDataDBUtil;
 
 
 public class SampleRepository extends Repository {
@@ -19,10 +21,12 @@ public class SampleRepository extends Repository {
     protected SQLiteDatabase writableDatabase;
     private String databasePassword = "db_pass";
     private static final String TAG = SampleRepository.class.getCanonicalName();
+    private Context context;
 
 
     public SampleRepository(Context context, org.smartregister.Context openSRPContext) {
         super(context, AllConstants.DATABASE_NAME, AllConstants.DATABASE_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
+        this.context = context;
     }
 
     @Override
@@ -32,6 +36,13 @@ public class SampleRepository extends Repository {
         IndicatorRepository.createTable(database);
         IndicatorQueryRepository.createTable(database);
         DailyIndicatorCountRepository.createTable(database);
+        IndicatorRepository indicatorRepository = ReportingLibrary.getInstance().indicatorRepository();
+        IndicatorQueryRepository queryRepository = ReportingLibrary.getInstance().indicatorQueryRepository();
+        DailyIndicatorCountRepository dailyIndicatorCountRepository = ReportingLibrary.getInstance().dailyIndicatorCountRepository();
+        SampleDataDBUtil.addSampleIndicators(indicatorRepository, database);
+        SampleDataDBUtil.addSampleIndicatorQueries(queryRepository, database);
+        SampleDataDBUtil.addSampleIndicatorDailyTally(dailyIndicatorCountRepository, database);
+
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
