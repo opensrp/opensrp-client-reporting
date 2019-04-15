@@ -22,22 +22,22 @@ public class SampleDataDBUtil {
     public static String pieChartNoIndicatorKey = "IND-003";
     public static String TAG = SampleDataDBUtil.class.getCanonicalName();
 
-    public static void addSampleIndicators(IndicatorRepository indicatorRepository, SQLiteDatabase database) {
-        indicatorRepository.add(new ReportIndicator(null, numericIndicatorKey, "Total Children", null), database);
-        indicatorRepository.add(new ReportIndicator(null, pieChartYesIndicatorKey, "Immunized children", null), database);
-        indicatorRepository.add(new ReportIndicator(null, pieChartNoIndicatorKey, "Non immunized children", null), database);
+    public static void addSampleIndicators(IndicatorRepository indicatorRepository) {
+        indicatorRepository.add(new ReportIndicator(null, numericIndicatorKey, "Total Children", null));
+        indicatorRepository.add(new ReportIndicator(null, pieChartYesIndicatorKey, "Immunized children", null));
+        indicatorRepository.add(new ReportIndicator(null, pieChartNoIndicatorKey, "Non immunized children", null));
     }
 
-    public static void addSampleIndicatorQueries(IndicatorQueryRepository indicatorQueryRepository, SQLiteDatabase database) {
-        indicatorQueryRepository.add(new IndicatorQuery(null, numericIndicatorKey, "", BuildConfig.DATABASE_VERSION), database);
-        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartYesIndicatorKey, "", BuildConfig.DATABASE_VERSION), database);
-        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartNoIndicatorKey, "", BuildConfig.DATABASE_VERSION), database);
+    public static void addSampleIndicatorQueries(IndicatorQueryRepository indicatorQueryRepository) {
+        indicatorQueryRepository.add(new IndicatorQuery(null, numericIndicatorKey, "", BuildConfig.DATABASE_VERSION));
+        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartYesIndicatorKey, "", BuildConfig.DATABASE_VERSION));
+        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartNoIndicatorKey, "", BuildConfig.DATABASE_VERSION));
     }
 
-    public static void addSampleIndicatorDailyTally(DailyIndicatorCountRepository dailyIndicatorCountRepository, SQLiteDatabase database) {
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, numericIndicatorKey, null), database);
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, pieChartYesIndicatorKey, null), database);
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, pieChartNoIndicatorKey, null), database);
+    public static void addSampleIndicatorDailyTally(DailyIndicatorCountRepository dailyIndicatorCountRepository) {
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, numericIndicatorKey, null));
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, pieChartYesIndicatorKey, null));
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, pieChartNoIndicatorKey, null));
     }
 
     public static void addSampleEvent(EventClientRepository eventClientRepository) {
