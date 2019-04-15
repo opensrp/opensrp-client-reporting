@@ -57,6 +57,7 @@ public class IndicatorQueryRepository extends BaseRepository {
             while (!cursor.isAfterLast()) {
                 queries.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), cursor.getString(cursor.getColumnIndex(QUERY)));
             }
+            cursor.close();
         }
         return queries;
     }
@@ -75,6 +76,7 @@ public class IndicatorQueryRepository extends BaseRepository {
             while (!cursor.isAfterLast()) {
                 indicatorQuery = cursor.getString(cursor.getColumnIndex(QUERY));
             }
+            cursor.close();
         }
 
         return indicatorQuery;

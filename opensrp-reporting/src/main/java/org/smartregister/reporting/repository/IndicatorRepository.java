@@ -83,6 +83,7 @@ public class IndicatorRepository extends BaseRepository {
                 indicator.setDescription(cursor.getString(cursor.getColumnIndex(INDICATOR_DESCRIPTION)));
                 indicator.setType(cursor.getString(cursor.getColumnIndex(INDICATOR_TYPE)));
             }
+            cursor.close();
         }
 
         return reportIndicators;
