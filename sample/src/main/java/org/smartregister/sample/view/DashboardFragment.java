@@ -85,7 +85,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
 
     private void buildVisualisations() {
 
-        if (indicatorTallies == null) {
+        if (indicatorTallies == null || indicatorTallies.isEmpty()) {
             return;
         }
         // Aggregate values for display
