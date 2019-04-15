@@ -38,15 +38,13 @@ public class IndicatorRepository extends BaseRepository {
         database.execSQL(CREATE_TABLE_INDICATOR);
     }
 
-    public void add(ReportIndicator indicator, SQLiteDatabase database_) {
+    public void add(ReportIndicator indicator) {
         if (indicator == null) {
             return;
         }
 
-        SQLiteDatabase database = database_;
-        if (database == null) {
-            database = getWritableDatabase();
-        }
+        SQLiteDatabase database = getWritableDatabase();
+
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
     }
 
@@ -82,6 +80,8 @@ public class IndicatorRepository extends BaseRepository {
                 indicator.setKey(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
                 indicator.setDescription(cursor.getString(cursor.getColumnIndex(INDICATOR_DESCRIPTION)));
                 indicator.setType(cursor.getString(cursor.getColumnIndex(INDICATOR_TYPE)));
+                reportIndicators.add(indicator);
+                cursor.moveToNext();
             }
             cursor.close();
         }

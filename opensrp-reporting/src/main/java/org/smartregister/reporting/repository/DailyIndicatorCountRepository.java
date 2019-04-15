@@ -42,15 +42,12 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL(CREATE_DAILY_TALLY_TABLE);
     }
 
-    public void add(IndicatorTally indicatorTally, SQLiteDatabase database_) {
+    public void add(IndicatorTally indicatorTally) {
         if (indicatorTally == null) {
             return;
         }
 
-        SQLiteDatabase database = database_;
-        if (database == null) {
-            database = getWritableDatabase();
-        }
+        SQLiteDatabase database = getWritableDatabase();
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
@@ -77,6 +74,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             }
             cursor.close();
         }
+
         return indicatorTallies;
     }
 

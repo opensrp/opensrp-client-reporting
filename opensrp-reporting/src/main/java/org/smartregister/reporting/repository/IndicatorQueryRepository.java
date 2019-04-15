@@ -37,14 +37,11 @@ public class IndicatorQueryRepository extends BaseRepository {
         database.execSQL(CREATE_TABLE_INDICATOR_QUERY);
     }
 
-    public void add(IndicatorQuery indicatorQuery, SQLiteDatabase database_) {
+    public void add(IndicatorQuery indicatorQuery) {
         if (indicatorQuery == null) {
             return;
         }
-        SQLiteDatabase database = database_;
-        if (database == null) {
-            database = getWritableDatabase();
-        }
+        SQLiteDatabase database = getWritableDatabase();
         indicatorQuery.setId(database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery)));
     }
 
@@ -56,6 +53,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 queries.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), cursor.getString(cursor.getColumnIndex(QUERY)));
+                cursor.moveToNext();
             }
             cursor.close();
         }

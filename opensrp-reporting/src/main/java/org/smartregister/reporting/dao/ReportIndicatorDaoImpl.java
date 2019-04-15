@@ -3,6 +3,7 @@ package org.smartregister.reporting.dao;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.model.ReportIndicator;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
-    private SQLiteDatabase database;
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
@@ -43,13 +43,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public void addReportIndicator(ReportIndicator indicator, SQLiteDatabase database) {
-        indicatorRepository.add(indicator, database);
+    public void addReportIndicator(ReportIndicator indicator) {
+        indicatorRepository.add(indicator);
     }
 
     @Override
-    public void addIndicatorQuery(IndicatorQuery indicatorQuery, SQLiteDatabase database) {
-        indicatorQueryRepository.add(indicatorQuery, database);
+    public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
+        indicatorQueryRepository.add(indicatorQuery);
     }
 
     @Override
@@ -58,47 +58,35 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     @Override
-    public void generateDailyIndicatorTallies(SQLiteDatabase db, String lastProcessedDate) {
+    public void generateDailyIndicatorTallies(String lastProcessedDate) {
         int count;
         IndicatorTally tally;
+        SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
-        ArrayList<Map<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, db);
+        ArrayList<HashMap<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, database);
         for (Map<String, String> dates : reportEventDates) {
             String date = dates.get(EventClientRepository.event_column.eventDate.name());
             // String updatedAt = dates.get(EventClientRepository.event_column.updatedAt.name());
             Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
             for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
-                count = executeQueryAndReturnCount(entry.getValue(), date);
+                count = executeQueryAndReturnCount(entry.getValue(), date, database);
                 tally = new IndicatorTally();
                 tally.setIndicatorCode(entry.getKey());
                 tally.setCount(count);
-                dailyIndicatorCountRepository.add(tally, db);
+                dailyIndicatorCountRepository.add(tally);
             }
         }
     }
 
-    private ArrayList<Map<String, String>> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
-        ArrayList<Map<String, String>> eventDatesList = new ArrayList<>();
-        Cursor cursor;
+    private ArrayList<HashMap<String, String>> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
         if (lastProcessedDate == null || lastProcessedDate.isEmpty()) {
-            cursor = database.rawQuery(PREVIOUS_REPORT_DATES_QUERY, null);
+            return dailyIndicatorCountRepository.rawQuery(database, PREVIOUS_REPORT_DATES_QUERY);
         } else {
-            cursor = database.rawQuery(PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " >'" + lastProcessedDate + "'" + " order by eventDate asc"), null);
+            return dailyIndicatorCountRepository.rawQuery(database, PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " >'" + lastProcessedDate + "'" + " order by eventDate asc"));
         }
-        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-            int i = 0;
-            while (!cursor.isAfterLast()) {
-                Map<String, String> dateMap = new HashMap<>();
-                dateMap.put(cursor.getColumnName(i), cursor.getString(i));
-                eventDatesList.add(dateMap);
-                i++;
-            }
-            cursor.close();
-        }
-        return eventDatesList;
     }
 
-    private int executeQueryAndReturnCount(String query, String date) {
+    private int executeQueryAndReturnCount(String query, String date, SQLiteDatabase database) {
         if (date != null) {
             // Use date in querying if specified
             query = String.format(query, date);

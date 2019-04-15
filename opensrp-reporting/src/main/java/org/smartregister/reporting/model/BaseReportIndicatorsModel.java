@@ -24,12 +24,12 @@ public class BaseReportIndicatorsModel implements ReportContract.Model {
 
     @Override
     public void addIndicator(ReportIndicator indicator) {
-        dao.addReportIndicator(indicator, null);
+        dao.addReportIndicator(indicator);
     }
 
     @Override
     public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
-        dao.addIndicatorQuery(indicatorQuery, null);
+        dao.addIndicatorQuery(indicatorQuery);
     }
 
     @Override
