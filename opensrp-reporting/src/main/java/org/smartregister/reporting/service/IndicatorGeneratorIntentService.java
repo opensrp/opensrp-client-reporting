@@ -3,6 +3,7 @@ package org.smartregister.reporting.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -26,6 +27,7 @@ public class IndicatorGeneratorIntentService extends IntentService {
     private IndicatorRepository indicatorRepository;
     private ReportIndicatorDaoImpl reportIndicatorDao;
     private String lastProcessedDate;
+    public static String TAG = "IndicatorGeneratorIntentService";
 
     public IndicatorGeneratorIntentService() {
         super("IndicatorGeneratorIntentService");
@@ -33,8 +35,10 @@ public class IndicatorGeneratorIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.i(TAG, "IndicatorGeneratorIntentService running");
         lastProcessedDate = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
+        Log.d(TAG, "LastProcessedDate " + lastProcessedDate);
         reportIndicatorDao.generateDailyIndicatorTallies(database, lastProcessedDate);
     }
 

@@ -59,11 +59,10 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     @Override
     public void generateDailyIndicatorTallies(SQLiteDatabase db, String lastProcessedDate) {
-        database = db;
-        int count = 0;
+        int count;
         IndicatorTally tally;
 
-        ArrayList<Map<String, String>> reportEventDates = getReportEventDates(lastProcessedDate);
+        ArrayList<Map<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, db);
         for (Map<String, String> dates : reportEventDates) {
             String date = dates.get(EventClientRepository.event_column.eventDate.name());
             // String updatedAt = dates.get(EventClientRepository.event_column.updatedAt.name());
@@ -78,10 +77,10 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         }
     }
 
-    private ArrayList<Map<String, String>> getReportEventDates(String lastProcessedDate) {
+    private ArrayList<Map<String, String>> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
         ArrayList<Map<String, String>> eventDatesList = new ArrayList<>();
         Cursor cursor;
-        if (lastProcessedDate == null) {
+        if (lastProcessedDate == null || lastProcessedDate.isEmpty()) {
             cursor = database.rawQuery(PREVIOUS_REPORT_DATES_QUERY, null);
         } else {
             cursor = database.rawQuery(PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " >'" + lastProcessedDate + "'" + " order by eventDate asc"), null);
@@ -94,6 +93,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 eventDatesList.add(dateMap);
                 i++;
             }
+            cursor.close();
         }
         return eventDatesList;
     }

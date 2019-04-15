@@ -1,7 +1,5 @@
 package org.smartregister.reporting.model;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;

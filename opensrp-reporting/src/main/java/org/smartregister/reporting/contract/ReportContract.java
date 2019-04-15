@@ -29,6 +29,12 @@ public interface ReportContract {
         void addIndicators(List<ReportIndicator> indicators);
 
         void addIndicatorQueries(List<IndicatorQuery> indicatorQueries);
+
+        void scheduleRecurringTallyJob();
+    }
+
+    interface Interactor {
+        void scheduleDailyTallyJob();
     }
 
     interface Model {
@@ -38,5 +44,6 @@ public interface ReportContract {
         void addIndicatorQuery(IndicatorQuery indicatorQuery);
 
         List<Map<String, IndicatorTally>> getIndicatorsDailyTallies();
+
     }
 }

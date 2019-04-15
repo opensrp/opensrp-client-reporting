@@ -75,6 +75,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                 indicatorTallies.add(tallyMap);
                 cursor.moveToNext();
             }
+            cursor.close();
         }
         return indicatorTallies;
     }

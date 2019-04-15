@@ -56,6 +56,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         super.onCreate(savedInstanceState);
         // fetch Indicator data
         presenter = new SamplePresenter(this);
+        presenter.scheduleRecurringTallyJob();
         getLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
@@ -138,6 +139,9 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         PieChartFactory pieChartFactory = new PieChartFactory();
         pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
 
+        visualizationsViewGroup.addView(numericIndicatorView);
+        visualizationsViewGroup.addView(pieChartView);
+
     }
 
     private void updateTotalTally(Map<String, IndicatorTally> indicatorTallyMap, Map<String, IndicatorTally> currentIndicatorValueMap, String indicatorKey) {
@@ -154,8 +158,6 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     @Override
     public void refreshUI() {
         buildVisualisations();
-        visualizationsViewGroup.addView(numericIndicatorView);
-        visualizationsViewGroup.addView(pieChartView);
     }
 
     @NonNull

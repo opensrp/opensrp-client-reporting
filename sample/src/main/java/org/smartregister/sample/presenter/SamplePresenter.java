@@ -5,6 +5,7 @@ import org.smartregister.reporting.model.BaseReportIndicatorsModel;
 import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.model.ReportIndicator;
+import org.smartregister.sample.interactor.SampleInteractor;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -14,10 +15,12 @@ public class SamplePresenter implements ReportContract.Presenter {
 
     private WeakReference<ReportContract.View> viewWeakReference;
     private ReportContract.Model model;
+    private ReportContract.Interactor interactor;
 
     public SamplePresenter(ReportContract.View view) {
         this.viewWeakReference = new WeakReference<>(view);
         this.model = new BaseReportIndicatorsModel();
+        this.interactor = new SampleInteractor();
     }
 
     @Override
@@ -42,6 +45,11 @@ public class SamplePresenter implements ReportContract.Presenter {
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             model.addIndicatorQuery(indicatorQuery);
         }
+    }
+
+    @Override
+    public void scheduleRecurringTallyJob() {
+        interactor.scheduleDailyTallyJob();
     }
 
 
