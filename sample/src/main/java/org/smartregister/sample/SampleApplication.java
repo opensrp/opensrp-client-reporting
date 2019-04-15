@@ -20,10 +20,11 @@ public class SampleApplication extends DrishtiApplication {
 
         mInstance = this;
         context = Context.getInstance();
-
         context.updateApplicationContext(getApplicationContext());
         CoreLibrary.init(context);
-        ReportingLibrary.init(Context.getInstance(), getRepository(), null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        repository = getRepository();
+        ReportingLibrary.init(Context.getInstance(), repository, null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        SampleRepository.addSampleData();
         JobManager.create(this).addJobCreator(new IndicatorJobCreator());
     }
 

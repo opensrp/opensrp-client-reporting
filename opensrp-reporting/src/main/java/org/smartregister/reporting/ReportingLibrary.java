@@ -5,6 +5,7 @@ import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 
 public class ReportingLibrary {
@@ -13,6 +14,7 @@ public class ReportingLibrary {
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorQueryRepository indicatorQueryRepository;
     private IndicatorRepository indicatorRepository;
+    private EventClientRepository eventClientRepository;
     private Context context;
     private static ReportingLibrary instance;
     private CommonFtsObject commonFtsObject;
@@ -67,6 +69,14 @@ public class ReportingLibrary {
         }
 
         return indicatorRepository;
+    }
+
+    public EventClientRepository eventClientRepository() {
+        if (eventClientRepository == null) {
+            eventClientRepository = new EventClientRepository(getRepository());
+        }
+
+        return eventClientRepository;
     }
 
     public Context getContext() {

@@ -36,13 +36,6 @@ public class SampleRepository extends Repository {
         IndicatorRepository.createTable(database);
         IndicatorQueryRepository.createTable(database);
         DailyIndicatorCountRepository.createTable(database);
-        IndicatorRepository indicatorRepository = ReportingLibrary.getInstance().indicatorRepository();
-        IndicatorQueryRepository queryRepository = ReportingLibrary.getInstance().indicatorQueryRepository();
-        DailyIndicatorCountRepository dailyIndicatorCountRepository = ReportingLibrary.getInstance().dailyIndicatorCountRepository();
-        SampleDataDBUtil.addSampleIndicators(indicatorRepository, database);
-        SampleDataDBUtil.addSampleIndicatorQueries(queryRepository, database);
-        SampleDataDBUtil.addSampleIndicatorDailyTally(dailyIndicatorCountRepository, database);
-
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -99,5 +92,15 @@ public class SampleRepository extends Repository {
         super.close();
     }
 
+    public static void addSampleData() {
+        IndicatorRepository indicatorRepository = ReportingLibrary.getInstance().indicatorRepository();
+        IndicatorQueryRepository queryRepository = ReportingLibrary.getInstance().indicatorQueryRepository();
+        DailyIndicatorCountRepository dailyIndicatorCountRepository = ReportingLibrary.getInstance().dailyIndicatorCountRepository();
+        EventClientRepository eventClientRepository = ReportingLibrary.getInstance().eventClientRepository();
+        SampleDataDBUtil.addSampleIndicators(indicatorRepository);
+        SampleDataDBUtil.addSampleIndicatorQueries(queryRepository);
+        SampleDataDBUtil.addSampleIndicatorDailyTally(dailyIndicatorCountRepository);
+        SampleDataDBUtil.addSampleEvent(eventClientRepository);
+    }
 
 }
