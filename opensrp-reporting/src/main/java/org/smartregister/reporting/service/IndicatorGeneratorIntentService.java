@@ -37,9 +37,8 @@ public class IndicatorGeneratorIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.i(TAG, "IndicatorGeneratorIntentService running");
         lastProcessedDate = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
-        SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
         Log.d(TAG, "LastProcessedDate " + lastProcessedDate);
-        reportIndicatorDao.generateDailyIndicatorTallies(database, lastProcessedDate);
+        reportIndicatorDao.generateDailyIndicatorTallies(lastProcessedDate);
     }
 
     @Override
