@@ -67,16 +67,21 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
         ArrayList<HashMap<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, database);
-        for (Map<String, String> dates : reportEventDates) {
-            String date = dates.get(EventClientRepository.event_column.eventDate.name());
-            Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
-            for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
-                count = executeQueryAndReturnCount(entry.getValue(), date, database);
-                tally = new IndicatorTally();
-                tally.setIndicatorCode(entry.getKey());
-                tally.setCount(count);
-                dailyIndicatorCountRepository.add(tally);
+        if (!reportEventDates.isEmpty()) {
+            String date, lastUpdatedDate = "";
+            for (Map<String, String> dates : reportEventDates) {
+                date = dates.get(EventClientRepository.event_column.eventDate.name());
+                lastUpdatedDate = dates.get(EventClientRepository.event_column.updatedAt.name());
+                Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
+                for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
+                    count = executeQueryAndReturnCount(entry.getValue(), date, database);
+                    tally = new IndicatorTally();
+                    tally.setIndicatorCode(entry.getKey());
+                    tally.setCount(count);
+                    dailyIndicatorCountRepository.add(tally);
+                }
             }
+            ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
         }
     }
 
