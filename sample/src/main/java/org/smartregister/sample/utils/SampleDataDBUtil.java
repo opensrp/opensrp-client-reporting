@@ -29,9 +29,10 @@ public class SampleDataDBUtil {
     }
 
     public static void addSampleIndicatorQueries(IndicatorQueryRepository indicatorQueryRepository) {
-        indicatorQueryRepository.add(new IndicatorQuery(null, numericIndicatorKey, "", BuildConfig.DATABASE_VERSION));
-        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartYesIndicatorKey, "", BuildConfig.DATABASE_VERSION));
-        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartNoIndicatorKey, "", BuildConfig.DATABASE_VERSION));
+        // IndicatorQueries with sample count queries
+        indicatorQueryRepository.add(new IndicatorQuery(null, numericIndicatorKey, "select count(*) from " + IndicatorQueryRepository.INDICATOR_QUERY_TABLE, BuildConfig.DATABASE_VERSION));
+        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartYesIndicatorKey, "select count(*) from " + IndicatorQueryRepository.INDICATOR_QUERY_TABLE, BuildConfig.DATABASE_VERSION));
+        indicatorQueryRepository.add(new IndicatorQuery(null, pieChartNoIndicatorKey, "select count(*) from " + IndicatorQueryRepository.INDICATOR_QUERY_TABLE, BuildConfig.DATABASE_VERSION));
     }
 
     public static void addSampleIndicatorDailyTally(DailyIndicatorCountRepository dailyIndicatorCountRepository) {
