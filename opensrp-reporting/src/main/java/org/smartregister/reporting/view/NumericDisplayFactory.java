@@ -9,7 +9,6 @@ import android.widget.TextView;
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.model.NumericIndicatorVisualization;
 import org.smartregister.reporting.model.ReportingIndicatorVisualization;
-import org.smartregister.reporting.view.IndicatorVisualisationFactory;
 
 /**
  * The NumericDisplayFactory provides functionality to generate views that display a numeric indicator

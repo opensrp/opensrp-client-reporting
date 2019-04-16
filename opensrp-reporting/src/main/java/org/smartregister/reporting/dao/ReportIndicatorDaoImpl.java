@@ -13,6 +13,8 @@ import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +32,9 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct strftime('%Y-%m-%d'," + EventClientRepository.event_column.eventDate + ") as eventDate, " + EventClientRepository.event_column.updatedAt + " from " + EventClientRepository.Table.event.name();
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from " + EventClientRepository.Table.event.name();
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
+    private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
 
     public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository, IndicatorRepository indicatorRepository) {
         this.indicatorQueryRepository = indicatorQueryRepository;
@@ -66,7 +69,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         ArrayList<HashMap<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, database);
         for (Map<String, String> dates : reportEventDates) {
             String date = dates.get(EventClientRepository.event_column.eventDate.name());
-            // String updatedAt = dates.get(EventClientRepository.event_column.updatedAt.name());
             Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
             for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
                 count = executeQueryAndReturnCount(entry.getValue(), date, database);
@@ -87,8 +89,10 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     }
 
     private int executeQueryAndReturnCount(String query, String date, SQLiteDatabase database) {
+        // Use date in querying if specified
         if (date != null) {
-            // Use date in querying if specified
+            // Format date first
+            date = formatDate(date);
             query = String.format(query, date);
         }
         Cursor cursor = null;
@@ -110,6 +114,21 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
         }
         return count;
+    }
+
+    private String formatDate(String date) {
+        String dbDateFormatString = "E MMM dd hh:mm:ss z yyyy";
+        String queryFormatString = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat dbDate = new SimpleDateFormat(dbDateFormatString);
+        SimpleDateFormat queryFormat = new SimpleDateFormat(queryFormatString);
+        String formatedDate = "";
+        try {
+            formatedDate = queryFormat.format(dbDate.parse(date));
+        } catch (ParseException pe) {
+            // Oh no!
+            Log.logError(TAG, "Error parsing the db date");
+        }
+        return formatedDate;
     }
 
     public void setIndicatorQueryRepository(IndicatorQueryRepository indicatorQueryRepository) {
