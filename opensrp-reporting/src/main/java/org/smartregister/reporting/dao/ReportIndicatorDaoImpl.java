@@ -82,6 +82,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 }
             }
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
+            Log.logDebug("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
