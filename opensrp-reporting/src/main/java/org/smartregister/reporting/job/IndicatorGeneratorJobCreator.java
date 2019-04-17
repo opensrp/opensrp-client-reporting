@@ -7,7 +7,7 @@ import android.util.Log;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 
-public class IndicatorJobCreator implements JobCreator {
+public class IndicatorGeneratorJobCreator implements JobCreator {
     @Nullable
     @Override
     public Job create(@NonNull String tag) {
@@ -15,7 +15,7 @@ public class IndicatorJobCreator implements JobCreator {
             case RecurringIndicatorGeneratingJob.TAG:
                 return new RecurringIndicatorGeneratingJob();
             default:
-                Log.d(IndicatorJobCreator.class.getCanonicalName(), "Looks like you tried to create a job " + tag + " that is not declared in the Job Creator");
+                Log.d(IndicatorGeneratorJobCreator.class.getCanonicalName(), "Looks like you tried to create a job " + tag + " that is not declared in the Job Creator");
                 return null;
 
         }

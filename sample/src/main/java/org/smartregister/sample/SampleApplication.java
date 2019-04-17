@@ -5,7 +5,7 @@ import com.evernote.android.job.JobManager;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
-import org.smartregister.reporting.job.IndicatorJobCreator;
+import org.smartregister.reporting.job.IndicatorGeneratorJobCreator;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
@@ -25,7 +25,7 @@ public class SampleApplication extends DrishtiApplication {
         repository = getRepository();
         ReportingLibrary.init(Context.getInstance(), repository, null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
         SampleRepository.addSampleData();
-        JobManager.create(this).addJobCreator(new IndicatorJobCreator());
+        JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
     }
 
     public Repository getRepository() {
