@@ -19,7 +19,7 @@ public class IndicatorGeneratorJobCreatorTest {
     }
 
     @Test
-    public void indicatorGeneratorJobcreator_returnsRecurringIndicatorGeneratingJob() {
+    public void indicatorGeneratorJobcreatorReturnsRecurringIndicatorGeneratingJob() {
         Job jobCreated = jobCreator.create(RecurringIndicatorGeneratingJob.TAG);
         Assert.assertNotNull(jobCreated);
         Assert.assertTrue(jobCreated instanceof RecurringIndicatorGeneratingJob);
