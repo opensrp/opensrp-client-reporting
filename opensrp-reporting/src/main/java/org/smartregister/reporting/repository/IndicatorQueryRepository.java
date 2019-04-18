@@ -42,7 +42,7 @@ public class IndicatorQueryRepository extends BaseRepository {
             return;
         }
         SQLiteDatabase database = getWritableDatabase();
-        indicatorQuery.setId(database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery)));
+        database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
     }
 
     public Map<String, String> getAllIndicatorQueries() {
