@@ -1,6 +1,6 @@
 package org.smartregister.reporting.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class IndicatorTally {
     private Long id;

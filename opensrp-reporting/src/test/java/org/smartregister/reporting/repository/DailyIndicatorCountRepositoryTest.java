@@ -26,20 +26,28 @@ public class DailyIndicatorCountRepositoryTest extends BaseUnitTest {
     @InjectMocks
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
 
+    private DailyIndicatorCountRepository dailyIndicatorCountRepositorySpy;
+
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        dailyIndicatorCountRepositorySpy = Mockito.spy(dailyIndicatorCountRepository);
     }
 
     @Test
     public void addIndicatorTallyInvokesWritableDBInsert() {
         IndicatorTally indicatorTally = Mockito.mock(IndicatorTally.class);
-        DailyIndicatorCountRepository dailyIndicatorCountRepositorySpy = Mockito.spy(dailyIndicatorCountRepository);
         Mockito.when(dailyIndicatorCountRepositorySpy.getWritableDatabase()).thenReturn(sqLiteDatabase);
         dailyIndicatorCountRepositorySpy.add(indicatorTally);
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).insert(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String.class), ArgumentMatchers.any(ContentValues.class));
     }
 
-
+    @Test
+    public void getAllDailyTalliesReturnsListOfDailyTallies() {
+        Mockito.when(dailyIndicatorCountRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
+        dailyIndicatorCountRepositorySpy.getAllDailyTallies();
+        Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+                ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));
+    }
 }
