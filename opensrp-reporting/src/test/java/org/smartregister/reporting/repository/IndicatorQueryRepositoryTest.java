@@ -36,7 +36,6 @@ public class IndicatorQueryRepositoryTest extends BaseUnitTest {
         indicatorQueryRepositorySpy = Mockito.spy(indicatorQueryRepository);
     }
 
-
     @Test
     public void addIndicatorQueryInvokesWritableDBInsert() {
         IndicatorQuery indicatorQuery = Mockito.mock(IndicatorQuery.class);
@@ -51,5 +50,6 @@ public class IndicatorQueryRepositoryTest extends BaseUnitTest {
         Mockito.when(indicatorQueryRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
         indicatorQueryRepositorySpy.getAllIndicatorQueries();
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
-                ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));    }
+                ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));
+    }
 }
