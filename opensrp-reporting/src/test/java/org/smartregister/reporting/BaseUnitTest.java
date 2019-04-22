@@ -6,5 +6,5 @@ import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 22)
-public class BaseUnitTest {
+public abstract class BaseUnitTest {
 }
