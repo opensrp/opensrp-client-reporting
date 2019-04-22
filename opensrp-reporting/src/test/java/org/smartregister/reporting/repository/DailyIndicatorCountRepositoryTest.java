@@ -44,7 +44,7 @@ public class DailyIndicatorCountRepositoryTest extends BaseUnitTest {
     }
 
     @Test
-    public void getAllDailyTalliesReturnsListOfDailyTallies() {
+    public void getAllDailyTalliesInvokesReadableDBQuery() {
         Mockito.when(dailyIndicatorCountRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
