@@ -23,6 +23,8 @@ public class IndicatorQueryRepositoryTest extends BaseUnitTest {
     @Mock
     private SQLiteDatabase sqLiteDatabase;
 
+    private IndicatorQueryRepository indicatorQueryRepositorySpy;
+
 
     @InjectMocks
     private IndicatorQueryRepository indicatorQueryRepository;
@@ -31,15 +33,23 @@ public class IndicatorQueryRepositoryTest extends BaseUnitTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        indicatorQueryRepositorySpy = Mockito.spy(indicatorQueryRepository);
     }
 
 
     @Test
     public void addIndicatorQueryInvokesWritableDBInsert() {
         IndicatorQuery indicatorQuery = Mockito.mock(IndicatorQuery.class);
-        IndicatorQueryRepository indicatorQueryRepositorySpy = Mockito.spy(indicatorQueryRepository);
+
         Mockito.when(indicatorQueryRepositorySpy.getWritableDatabase()).thenReturn(sqLiteDatabase);
         indicatorQueryRepositorySpy.add(indicatorQuery);
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).insert(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String.class), ArgumentMatchers.any(ContentValues.class));
     }
+
+    @Test
+    public void getAllIndicatorQueriesInvokesReadableDBQuery() {
+        Mockito.when(indicatorQueryRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
+        indicatorQueryRepositorySpy.getAllIndicatorQueries();
+        Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+                ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));    }
 }
