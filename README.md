@@ -7,8 +7,9 @@ OpenSRP Client Reporting Library
 
 ## Introduction
 
-The Reporting library allows creating of visualizations for display in an application for instance on a dashboard. 
-The library provides a custom numeric value display to show a lable and a numeric value and extends HelloCharts library to show Charts e.g. PieCharts
+The Reporting library allows creating of visualizations for display in an application for instance on a dashboard.  
+The library provides a custom numeric value display to show a lable and a numeric value and extends [HelloCharts Android library](https://github.com/lecho/hellocharts-android)
+to show Charts e.g. PieCharts
 
 ## Supported visualizations
 
@@ -37,10 +38,10 @@ Create an instance of NumericDisplayFactory and use its getIndicatorView(numeric
 NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(SampleDataDBUtil.numericIndicatorKey).getCount());
 
 NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
-numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, context);```
+numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, context);
+```
 
-
-### PieChart   
+### PieChart
 
 To display a PieChart, create an instance of PieChartIndicatorVisualization and initialize the chart label and chart data
 The chart data is a PieChartIndicatorData object and allows setting whether the PieChart labels, Slice values and colors. 
