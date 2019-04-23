@@ -11,7 +11,6 @@ import org.smartregister.reporting.model.PieChartIndicatorData;
 import org.smartregister.reporting.model.PieChartIndicatorVisualization;
 import org.smartregister.reporting.model.PieChartSlice;
 import org.smartregister.reporting.model.ReportingIndicatorVisualization;
-import org.smartregister.reporting.view.IndicatorVisualisationFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.ArrayList;
