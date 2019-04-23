@@ -68,7 +68,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
         ArrayList<HashMap<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, database);
         if (!reportEventDates.isEmpty()) {
-            String date, lastUpdatedDate = "";
+            String date;
+            String lastUpdatedDate = "";
             for (Map<String, String> dates : reportEventDates) {
                 date = dates.get(EventClientRepository.event_column.eventDate.name());
                 lastUpdatedDate = dates.get(EventClientRepository.event_column.updatedAt.name());
@@ -94,17 +95,17 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         }
     }
 
-    private int executeQueryAndReturnCount(String query, String date, SQLiteDatabase database) {
+    private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
         if (date != null) {
             // Format date first
             date = formatDate(date);
-            query = String.format(query, date);
+            queryString = String.format(queryString, date);
         }
         Cursor cursor = null;
         int count = 0;
         try {
-            cursor = database.rawQuery(query, null);
+            cursor = database.rawQuery(queryString, null);
             if (null != cursor) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();

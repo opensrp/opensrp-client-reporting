@@ -61,15 +61,13 @@ public class IndicatorRepository extends BaseRepository {
     }
 
     public List<ReportIndicator> getAllIndicators() {
-        List<ReportIndicator> indicators = new ArrayList<>();
-
         SQLiteDatabase database = getReadableDatabase();
         Cursor cursor = database.query(INDICATOR_TABLE, null, null, null, null, null, null, null);
 
         return buildReportIndicatorsFromCursor(cursor);
     }
 
-    public List<ReportIndicator> buildReportIndicatorsFromCursor(Cursor cursor) {
+    private List<ReportIndicator> buildReportIndicatorsFromCursor(Cursor cursor) {
 
         List<ReportIndicator> reportIndicators = new ArrayList<>();
 
@@ -89,7 +87,7 @@ public class IndicatorRepository extends BaseRepository {
         return reportIndicators;
     }
 
-    public ContentValues createContentValues(ReportIndicator indicator) {
+    private ContentValues createContentValues(ReportIndicator indicator) {
         ContentValues values = new ContentValues();
         values.put(ID, indicator.getId());
         values.put(INDICATOR_CODE, indicator.getKey());
