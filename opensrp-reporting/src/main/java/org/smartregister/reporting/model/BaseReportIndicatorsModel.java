@@ -12,35 +12,27 @@ import java.util.Map;
 
 public class BaseReportIndicatorsModel implements ReportContract.Model {
 
-    private IndicatorRepository indicatorRepository;
-    private IndicatorQueryRepository indicatorQueryRepository;
-    private DailyIndicatorCountRepository dailyIndicatorCountRepository;
-    private ReportIndicatorDaoImpl dao;
+    private ReportingLibrary reportingLibrary = ReportingLibrary.getInstance();
+    private ReportIndicatorDaoImpl dao = new ReportIndicatorDaoImpl();
 
     public BaseReportIndicatorsModel() {
-        initialiseRepositories();
-        dao = new ReportIndicatorDaoImpl(indicatorQueryRepository, dailyIndicatorCountRepository, indicatorRepository);
     }
 
     @Override
     public void addIndicator(ReportIndicator indicator) {
+        dao.setIndicatorRepository(reportingLibrary.indicatorRepository());
         dao.addReportIndicator(indicator);
     }
 
     @Override
     public void addIndicatorQuery(IndicatorQuery indicatorQuery) {
+        dao.setIndicatorQueryRepository(reportingLibrary.indicatorQueryRepository());
         dao.addIndicatorQuery(indicatorQuery);
     }
 
     @Override
     public List<Map<String, IndicatorTally>> getIndicatorsDailyTallies() {
+        dao.setDailyIndicatorCountRepository(reportingLibrary.dailyIndicatorCountRepository());
         return dao.getIndicatorsDailyTallies();
-    }
-
-    private void initialiseRepositories() {
-        ReportingLibrary reportingLibrary = ReportingLibrary.getInstance();
-        indicatorRepository = reportingLibrary.indicatorRepository();
-        indicatorQueryRepository = reportingLibrary.indicatorQueryRepository();
-        dailyIndicatorCountRepository = reportingLibrary.dailyIndicatorCountRepository();
     }
 }
