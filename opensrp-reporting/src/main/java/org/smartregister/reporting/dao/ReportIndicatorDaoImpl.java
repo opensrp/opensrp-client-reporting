@@ -67,13 +67,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
         ArrayList<HashMap<String, String>> reportEventDates = getReportEventDates(lastProcessedDate, database);
-        if (!reportEventDates.isEmpty()) {
+        Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
+        if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
             String date;
             String lastUpdatedDate = "";
             for (Map<String, String> dates : reportEventDates) {
                 date = dates.get(EventClientRepository.event_column.eventDate.name());
                 lastUpdatedDate = dates.get(EventClientRepository.event_column.updatedAt.name());
-                Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
                 for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
                     count = executeQueryAndReturnCount(entry.getValue(), date, database);
                     tally = new IndicatorTally();
