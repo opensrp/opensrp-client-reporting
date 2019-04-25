@@ -19,7 +19,6 @@ import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.reporting.view.NumericDisplayFactory;
 import org.smartregister.reporting.model.NumericIndicatorVisualization;
 import org.smartregister.reporting.view.PieChartFactory;
-import org.smartregister.reporting.model.PieChartIndicatorData;
 import org.smartregister.reporting.model.PieChartIndicatorVisualization;
 import org.smartregister.reporting.model.PieChartSlice;
 import org.smartregister.sample.R;
@@ -113,28 +112,23 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, getContext());
 
         // Generate pie chart
-        PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization();
-        pieChartIndicatorVisualization.setIndicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label));
 
-        PieChartIndicatorData chartData = new PieChartIndicatorData();
-        chartData.setHasLabels(true);
-        chartData.setHasLabelsOutside(true);
-        chartData.setHasCenterCircle(false);
+        // Define pie chart chartSlices
+        List<PieChartSlice> chartSlices = new ArrayList<>();
 
-        List<PieChartSlice> slices = new ArrayList<>();
+        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(SampleDataDBUtil.pieChartYesIndicatorKey).getCount(), ChartUtil.YES_GREEN_SLICE_COLOR);
+        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(SampleDataDBUtil.pieChartNoIndicatorKey).getCount(), ChartUtil.NO_RED_SLICE_COLOR);
+        chartSlices.add(yesSlice);
+        chartSlices.add(noSlice);
 
-        int yesColor = ChartUtil.YES_GREEN_SLICE_COLOR;
-        int noColor = ChartUtil.NO_RED_SLICE_COLOR;
-        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(SampleDataDBUtil.pieChartYesIndicatorKey).getCount(), yesColor);
-        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(SampleDataDBUtil.pieChartNoIndicatorKey).getCount(), noColor);
-
-        slices.add(yesSlice);
-        slices.add(noSlice);
-
-        chartData.setSlices(slices);
-        chartData.setListener(new ChartListener());
-
-        pieChartIndicatorVisualization.setChartData(chartData);
+        // Build the chart
+        PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
+                .indicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label))
+                .chartHasLabels(true)
+                .chartHasLabelsOutside(true)
+                .chartHasCenterCircle(false)
+                .chartSlices(chartSlices)
+                .chartListener(new ChartListener()).build();
 
         PieChartFactory pieChartFactory = new PieChartFactory();
         pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
