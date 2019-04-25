@@ -38,9 +38,6 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
         private List<PieChartSlice> slices;
         private PieChartSelectListener listener;
 
-        public PieChartIndicatorVisualizationBuilder() {
-        }
-
         public PieChartIndicatorVisualizationBuilder indicatorLabel(String label) {
             this.indicatorLabel = label;
             return this;

@@ -6,34 +6,29 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.smartregister.reporting.BaseUnitTest;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.model.IndicatorQuery;
 import org.smartregister.repository.Repository;
 
-public class IndicatorQueryRepositoryTest extends BaseUnitTest {
+@RunWith(MockitoJUnitRunner.class)
+public class IndicatorQueryRepositoryTest {
     @Mock
     private Repository repository;
-
 
     @Mock
     private SQLiteDatabase sqLiteDatabase;
 
     private IndicatorQueryRepository indicatorQueryRepositorySpy;
 
-
-    @InjectMocks
-    private IndicatorQueryRepository indicatorQueryRepository;
-
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        indicatorQueryRepositorySpy = Mockito.spy(indicatorQueryRepository);
+        indicatorQueryRepositorySpy = Mockito.spy(new IndicatorQueryRepository(repository));
     }
 
     @Test

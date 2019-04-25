@@ -97,15 +97,16 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
+        String formattedQueryString = "";
         if (date != null) {
             // Format date first
             date = formatDate(date);
-            queryString = String.format(queryString, date);
+            formattedQueryString = String.format(queryString, date);
         }
         Cursor cursor = null;
         int count = 0;
         try {
-            cursor = database.rawQuery(queryString, null);
+            cursor = database.rawQuery(formattedQueryString, null);
             if (null != cursor) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
