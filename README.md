@@ -15,13 +15,13 @@ to show Charts e.g. PieCharts
 
 The current supported visualizations are 
 
- 1. Numeric display
+1. Numeric display
 
-     * This is used to display a lable and a value (count)
+    * This is used to display a lable and a value (count)
 
- 2. PieChart
+2. PieChart
 
-     * This is used to display ratios with different colors for the different ratios being displayed
+    * This is used to display ratios with different colors for the different ratios being displayed
 
 ## Displaying visualizations
 
