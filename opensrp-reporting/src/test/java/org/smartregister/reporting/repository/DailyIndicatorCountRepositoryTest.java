@@ -6,16 +6,17 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.smartregister.reporting.BaseUnitTest;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.model.IndicatorTally;
 import org.smartregister.repository.Repository;
 
-public class DailyIndicatorCountRepositoryTest extends BaseUnitTest {
+@RunWith(MockitoJUnitRunner.class)
+public class DailyIndicatorCountRepositoryTest {
 
     @Mock
     private SQLiteDatabase sqLiteDatabase;
@@ -23,16 +24,13 @@ public class DailyIndicatorCountRepositoryTest extends BaseUnitTest {
     @Mock
     private Repository repository;
 
-    @InjectMocks
-    private DailyIndicatorCountRepository dailyIndicatorCountRepository;
-
     private DailyIndicatorCountRepository dailyIndicatorCountRepositorySpy;
 
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        dailyIndicatorCountRepositorySpy = Mockito.spy(dailyIndicatorCountRepository);
+        dailyIndicatorCountRepositorySpy = Mockito.spy(new DailyIndicatorCountRepository(repository));
     }
 
     @Test

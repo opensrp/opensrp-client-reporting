@@ -51,10 +51,10 @@ public class DaoTest {
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
 
     @Mock
-    SQLiteDatabase sqLiteDatabase;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Mock
-    AllSharedPreferences sharedPreferences;
+    private AllSharedPreferences sharedPreferences;
 
     private ReportIndicatorDaoImpl daoSpy;
 

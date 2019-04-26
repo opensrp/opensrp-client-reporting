@@ -17,7 +17,7 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
 
     private PieChartIndicatorData chartData;
 
-    private PieChartIndicatorVisualization(PieChartIndicatorData chartData) {
+    public PieChartIndicatorVisualization(PieChartIndicatorData chartData) {
         this.chartData = chartData;
     }
 

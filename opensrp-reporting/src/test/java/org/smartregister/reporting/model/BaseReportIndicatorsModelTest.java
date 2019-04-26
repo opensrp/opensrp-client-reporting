@@ -2,27 +2,24 @@ package org.smartregister.reporting.model;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.smartregister.reporting.BaseUnitTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 
+@RunWith(PowerMockRunner.class)
 @PrepareForTest({ReportingLibrary.class, BaseReportIndicatorsModel.class})
-public class BaseReportIndicatorsModelTest extends BaseUnitTest {
-
-    @Rule
-    public PowerMockRule rule = new PowerMockRule();
+public class BaseReportIndicatorsModelTest {
 
     @Mock
     private ReportingLibrary reportingLibrary;
