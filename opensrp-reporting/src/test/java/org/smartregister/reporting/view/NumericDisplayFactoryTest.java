@@ -19,7 +19,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.model.NumericIndicatorVisualization;
+import org.smartregister.reporting.domain.NumericIndicatorVisualization;
 
 @PrepareForTest(LayoutInflater.class)
 public class NumericDisplayFactoryTest extends BaseUnitTest {

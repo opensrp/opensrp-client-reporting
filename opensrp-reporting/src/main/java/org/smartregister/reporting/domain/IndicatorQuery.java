@@ -1,4 +1,4 @@
-package org.smartregister.reporting.model;
+package org.smartregister.reporting.domain;
 
 public class IndicatorQuery {
     private Long id;

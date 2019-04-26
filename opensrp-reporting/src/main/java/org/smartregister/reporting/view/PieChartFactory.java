@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.model.PieChartIndicatorData;
-import org.smartregister.reporting.model.PieChartIndicatorVisualization;
-import org.smartregister.reporting.model.PieChartSlice;
-import org.smartregister.reporting.model.ReportingIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartIndicatorData;
+import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
 import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.ArrayList;

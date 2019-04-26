@@ -2,7 +2,7 @@ package org.smartregister.sample.utils;
 
 import android.content.Context;
 import android.graphics.Color;
-import org.smartregister.reporting.model.PieChartSlice;
+import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.sample.R;
 
 /**

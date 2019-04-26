@@ -1,6 +1,6 @@
 package org.smartregister.reporting.listener;
 
-import org.smartregister.reporting.model.PieChartSlice;
+import org.smartregister.reporting.domain.PieChartSlice;
 
 public interface PieChartSelectListener {
     void handleOnSelectEvent(PieChartSlice selectValue);

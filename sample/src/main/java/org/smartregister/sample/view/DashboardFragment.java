@@ -15,12 +15,12 @@ import android.widget.Toast;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.listener.PieChartSelectListener;
-import org.smartregister.reporting.model.IndicatorTally;
+import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.view.NumericDisplayFactory;
-import org.smartregister.reporting.model.NumericIndicatorVisualization;
+import org.smartregister.reporting.domain.NumericIndicatorVisualization;
 import org.smartregister.reporting.view.PieChartFactory;
-import org.smartregister.reporting.model.PieChartIndicatorVisualization;
-import org.smartregister.reporting.model.PieChartSlice;
+import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
 import org.smartregister.sample.utils.ChartUtil;

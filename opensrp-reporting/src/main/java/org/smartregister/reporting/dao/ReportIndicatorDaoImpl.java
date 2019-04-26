@@ -4,9 +4,9 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
-import org.smartregister.reporting.model.IndicatorQuery;
-import org.smartregister.reporting.model.IndicatorTally;
-import org.smartregister.reporting.model.ReportIndicator;
+import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;

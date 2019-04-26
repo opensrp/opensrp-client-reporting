@@ -10,7 +10,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.smartregister.reporting.model.ReportIndicator;
+import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.repository.Repository;
 
 

@@ -19,8 +19,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.model.PieChartIndicatorData;
-import org.smartregister.reporting.model.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartIndicatorData;
+import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 
 import lecho.lib.hellocharts.view.PieChartView;
 

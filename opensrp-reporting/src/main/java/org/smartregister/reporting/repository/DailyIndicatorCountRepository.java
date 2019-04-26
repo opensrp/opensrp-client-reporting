@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
-import org.smartregister.reporting.model.IndicatorTally;
+import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 

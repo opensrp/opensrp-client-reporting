@@ -1,4 +1,4 @@
-package org.smartregister.reporting.model;
+package org.smartregister.reporting.domain;
 
 /**
  * NumericIndicatorVisualization is the base class for indicator visualizations that display

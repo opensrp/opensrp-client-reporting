@@ -1,4 +1,4 @@
-package org.smartregister.reporting.model;
+package org.smartregister.reporting.domain;
 
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.contract.ReportContract;

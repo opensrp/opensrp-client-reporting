@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.smartregister.reporting.model.IndicatorTally;
+import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.Repository;
 
 @RunWith(MockitoJUnitRunner.class)
