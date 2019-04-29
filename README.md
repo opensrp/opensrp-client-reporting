@@ -27,9 +27,9 @@ The current supported visualizations are
 
 ### Numeric indicator display  
 
-To display a numeric value, create an instance of NumericIndicatorVisualization and set the lable and the value. 
+To display a numeric value, create an instance of NumericIndicatorVisualization and set the lable and the value.  
 This visualization data object is what is used by the NumericDisplayFactory to generate the view to be displayed.
-Create an instance of NumericDisplayFactory and use its getIndicatorView(numericIndicatorData, context) to get the numeric display view. 
+Create an instance of NumericDisplayFactory and use its getIndicatorView(numericIndicatorData, context) to get the numeric display view.  
 
 #### Sample Numeric indicator display
 
@@ -44,7 +44,7 @@ numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicator
 ### PieChart
 
 To display a PieChart, create an instance of PieChartIndicatorVisualization and initialize the chart label and chart data
-The chart data is a PieChartIndicatorData object and allows setting whether the PieChart labels, Slice values and colors. 
+The chart data is a PieChartIndicatorData object and allows setting whether the PieChart labels, Slice values and colors.  
 Create an instance of PieChartIndicatorData and use its getIndicatorView(pieChartIndicatorVisualization, context) to get the chart view for display.
 
 #### Sample PieChart
