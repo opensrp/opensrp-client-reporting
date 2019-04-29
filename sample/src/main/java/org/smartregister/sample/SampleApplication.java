@@ -5,6 +5,7 @@ import com.evernote.android.job.JobManager;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.job.IndicatorGeneratorJobCreator;
@@ -20,6 +21,7 @@ import static org.smartregister.util.Log.logError;
 public class SampleApplication extends DrishtiApplication {
 
     private String indicatorsConfigFile = "config/indicator-definitions.yml";
+    private String indicatorDataInitialisedPref = "INDICATOR_DATA_INITIALISED";
 
     @Override
     public void onCreate() {
@@ -31,10 +33,18 @@ public class SampleApplication extends DrishtiApplication {
         CoreLibrary.init(context);
         repository = getRepository();
         ReportingLibrary.init(Context.getInstance(), repository, null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
-        ReportingLibrary.getInstance().initIndicatorData(indicatorsConfigFile);
-        List<ReportIndicator> reportIndicators = ReportingLibrary.getInstance().getReportIndicators();
-        List<IndicatorQuery> indicatorQueries = ReportingLibrary.getInstance().getIndicatorQueries();
-        SampleRepository.addSampleData(reportIndicators, indicatorQueries);
+        // Check if indicator data initialised
+        boolean indicatorDataInitialised = Boolean.parseBoolean(ReportingLibrary.getInstance().getContext()
+                .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
+        if (!indicatorDataInitialised) {
+            ReportingLibrary.getInstance().initIndicatorData(indicatorsConfigFile);
+            List<ReportIndicator> reportIndicators = ReportingLibrary.getInstance().getReportIndicators();
+            List<IndicatorQuery> indicatorQueries = ReportingLibrary.getInstance().getIndicatorQueries();
+            SampleRepository.addSampleData(reportIndicators, indicatorQueries);
+            ReportingLibrary.getInstance().getContext()
+                    .allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
+        }
+
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
     }
 
