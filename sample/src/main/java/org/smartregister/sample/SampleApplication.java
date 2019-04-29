@@ -33,14 +33,13 @@ public class SampleApplication extends DrishtiApplication {
         CoreLibrary.init(context);
         repository = getRepository();
         ReportingLibrary.init(Context.getInstance(), repository, null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        ReportingLibrary reportingLibraryInstance = ReportingLibrary.getInstance();
         // Check if indicator data initialised
-        boolean indicatorDataInitialised = Boolean.parseBoolean(ReportingLibrary.getInstance().getContext()
+        boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
                 .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
         if (!indicatorDataInitialised) {
-            ReportingLibrary.getInstance().initIndicatorData(indicatorsConfigFile);
-            List<ReportIndicator> reportIndicators = ReportingLibrary.getInstance().getReportIndicators();
-            List<IndicatorQuery> indicatorQueries = ReportingLibrary.getInstance().getIndicatorQueries();
-            SampleRepository.addSampleData(reportIndicators, indicatorQueries);
+            reportingLibraryInstance.initIndicatorData(indicatorsConfigFile); // This will persist the data in the DB
+            SampleRepository.addSampleData();
             ReportingLibrary.getInstance().getContext()
                     .allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
         }

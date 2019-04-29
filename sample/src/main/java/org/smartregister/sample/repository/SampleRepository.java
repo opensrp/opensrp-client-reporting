@@ -98,35 +98,19 @@ public class SampleRepository extends Repository {
         super.close();
     }
 
-    public static void addSampleData(List<ReportIndicator> sampleIndicators, List<IndicatorQuery> sampleIndicatorQueries) {
-        addSampleIndicators(sampleIndicators);
-        addSampleIndicatorQueries(sampleIndicatorQueries);
+    public static void addSampleData() {
         addSampleIndicatorDailyTally();
         addSampleEvent();
     }
 
-    public static void addSampleIndicators(List<ReportIndicator> reportIndicators) {
-        IndicatorRepository indicatorRepository = ReportingLibrary.getInstance().indicatorRepository();
-        for (ReportIndicator indicator : reportIndicators) {
-            indicatorRepository.add(indicator);
-        }
-    }
-
-    public static void addSampleIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
-        IndicatorQueryRepository queryRepository = ReportingLibrary.getInstance().indicatorQueryRepository();
-        for (IndicatorQuery indicatorQuery : indicatorQueries) {
-            queryRepository.add(indicatorQuery);
-        }
-    }
-
-    public static void addSampleIndicatorDailyTally() {
+    private static void addSampleIndicatorDailyTally() {
         DailyIndicatorCountRepository dailyIndicatorCountRepository = ReportingLibrary.getInstance().dailyIndicatorCountRepository();
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, null));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, null));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, null));
     }
 
-    public static void addSampleEvent() {
+    private static void addSampleEvent() {
         EventClientRepository eventClientRepository = ReportingLibrary.getInstance().eventClientRepository();
         String eventJSONString = "{\"baseEntityId\":\"3b6048d5-231d-4a11-a141-4c4358b8e401\",\"duration\":0,\"entityType\":\"ec_woman\",\"eventDate\":\"2019-04-15T00:00:00.000Z\",\n" +
                 "\"eventType\":\"ANC Registration\",\"formSubmissionId\":\"f297be35-de9c-4749-9ff4-a963e17d0680\",\"locationId\":\"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\",\n" +

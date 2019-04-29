@@ -35,8 +35,6 @@ public class ReportingLibrary {
     private int applicationVersion;
     private int databaseVersion;
     private Yaml yaml;
-    private List<ReportIndicator> reportIndicators;
-    private List<IndicatorQuery> indicatorQueries;
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {
@@ -112,14 +110,6 @@ public class ReportingLibrary {
         return databaseVersion;
     }
 
-    public List<ReportIndicator> getReportIndicators() {
-        return reportIndicators;
-    }
-
-    public List<IndicatorQuery> getIndicatorQueries() {
-        return indicatorQueries;
-    }
-
     public void initIndicatorData(String configFilePath) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
@@ -130,8 +120,8 @@ public class ReportingLibrary {
         }
         if (indicatorsFromFile != null) {
             IndicatorsYamlConfig indicatorsConfig;
-            reportIndicators = new ArrayList<>();
-            indicatorQueries = new ArrayList<>();
+            List<ReportIndicator> reportIndicators = new ArrayList<>();
+            List<IndicatorQuery> indicatorQueries = new ArrayList<>();
             ReportIndicator indicator;
             IndicatorQuery indicatorQuery;
 
@@ -144,6 +134,8 @@ public class ReportingLibrary {
                     indicatorQueries.add(indicatorQuery);
                 }
             }
+            addIndicators(reportIndicators);
+            addIndicatorQueries(indicatorQueries);
         }
     }
 
@@ -158,5 +150,17 @@ public class ReportingLibrary {
     private Iterable<Object> loadIndicatorsFromFile(String configFilePath) throws IOException {
         InputStreamReader inputStreamReader = new InputStreamReader(Context.getInstance().applicationContext().getAssets().open(configFilePath));
         return yaml.loadAll(inputStreamReader);
+    }
+
+    private void addIndicators(List<ReportIndicator> indicators) {
+        for (ReportIndicator indicator : indicators) {
+            this.indicatorRepository().add(indicator);
+        }
+    }
+
+    private void addIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
+        for (IndicatorQuery indicatorQuery : indicatorQueries) {
+            this.indicatorQueryRepository().add(indicatorQuery);
+        }
     }
 }
