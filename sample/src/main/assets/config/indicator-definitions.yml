@@ -1,12 +1,12 @@
 indicators:
-  - key: "SAMPLE-0001"
+  - key: "S_IND_001"
     description: "Total Childrean"
     indicatorQuery: "select count(*) from indicator_queries"
 
-  - key: "SAMPLE-0002"
+  - key: "S_IND_002"
     description: "Total immunized"
     indicatorQuery: "select count(*) from indicator_queries"
 
-  - key: "SAMPLE-0003"
+  - key: "S_IND_003"
     description: "Total not immunized"
     indicatorQuery: "select count(*) from indicator_queries"

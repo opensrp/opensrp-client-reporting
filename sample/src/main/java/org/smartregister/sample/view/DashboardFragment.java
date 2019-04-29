@@ -23,8 +23,8 @@ import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
+import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.sample.utils.ChartUtil;
-import org.smartregister.sample.utils.SampleDataDBUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,20 +93,20 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         Map<String, IndicatorTally> pieChartNoValue = new HashMap<>();
 
         for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {
-            if (indicatorTallyMap.containsKey(SampleDataDBUtil.numericIndicatorKey)) {
-                updateTotalTally(indicatorTallyMap, numericIndicatorValue, SampleDataDBUtil.numericIndicatorKey);
+            if (indicatorTallyMap.containsKey(ChartUtil.numericIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, numericIndicatorValue, ChartUtil.numericIndicatorKey);
             }
-            if (indicatorTallyMap.containsKey(SampleDataDBUtil.pieChartYesIndicatorKey)) {
-                updateTotalTally(indicatorTallyMap, pieChartYesValue, SampleDataDBUtil.pieChartYesIndicatorKey);
+            if (indicatorTallyMap.containsKey(ChartUtil.pieChartYesIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, pieChartYesValue, ChartUtil.pieChartYesIndicatorKey);
             }
 
-            if (indicatorTallyMap.containsKey(SampleDataDBUtil.pieChartNoIndicatorKey)) {
-                updateTotalTally(indicatorTallyMap, pieChartNoValue, SampleDataDBUtil.pieChartNoIndicatorKey);
+            if (indicatorTallyMap.containsKey(ChartUtil.pieChartNoIndicatorKey)) {
+                updateTotalTally(indicatorTallyMap, pieChartNoValue, ChartUtil.pieChartNoIndicatorKey);
             }
         }
 
         // Generate numeric indicator visualization
-        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(SampleDataDBUtil.numericIndicatorKey).getCount());
+        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(ChartUtil.numericIndicatorKey).getCount());
 
         NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
         numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, getContext());
@@ -116,8 +116,8 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         // Define pie chart chartSlices
         List<PieChartSlice> chartSlices = new ArrayList<>();
 
-        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(SampleDataDBUtil.pieChartYesIndicatorKey).getCount(), ChartUtil.YES_GREEN_SLICE_COLOR);
-        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(SampleDataDBUtil.pieChartNoIndicatorKey).getCount(), ChartUtil.NO_RED_SLICE_COLOR);
+        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(ChartUtil.pieChartYesIndicatorKey).getCount(), ChartUtil.YES_GREEN_SLICE_COLOR);
+        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(ChartUtil.pieChartNoIndicatorKey).getCount(), ChartUtil.NO_RED_SLICE_COLOR);
         chartSlices.add(yesSlice);
         chartSlices.add(noSlice);
 
