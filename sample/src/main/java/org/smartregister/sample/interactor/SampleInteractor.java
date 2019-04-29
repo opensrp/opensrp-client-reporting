@@ -1,7 +1,10 @@
 package org.smartregister.sample.interactor;
 
+import org.smartregister.reporting.BuildConfig;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.job.RecurringIndicatorGeneratingJob;
+
+import java.util.concurrent.TimeUnit;
 
 public class SampleInteractor implements ReportContract.Interactor {
 
@@ -10,7 +13,7 @@ public class SampleInteractor implements ReportContract.Interactor {
 
     @Override
     public void scheduleDailyTallyJob() {
-        // TODO :: Change this to periodic after testing
-        RecurringIndicatorGeneratingJob.scheduleJobImmediately(RecurringIndicatorGeneratingJob.TAG);
+        RecurringIndicatorGeneratingJob.scheduleJob(RecurringIndicatorGeneratingJob.TAG,
+                TimeUnit.MINUTES.toMillis(BuildConfig.REPORT_INDICATOR_GENERATION_MINUTES), TimeUnit.MINUTES.toMillis(1));
     }
 }
