@@ -1,4 +1,4 @@
-package org.smartregister.sample.domain;
+package org.smartregister.reporting.domain;
 
 import java.util.List;
 

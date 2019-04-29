@@ -1,12 +1,26 @@
 package org.smartregister.reporting;
 
+import android.util.Log;
+
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
+import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.domain.IndicatorYamlConfigItem;
+import org.smartregister.reporting.domain.IndicatorsYamlConfig;
+import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReportingLibrary {
 
@@ -20,6 +34,9 @@ public class ReportingLibrary {
     private CommonFtsObject commonFtsObject;
     private int applicationVersion;
     private int databaseVersion;
+    private Yaml yaml;
+    private List<ReportIndicator> reportIndicators;
+    private List<IndicatorQuery> indicatorQueries;
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {
@@ -93,5 +110,53 @@ public class ReportingLibrary {
 
     public int getDatabaseVersion() {
         return databaseVersion;
+    }
+
+    public List<ReportIndicator> getReportIndicators() {
+        return reportIndicators;
+    }
+
+    public List<IndicatorQuery> getIndicatorQueries() {
+        return indicatorQueries;
+    }
+
+    public void initIndicatorData(String configFilePath) {
+        initYamlIndicatorConfig();
+        Iterable<Object> indicatorsFromFile = null;
+        try {
+            indicatorsFromFile = loadIndicatorsFromFile(configFilePath);
+        } catch (IOException ioe) {
+            Log.e("SampleApplication", ioe.getMessage());
+        }
+        if (indicatorsFromFile != null) {
+            IndicatorsYamlConfig indicatorsConfig;
+            reportIndicators = new ArrayList<>();
+            indicatorQueries = new ArrayList<>();
+            ReportIndicator indicator;
+            IndicatorQuery indicatorQuery;
+
+            for (Object indicatorObject : indicatorsFromFile) {
+                indicatorsConfig = (IndicatorsYamlConfig) indicatorObject;
+                for (IndicatorYamlConfigItem indicatorYamlConfigItem : indicatorsConfig.getIndicators()) {
+                    indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
+                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getIndicatorQuery(), 0);
+                    reportIndicators.add(indicator);
+                    indicatorQueries.add(indicatorQuery);
+                }
+            }
+        }
+    }
+
+    private void initYamlIndicatorConfig() {
+        Constructor constructor = new Constructor(IndicatorsYamlConfig.class);
+        TypeDescription typeDescription = new TypeDescription(IndicatorsYamlConfig.class);
+        typeDescription.addPropertyParameters(IndicatorYamlConfigItem.INDICATOR_PROPERTY, IndicatorYamlConfigItem.class);
+        constructor.addTypeDescription(typeDescription);
+        yaml = new Yaml(constructor);
+    }
+
+    private Iterable<Object> loadIndicatorsFromFile(String configFilePath) throws IOException {
+        InputStreamReader inputStreamReader = new InputStreamReader(Context.getInstance().applicationContext().getAssets().open(configFilePath));
+        return yaml.loadAll(inputStreamReader);
     }
 }

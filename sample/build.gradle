@@ -91,9 +91,7 @@ dependencies {
     implementation project(":opensrp-reporting")
 
     implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
-
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.23'
-
+    
     implementation 'com.android.support:support-media-compat:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
