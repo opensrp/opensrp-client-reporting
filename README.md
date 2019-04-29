@@ -13,7 +13,7 @@ to show Charts e.g. PieCharts
 
 ## Supported visualizations
 
-The current supported visualizations are 
+The current supported visualizations are  
 
 1. Numeric display
 
