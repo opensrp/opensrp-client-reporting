@@ -17,7 +17,7 @@ public class SampleApplication extends DrishtiApplication {
 
     private String indicatorsConfigFile = "config/indicator-definitions.yml";
     private String indicatorDataInitialisedPref = "INDICATOR_DATA_INITIALISED";
-    private String appVersionCode = "APP_VERSION_CODE";
+    private String appVersionCodePref = "APP_VERSION_CODE";
 
     @Override
     public void onCreate() {
@@ -33,13 +33,16 @@ public class SampleApplication extends DrishtiApplication {
         // Check if indicator data initialised
         boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
                 .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
-        String savedAppVersion = reportingLibraryInstance.getContext().allSharedPreferences().getPreference(appVersionCode);
+        String savedAppVersion = reportingLibraryInstance.getContext().allSharedPreferences().getPreference(appVersionCodePref);
         boolean isUpdated = checkIfAppUpdated(savedAppVersion);
         if (!indicatorDataInitialised || isUpdated) {
             reportingLibraryInstance.initIndicatorData(indicatorsConfigFile); // This will persist the data in the DB
-            SampleRepository.addSampleData();
             reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
-            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(savedAppVersion, String.valueOf(BuildConfig.VERSION_CODE));
+            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(appVersionCodePref, String.valueOf(BuildConfig.VERSION_CODE));
+        }
+
+        if (!indicatorDataInitialised) {
+            SampleRepository.addSampleData();
         }
 
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
