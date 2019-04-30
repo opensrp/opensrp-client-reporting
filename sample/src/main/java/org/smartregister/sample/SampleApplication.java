@@ -33,8 +33,7 @@ public class SampleApplication extends DrishtiApplication {
         // Check if indicator data initialised
         boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
                 .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
-        String savedAppVersion = reportingLibraryInstance.getContext().allSharedPreferences().getPreference(appVersionCodePref);
-        boolean isUpdated = checkIfAppUpdated(savedAppVersion);
+        boolean isUpdated = checkIfAppUpdated();
         if (!indicatorDataInitialised || isUpdated) {
             reportingLibraryInstance.initIndicatorData(indicatorsConfigFile); // This will persist the data in the DB
             reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
@@ -64,7 +63,8 @@ public class SampleApplication extends DrishtiApplication {
         return (SampleApplication) mInstance;
     }
 
-    private boolean checkIfAppUpdated(String savedAppVersion) {
+    private boolean checkIfAppUpdated() {
+        String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(appVersionCodePref);
         if (savedAppVersion.isEmpty()) {
             return true;
         } else {
