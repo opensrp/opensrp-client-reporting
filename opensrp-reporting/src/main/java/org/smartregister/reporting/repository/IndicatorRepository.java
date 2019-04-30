@@ -48,6 +48,17 @@ public class IndicatorRepository extends BaseRepository {
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
     }
 
+    public void truncateTable() {
+        SQLiteDatabase database = getWritableDatabase();
+        database.rawQuery("DELETE FROM " + INDICATOR_TABLE, null);
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
+        cursor.moveToFirst();
+        int rowCount = cursor.getCount();
+        if (rowCount > 0) {
+            database.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
+        }
+    }
+
     public ReportIndicator getIndicatorByCode(String code) {
 
         SQLiteDatabase database = getReadableDatabase();

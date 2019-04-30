@@ -5,16 +5,11 @@ import com.evernote.android.job.JobManager;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
-import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
-import org.smartregister.reporting.domain.IndicatorQuery;
-import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.job.IndicatorGeneratorJobCreator;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
-
-import java.util.List;
 
 import static org.smartregister.util.Log.logError;
 
@@ -22,6 +17,7 @@ public class SampleApplication extends DrishtiApplication {
 
     private String indicatorsConfigFile = "config/indicator-definitions.yml";
     private String indicatorDataInitialisedPref = "INDICATOR_DATA_INITIALISED";
+    private String appVersionCode = "APP_VERSION_CODE";
 
     @Override
     public void onCreate() {
@@ -37,11 +33,13 @@ public class SampleApplication extends DrishtiApplication {
         // Check if indicator data initialised
         boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
                 .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
-        if (!indicatorDataInitialised) {
+        String savedAppVersion = reportingLibraryInstance.getContext().allSharedPreferences().getPreference(appVersionCode);
+        boolean isUpdated = checkIfAppUpdated(savedAppVersion);
+        if (!indicatorDataInitialised || isUpdated) {
             reportingLibraryInstance.initIndicatorData(indicatorsConfigFile); // This will persist the data in the DB
             SampleRepository.addSampleData();
-            ReportingLibrary.getInstance().getContext()
-                    .allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
+            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
+            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(savedAppVersion, String.valueOf(BuildConfig.VERSION_CODE));
         }
 
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
@@ -61,6 +59,15 @@ public class SampleApplication extends DrishtiApplication {
 
     public static synchronized SampleApplication getInstance() {
         return (SampleApplication) mInstance;
+    }
+
+    private boolean checkIfAppUpdated(String savedAppVersion) {
+        if (savedAppVersion.isEmpty()) {
+            return true;
+        } else {
+            int savedVersion = Integer.parseInt(savedAppVersion);
+            return (BuildConfig.VERSION_CODE > savedVersion);
+        }
     }
 
     @Override

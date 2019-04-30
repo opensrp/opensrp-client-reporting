@@ -45,6 +45,17 @@ public class IndicatorQueryRepository extends BaseRepository {
         database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
     }
 
+    public void truncateTable() {
+        SQLiteDatabase database = getWritableDatabase();
+        database.rawQuery("DELETE FROM " + INDICATOR_QUERY_TABLE, null);
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
+        cursor.moveToFirst();
+        int rowCount = cursor.getCount();
+        if (rowCount > 0) {
+            database.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
+        }
+    }
+
     public Map<String, String> getAllIndicatorQueries() {
         Map<String, String> queries = new HashMap<>();
         SQLiteDatabase database = getReadableDatabase();

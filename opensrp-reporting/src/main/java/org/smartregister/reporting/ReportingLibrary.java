@@ -153,12 +153,14 @@ public class ReportingLibrary {
     }
 
     private void saveIndicators(List<ReportIndicator> indicators) {
+        this.indicatorRepository().truncateTable();
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator);
         }
     }
 
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
+        this.indicatorQueryRepository().truncateTable();
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
         }
