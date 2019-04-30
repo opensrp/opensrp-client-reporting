@@ -134,8 +134,8 @@ public class ReportingLibrary {
                     indicatorQueries.add(indicatorQuery);
                 }
             }
-            addIndicators(reportIndicators);
-            addIndicatorQueries(indicatorQueries);
+            saveIndicators(reportIndicators);
+            saveIndicatorQueries(indicatorQueries);
         }
     }
 
@@ -152,13 +152,13 @@ public class ReportingLibrary {
         return yaml.loadAll(inputStreamReader);
     }
 
-    private void addIndicators(List<ReportIndicator> indicators) {
+    private void saveIndicators(List<ReportIndicator> indicators) {
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator);
         }
     }
 
-    private void addIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
+    private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
         }
