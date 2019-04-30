@@ -1,13 +1,11 @@
-package org.smartregister.reporting.model;
+package org.smartregister.reporting.domain;
 
 /**
  * NumericIndicatorVisualization is the base class for indicator visualizations that display
  * numeric data e.g. tallies
- * The numeric indicator visualization consists the label (text description) and the value (count/amount) to be displayed
+ * The numeric indicator visualization consists the indicator label (text description) and the value (count/amount) to be displayed
  *
  * @author allan
- *
- *
  */
 public class NumericIndicatorVisualization extends ReportingIndicatorVisualization {
     private int value;

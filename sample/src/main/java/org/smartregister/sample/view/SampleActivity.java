@@ -1,4 +1,4 @@
-package org.smartregister.sample;
+package org.smartregister.sample.view;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -9,18 +9,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-public class SampleActivity extends AppCompatActivity {
+import org.smartregister.reporting.contract.ReportContract;
+import org.smartregister.sample.R;
+
+public class SampleActivity extends AppCompatActivity implements ReportContract.View {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_activity);
-
         setUpViews();
     }
 
     private void setUpViews() {
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(" ");
@@ -36,6 +38,11 @@ public class SampleActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+    }
+
+    @Override
+    public void refreshUI() {
+
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
