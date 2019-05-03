@@ -98,11 +98,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
         String formattedQueryString = "";
-        String formattedDate = "";
         if (date != null) {
-            // Format date first
-            formattedDate = formatDate(date);
-            formattedQueryString = String.format(queryString, formattedDate);
+            formattedQueryString = String.format(queryString, date);
         }
         Cursor cursor = null;
         int count = 0;
@@ -123,21 +120,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
         }
         return count;
-    }
-
-    private String formatDate(String date) {
-        String dbDateFormatString = "E MMM dd hh:mm:ss z yyyy";
-        String queryFormatString = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat dbDate = new SimpleDateFormat(dbDateFormatString);
-        SimpleDateFormat queryFormat = new SimpleDateFormat(queryFormatString);
-        String formatedDate = "";
-        try {
-            formatedDate = queryFormat.format(dbDate.parse(date));
-        } catch (ParseException pe) {
-            // Oh no!
-            Log.logError(TAG, "Error parsing the db date");
-        }
-        return formatedDate;
     }
 
     public void setIndicatorQueryRepository(IndicatorQueryRepository indicatorQueryRepository) {
