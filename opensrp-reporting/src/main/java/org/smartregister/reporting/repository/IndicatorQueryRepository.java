@@ -38,21 +38,27 @@ public class IndicatorQueryRepository extends BaseRepository {
     }
 
     public void add(IndicatorQuery indicatorQuery) {
+        add(indicatorQuery, getWritableDatabase());
+    }
+
+    public void add(IndicatorQuery indicatorQuery, SQLiteDatabase sqLiteDatabase) {
         if (indicatorQuery == null) {
             return;
         }
-        SQLiteDatabase database = getWritableDatabase();
-        database.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
+        sqLiteDatabase.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
     }
 
     public void truncateTable() {
-        SQLiteDatabase database = getWritableDatabase();
-        database.rawQuery("DELETE FROM " + INDICATOR_QUERY_TABLE, null);
-        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
+        truncateTable(getWritableDatabase());
+    }
+
+    public void truncateTable(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.rawQuery("DELETE FROM " + INDICATOR_QUERY_TABLE, null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
         cursor.moveToFirst();
         int rowCount = cursor.getCount();
         if (rowCount > 0) {
-            database.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
+            sqLiteDatabase.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
         }
     }
 

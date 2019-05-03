@@ -39,23 +39,28 @@ public class IndicatorRepository extends BaseRepository {
     }
 
     public void add(ReportIndicator indicator) {
+        add(indicator, getWritableDatabase());
+    }
+
+    public void add(ReportIndicator indicator, SQLiteDatabase database) {
         if (indicator == null) {
             return;
         }
-
-        SQLiteDatabase database = getWritableDatabase();
 
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
     }
 
     public void truncateTable() {
-        SQLiteDatabase database = getWritableDatabase();
-        database.rawQuery("DELETE FROM " + INDICATOR_TABLE, null);
-        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
+        truncateTable(getWritableDatabase());
+    }
+
+    public void truncateTable(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.rawQuery("DELETE FROM " + INDICATOR_TABLE, null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
         cursor.moveToFirst();
         int rowCount = cursor.getCount();
         if (rowCount > 0) {
-            database.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
+            sqLiteDatabase.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
         }
     }
 
