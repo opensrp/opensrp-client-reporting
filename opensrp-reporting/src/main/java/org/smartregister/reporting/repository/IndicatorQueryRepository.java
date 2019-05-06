@@ -61,6 +61,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         if (rowCount > 0) {
             sqLiteDatabase.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
         }
+        cursor.close();
     }
 
     public Map<String, String> getAllIndicatorQueries() {
