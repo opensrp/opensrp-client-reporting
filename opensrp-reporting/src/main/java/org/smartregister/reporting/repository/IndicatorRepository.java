@@ -55,7 +55,8 @@ public class IndicatorRepository extends BaseRepository {
     }
 
     public void truncateTable(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.rawQuery("DELETE FROM " + INDICATOR_TABLE, null);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INDICATOR_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_INDICATOR);
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
         cursor.moveToFirst();
         int rowCount = cursor.getCount();

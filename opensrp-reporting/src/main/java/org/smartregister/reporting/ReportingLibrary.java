@@ -2,6 +2,8 @@ package org.smartregister.reporting;
 
 import android.util.Log;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.domain.IndicatorQuery;
@@ -110,7 +112,7 @@ public class ReportingLibrary {
         return databaseVersion;
     }
 
-    public void initIndicatorData(String configFilePath) {
+    public void initIndicatorData(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
         try {
@@ -134,8 +136,13 @@ public class ReportingLibrary {
                     indicatorQueries.add(indicatorQuery);
                 }
             }
-            saveIndicators(reportIndicators);
-            saveIndicatorQueries(indicatorQueries);
+            if (sqLiteDatabase != null) {
+                saveIndicators(reportIndicators, sqLiteDatabase);
+                saveIndicatorQueries(indicatorQueries, sqLiteDatabase);
+            } else {
+                saveIndicators(reportIndicators);
+                saveIndicatorQueries(indicatorQueries);
+            }
         }
     }
 
@@ -159,10 +166,24 @@ public class ReportingLibrary {
         }
     }
 
+    private void saveIndicators(List<ReportIndicator> indicators, SQLiteDatabase sqLiteDatabase) {
+        this.indicatorRepository().truncateTable(sqLiteDatabase);
+        for (ReportIndicator indicator : indicators) {
+            this.indicatorRepository().add(indicator, sqLiteDatabase);
+        }
+    }
+
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
         this.indicatorQueryRepository().truncateTable();
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
+        }
+    }
+
+    private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries, SQLiteDatabase sqLiteDatabase) {
+        this.indicatorQueryRepository().truncateTable(sqLiteDatabase);
+        for (IndicatorQuery indicatorQuery : indicatorQueries) {
+            this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
     }
 }
