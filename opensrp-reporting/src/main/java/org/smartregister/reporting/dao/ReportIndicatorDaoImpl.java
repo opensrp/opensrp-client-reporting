@@ -30,11 +30,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from " + EventClientRepository.Table.event.name();
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
+            + EventClientRepository.Table.event.name() + " order by eventDate asc";
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
 
-    public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository, IndicatorRepository indicatorRepository) {
+    public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository,
+                                  IndicatorRepository indicatorRepository) {
         this.indicatorQueryRepository = indicatorQueryRepository;
         this.dailyIndicatorCountRepository = dailyIndicatorCountRepository;
         this.indicatorRepository = indicatorRepository;
