@@ -13,8 +13,6 @@ import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.util.Log;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,10 +74,12 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 lastUpdatedDate = dates.get(EventClientRepository.event_column.updatedAt.name());
                 for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
                     count = executeQueryAndReturnCount(entry.getValue(), date, database);
-                    tally = new IndicatorTally();
-                    tally.setIndicatorCode(entry.getKey());
-                    tally.setCount(count);
-                    dailyIndicatorCountRepository.add(tally);
+                    if (count > 0) {
+                        tally = new IndicatorTally();
+                        tally.setIndicatorCode(entry.getKey());
+                        tally.setCount(count);
+                        dailyIndicatorCountRepository.add(tally);
+                    }
                 }
             }
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
