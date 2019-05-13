@@ -1,20 +1,21 @@
 package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
-import android.util.Log;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -37,12 +38,15 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
             INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER NOT NULL, " + DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
+    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " + INDICATOR_DAILY_TALLY_TABLE + " ( " + INDICATOR_CODE + " , " + DAY + " ) ";
+
     public DailyIndicatorCountRepository(Repository repository) {
         super(repository);
     }
 
     public static void createTable(SQLiteDatabase database) {
         database.execSQL(CREATE_DAILY_TALLY_TABLE);
+        database.execSQL(CREATE_UNIQUE_CONSTRAINT);
     }
 
     public void add(IndicatorTally indicatorTally) {
@@ -51,6 +55,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         }
 
         SQLiteDatabase database = getWritableDatabase();
+        database.delete(INDICATOR_DAILY_TALLY_TABLE, INDICATOR_CODE + " = ? AND " + DAY + " = ? ", new String[]{indicatorTally.getIndicatorCode(), new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt())});
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
@@ -91,7 +96,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         ContentValues values = new ContentValues();
         values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
         values.put(INDICATOR_VALUE, indicatorTally.getCount());
-        values.put(DAY, Calendar.getInstance().getTimeInMillis());
+        values.put(DAY, new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt()));
         return values;
     }
 }

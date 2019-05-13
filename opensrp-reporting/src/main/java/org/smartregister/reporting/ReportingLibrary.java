@@ -37,6 +37,7 @@ public class ReportingLibrary {
     private int applicationVersion;
     private int databaseVersion;
     private Yaml yaml;
+    private String dateFormat = "YYYYMMDD";
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {
@@ -63,6 +64,13 @@ public class ReportingLibrary {
         return repository;
     }
 
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
 
     public DailyIndicatorCountRepository dailyIndicatorCountRepository() {
         if (dailyIndicatorCountRepository == null) {
