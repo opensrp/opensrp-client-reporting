@@ -37,7 +37,7 @@ public class ReportingLibrary {
     private int applicationVersion;
     private int databaseVersion;
     private Yaml yaml;
-    private String dateFormat = "YYYYMMDD";
+    private String dateFormat = "yyyyMMdd";
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {

@@ -17,6 +17,13 @@ import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.utils.ChartUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import timber.log.Timber;
+
 public class SampleRepository extends Repository {
 
     private SQLiteDatabase readableDatabase;
@@ -100,9 +107,16 @@ public class SampleRepository extends Repository {
 
     private static void addSampleIndicatorDailyTally() {
         DailyIndicatorCountRepository dailyIndicatorCountRepository = ReportingLibrary.getInstance().dailyIndicatorCountRepository();
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, null));
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, null));
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, null));
+        String eventDateFormat = "E MMM dd hh:mm:ss z yyyy";
+        Date dateCreated = null;
+        try {
+            dateCreated = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(new Date().toString());
+        } catch (ParseException pe) {
+            Timber.e(pe.toString());
+        }
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
+        dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
     }
 
     private static void addSampleEvent() {
