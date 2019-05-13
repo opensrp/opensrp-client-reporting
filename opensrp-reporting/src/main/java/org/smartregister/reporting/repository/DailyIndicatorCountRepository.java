@@ -1,6 +1,7 @@
 package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -15,6 +16,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * This DailyIndicatorCountRepository class handles saving daily computed indicator values
@@ -58,23 +61,29 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, DAY};
 
-        Cursor cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
-
-        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                tallyMap = new HashMap<>();
-                IndicatorTally indicatorTally = new IndicatorTally();
-                indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-                indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
-                indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
-                indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
-                tallyMap.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
-                indicatorTallies.add(tallyMap);
-                cursor.moveToNext();
+        Cursor cursor = null;
+        try {
+            cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    tallyMap = new HashMap<>();
+                    IndicatorTally indicatorTally = new IndicatorTally();
+                    indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+                    indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+                    indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
+                    indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
+                    tallyMap.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
+                    indicatorTallies.add(tallyMap);
+                    cursor.moveToNext();
+                }
             }
-            cursor.close();
+        } catch (Exception ex) {
+            Timber.e(ex.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-
         return indicatorTallies;
     }
 

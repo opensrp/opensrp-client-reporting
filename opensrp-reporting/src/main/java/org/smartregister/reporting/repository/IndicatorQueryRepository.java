@@ -95,7 +95,6 @@ public class IndicatorQueryRepository extends BaseRepository {
             }
             cursor.close();
         }
-
         return indicatorQuery;
     }
 

@@ -46,7 +46,6 @@ public class IndicatorRepository extends BaseRepository {
         if (indicator == null) {
             return;
         }
-
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
     }
 
@@ -74,15 +73,17 @@ public class IndicatorRepository extends BaseRepository {
         String[] selectionArgs = {code};
 
         Cursor cursor = database.query(INDICATOR_TABLE, columns, selection, selectionArgs, null, null, null, null);
-
-        return buildReportIndicatorsFromCursor(cursor).get(0); // We're expecting only one
+        ReportIndicator reportIndicator = buildReportIndicatorsFromCursor(cursor).get(0); // We're expecting only one
+        cursor.close();
+        return reportIndicator;
     }
 
     public List<ReportIndicator> getAllIndicators() {
         SQLiteDatabase database = getReadableDatabase();
         Cursor cursor = database.query(INDICATOR_TABLE, null, null, null, null, null, null, null);
-
-        return buildReportIndicatorsFromCursor(cursor);
+        List<ReportIndicator> reportIndicators = buildReportIndicatorsFromCursor(cursor);
+        cursor.close();
+        return reportIndicators;
     }
 
     private List<ReportIndicator> buildReportIndicatorsFromCursor(Cursor cursor) {
@@ -99,9 +100,7 @@ public class IndicatorRepository extends BaseRepository {
                 reportIndicators.add(indicator);
                 cursor.moveToNext();
             }
-            cursor.close();
         }
-
         return reportIndicators;
     }
 
