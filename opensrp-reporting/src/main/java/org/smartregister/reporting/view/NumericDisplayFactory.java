@@ -21,7 +21,7 @@ public class NumericDisplayFactory implements IndicatorVisualisationFactory {
     public View getIndicatorView(ReportingIndicatorVisualization data, Context context) {
         NumericIndicatorVisualization indicatorData = (NumericIndicatorVisualization) data;
 
-        ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.numeric_indicator_view, null);
+        View rootLayout = LayoutInflater.from(context).inflate(R.layout.numeric_indicator_view, null);
 
         TextView chartLabelTextView = rootLayout.findViewById(R.id.numeric_indicator_label);
         TextView chartValueTextView = rootLayout.findViewById(R.id.numeric_indicator_value);
