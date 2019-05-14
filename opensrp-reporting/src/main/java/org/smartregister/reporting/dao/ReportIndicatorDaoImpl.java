@@ -13,7 +13,6 @@ import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.util.Log;
 
-import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
