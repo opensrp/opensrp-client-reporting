@@ -19,8 +19,7 @@
 
     <style name="IndicatorLabelStyle">
         <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/colorReportingIndicatorLabel</item>
         <item name="android:layout_alignParentStart">true</item>
     </style>
