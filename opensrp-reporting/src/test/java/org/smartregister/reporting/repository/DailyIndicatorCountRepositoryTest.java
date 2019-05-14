@@ -32,7 +32,7 @@ public class DailyIndicatorCountRepositoryTest {
     private Repository repository;
 
     @Mock
-    ReportingLibrary reportingLibraryInstance;
+    private ReportingLibrary reportingLibraryInstance;
 
     private DailyIndicatorCountRepository dailyIndicatorCountRepositorySpy;
 
