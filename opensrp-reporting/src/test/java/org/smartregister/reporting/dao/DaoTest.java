@@ -24,8 +24,11 @@ import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.Repository;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
@@ -91,11 +94,9 @@ public class DaoTest {
     public void generateDailyIndicatorTalliesSetsLastProcessedDatePreference() throws Exception {
         // Test data
         String lastProcessedDate = "2019-01-01 00:00";
-        ArrayList<HashMap<String, String>> reportEventDates = new ArrayList<>();
-        HashMap<String, String> dateMap = new HashMap<>();
-        dateMap.put("eventDate", "Mon Apr 15 03:00:00 GMT+03:00 2019");
-        dateMap.put("updatedAt", "2019-04-16 12:19:37");
-        reportEventDates.add(dateMap);
+        LinkedHashMap<String, Date> reportEventDates = new LinkedHashMap<>();
+        reportEventDates.put("20190413", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse("2019-04-13 12:19:37"));
+        reportEventDates.put("20190513", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse("2019-05-13 12:19:37"));
 
         Map<String, String> indicatorQueries = new HashMap<>();
         indicatorQueries.put("INDI-100", "select count(*) from table");
