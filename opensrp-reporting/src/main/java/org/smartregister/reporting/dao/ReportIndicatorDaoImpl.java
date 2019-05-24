@@ -136,7 +136,11 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String formattedQueryString = "";
         if (date != null) {
-            formattedQueryString = String.format(queryString, date);
+            if (queryString.contains("%s")) {
+                formattedQueryString = String.format(queryString, date);
+            } else {
+                formattedQueryString = queryString;
+            }
         }
         Cursor cursor = null;
         int count = 0;
