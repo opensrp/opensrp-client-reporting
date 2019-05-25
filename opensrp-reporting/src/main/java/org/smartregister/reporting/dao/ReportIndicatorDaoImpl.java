@@ -32,16 +32,15 @@ import java.util.Map;
 
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
+    public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
+            + EventClientRepository.Table.event.name();
+    private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
+    private static String eventDateFormat = "E MMM dd hh:mm:ss z yyyy";
+    private static String updateDateFormat = "yyyy-MM-dd hh:mm:ss";
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
-            + EventClientRepository.Table.event.name();
-    public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
-    private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
-
-    private static String eventDateFormat = "E MMM dd hh:mm:ss z yyyy";
-    private static String updateDateFormat = "yyyy-MM-dd hh:mm:ss";
 
     public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository,
                                   IndicatorRepository indicatorRepository) {
@@ -134,14 +133,14 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
-        String formattedQueryString = "";
+        String query = "";
         if (date != null) {
-            formattedQueryString = String.format(queryString, date);
+            query = queryString.contains("%s") ? String.format(queryString, date) : queryString;
         }
         Cursor cursor = null;
         int count = 0;
         try {
-            cursor = database.rawQuery(formattedQueryString, null);
+            cursor = database.rawQuery(query, null);
             if (null != cursor) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
