@@ -8,13 +8,14 @@ package org.smartregister.reporting.domain;
  * The different custom indicator visualizations extend this class to define their custom properties.
  *
  * @author allan
- *
  */
 
 public class ReportingIndicatorVisualization {
     private String indicatorLabel;
+    private String indicatorNote;
 
-    public ReportingIndicatorVisualization() {}
+    public ReportingIndicatorVisualization() {
+    }
 
     public ReportingIndicatorVisualization(String indicatorLabel) {
         this.indicatorLabel = indicatorLabel;
@@ -26,5 +27,13 @@ public class ReportingIndicatorVisualization {
 
     public void setIndicatorLabel(String indicatorLabel) {
         this.indicatorLabel = indicatorLabel;
+    }
+
+    public String getIndicatorNote() {
+        return indicatorNote;
+    }
+
+    public void setIndicatorNote(String indicatorNote) {
+        this.indicatorNote = indicatorNote;
     }
 }

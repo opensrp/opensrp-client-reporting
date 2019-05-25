@@ -36,7 +36,14 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
         ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
 
         TextView chartLabelTextView = rootLayout.findViewById(R.id.pie_indicator_label);
+        TextView chartNoteTextView = rootLayout.findViewById(R.id.pie_note_label);
         chartLabelTextView.setText(indicatorVisualization.getIndicatorLabel());
+        if (indicatorVisualization.getIndicatorNote() != null) {
+            chartNoteTextView.setText(indicatorVisualization.getIndicatorNote());
+        } else {
+            // Nothing to show
+            chartNoteTextView.setVisibility(View.GONE);
+        }
 
         PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
 

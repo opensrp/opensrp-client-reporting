@@ -32,6 +32,7 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
     public static class PieChartIndicatorVisualizationBuilder {
 
         private String indicatorLabel;
+        private String indicatorNote;
         private boolean hasLabels;
         private boolean hasLabelsOutside;
         private boolean hasCenterCircle;
@@ -40,6 +41,11 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
 
         public PieChartIndicatorVisualizationBuilder indicatorLabel(String label) {
             this.indicatorLabel = label;
+            return this;
+        }
+
+        public PieChartIndicatorVisualizationBuilder indicatorNote(String note) {
+            this.indicatorNote = note;
             return this;
         }
 
@@ -77,6 +83,7 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
             chartData.setListener(this.listener);
             PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization(chartData);
             pieChartIndicatorVisualization.setIndicatorLabel(this.indicatorLabel);
+            pieChartIndicatorVisualization.setIndicatorNote(this.indicatorNote);
             return pieChartIndicatorVisualization;
         }
 
