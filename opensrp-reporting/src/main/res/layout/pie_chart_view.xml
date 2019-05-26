@@ -1,77 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pie_chart_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/pie_indicator_label"
-        style="@style/IndicatorLabelStyle"
+    <RelativeLayout
+        android:id="@+id/pie_chart_contents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:text="Sample label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp">
 
-    <TextView
-        android:id="@+id/numeric_indicator_value"
-        style="@style/NumericIndicatorValueStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:text="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.858"
-        app:layout_constraintStart_toEndOf="@+id/pie_indicator_label"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/pie_indicator_label"
+            style="@style/IndicatorLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/numeric_indicator_value"
+            android:text="This is a sample label that exposes just how the view is rendered" />
 
-    <TextView
-        android:id="@+id/pie_note_label"
-        style="@style/IndicatorNoteStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:text="Sample Note"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pie_indicator_label" />
+        <TextView
+            android:id="@+id/numeric_indicator_value"
+            style="@style/NumericIndicatorValueStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="8dp"
+            android:text="0" />
+
+        <TextView
+            android:id="@+id/pie_note_label"
+            style="@style/IndicatorNoteStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/pie_indicator_label"
+            android:text="Sample Note" />
+
+    </RelativeLayout>
 
     <lecho.lib.hellocharts.view.PieChartView
         android:id="@+id/pie_chart"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:paddingBottom="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pie_note_label" />
+        android:layout_height="250dp" />
 
     <View
         android:id="@+id/pie_chart_split_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="24dp"
-        android:background="@color/indicatorSplitLine"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numeric_indicator_value"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="16dp" />
+        android:background="@color/indicatorSplitLine" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

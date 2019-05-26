@@ -1,9 +1,9 @@
 package org.smartregister.reporting.view;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
@@ -31,7 +31,7 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
     @Override
     public View getIndicatorView(ReportingIndicatorVisualization visualization, Context context) {
 
-        ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
+        LinearLayout rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
         TextView chartLabelTextView = rootLayout.findViewById(R.id.pie_indicator_label);
         TextView chartNoteTextView = rootLayout.findViewById(R.id.pie_note_label);
         TextView numericValueTextView = rootLayout.findViewById(R.id.numeric_indicator_value);
