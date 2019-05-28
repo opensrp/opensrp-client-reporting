@@ -1,9 +1,9 @@
 package org.smartregister.reporting.view;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.junit.Assert;
@@ -40,13 +40,19 @@ public class PieChartFactoryTest extends BaseUnitTest {
     private TextView chartLabelTextView;
 
     @Mock
+    private TextView chartNoteTextView;
+
+    @Mock
+    private TextView numericValueTextView;
+
+    @Mock
     private PieChartView pieChartView;
 
     @Mock
     private LayoutInflater layoutInflater;
 
     @Mock
-    private ConstraintLayout rootLayout;
+    private LinearLayout rootLayout;
 
     @Mock
     private PieChartIndicatorData chartConfiguration;
@@ -66,10 +72,12 @@ public class PieChartFactoryTest extends BaseUnitTest {
         PowerMockito.when(LayoutInflater.from(context)).thenReturn(layoutInflater);
         Mockito.doReturn(rootLayout).when(layoutInflater).inflate(R.layout.pie_chart_view, null);
         Mockito.doReturn(chartLabelTextView).when(rootLayout).findViewById(R.id.pie_indicator_label);
+        Mockito.doReturn(chartNoteTextView).when(rootLayout).findViewById(R.id.pie_note_label);
+        Mockito.doReturn(numericValueTextView).when(rootLayout).findViewById(R.id.numeric_indicator_value);
         Mockito.doReturn(pieChartView).when(rootLayout).findViewById(R.id.pie_chart);
         Mockito.doReturn(chartConfiguration).when(visualization).getChartData();
         View view = pieChartFactorySpy.getIndicatorView(visualization, context);
         Assert.assertNotNull(view);
-        Assert.assertTrue(view instanceof ConstraintLayout);
+        Assert.assertTrue(view instanceof LinearLayout);
     }
 }
