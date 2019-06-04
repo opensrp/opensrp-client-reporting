@@ -36,8 +36,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
-    private static String eventDateFormat = "E MMM dd hh:mm:ss z yyyy";
-    private static String updateDateFormat = "yyyy-MM-dd hh:mm:ss";
+    private static String eventDateFormat = ReportingLibrary.getInstance().getDateFormat();
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
@@ -78,7 +77,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
             String lastUpdatedDate = "";
             for (Map.Entry<String, Date> dates : reportEventDates.entrySet()) {
-                lastUpdatedDate = new SimpleDateFormat(updateDateFormat, Locale.getDefault()).format(dates.getValue());
+                lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
                     count = executeQueryAndReturnCount(entry.getValue(), dates.getKey(), database);
                     if (count > 0) {
@@ -86,7 +85,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         tally.setIndicatorCode(entry.getKey());
                         tally.setCount(count);
                         try {
-                            tally.setCreatedAt(new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).parse(dates.getKey()));
+                            tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
                         } catch (ParseException e) {
                             tally.setCreatedAt(new Date());
                         }
@@ -114,9 +113,9 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         Date updateDate;
         for (HashMap<String, String> val : values) {
             eventDate = formatDate(val.get(EventClientRepository.event_column.eventDate.name()), eventDateFormat);
-            updateDate = formatDate(val.get(EventClientRepository.event_column.updatedAt.name()), updateDateFormat);
+            updateDate = formatDate(val.get(EventClientRepository.event_column.updatedAt.name()), eventDateFormat);
 
-            String keyDate = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(eventDate);
+            String keyDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(eventDate);
 
             if (result.get(keyDate) != null && updateDate != null) {
                 if (result.get(keyDate).getTime() < updateDate.getTime()) {
@@ -126,9 +125,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 result.put(keyDate, updateDate);
             }
         }
-
         return result;
-        //
     }
 
     private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {

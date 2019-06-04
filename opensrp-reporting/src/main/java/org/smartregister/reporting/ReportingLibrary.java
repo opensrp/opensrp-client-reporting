@@ -26,18 +26,26 @@ import java.util.List;
 
 public class ReportingLibrary {
 
+    private static ReportingLibrary instance;
     private Repository repository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorQueryRepository indicatorQueryRepository;
     private IndicatorRepository indicatorRepository;
     private EventClientRepository eventClientRepository;
     private Context context;
-    private static ReportingLibrary instance;
     private CommonFtsObject commonFtsObject;
     private int applicationVersion;
     private int databaseVersion;
     private Yaml yaml;
-    private String dateFormat = "yyyyMMdd";
+    private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+
+    private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
+        this.repository = repository;
+        this.context = context;
+        this.commonFtsObject = commonFtsObject;
+        this.applicationVersion = applicationVersion;
+        this.databaseVersion = databaseVersion;
+    }
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {
@@ -52,24 +60,8 @@ public class ReportingLibrary {
         return instance;
     }
 
-    private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
-        this.repository = repository;
-        this.context = context;
-        this.commonFtsObject = commonFtsObject;
-        this.applicationVersion = applicationVersion;
-        this.databaseVersion = databaseVersion;
-    }
-
     public Repository getRepository() {
         return repository;
-    }
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public String getDateFormat() {
-        return dateFormat;
     }
 
     public DailyIndicatorCountRepository dailyIndicatorCountRepository() {
@@ -118,6 +110,14 @@ public class ReportingLibrary {
 
     public int getDatabaseVersion() {
         return databaseVersion;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
     public void initIndicatorData(String configFilePath, SQLiteDatabase sqLiteDatabase) {
