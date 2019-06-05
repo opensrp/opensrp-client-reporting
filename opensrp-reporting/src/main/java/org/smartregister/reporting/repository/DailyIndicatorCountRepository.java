@@ -6,7 +6,6 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
-import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
@@ -96,9 +95,10 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public ContentValues createContentValues(IndicatorTally indicatorTally) {
         ContentValues values = new ContentValues();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
         values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
         values.put(INDICATOR_VALUE, indicatorTally.getCount());
-        values.put(DAY, new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt()));
+        values.put(DAY, dateFormat.format(indicatorTally.getCreatedAt()));
         return values;
     }
 }
