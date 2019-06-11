@@ -86,7 +86,7 @@ if (!indicatorDataInitialised || isUpdated) {
 
 ### Displaying indicator visualizations
 
-First, fetch the indicator tallies. This would be ideally done in the background.
+First, fetch the indicator tallies. This would be ideally done in a background thread.
 
 ```java
 @Nullable
