@@ -55,13 +55,7 @@ public class IndicatorQueryRepository extends BaseRepository {
     public void truncateTable(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INDICATOR_QUERY_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_INDICATOR_QUERY);
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
-        cursor.moveToFirst();
-        int rowCount = cursor.getCount();
-        if (rowCount > 0) {
-            sqLiteDatabase.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_QUERY_TABLE + "'", null);
-        }
-        cursor.close();
+        sqLiteDatabase.delete("sqlite_sequence", "name = ?", new String[]{INDICATOR_QUERY_TABLE});
     }
 
     public Map<String, String> getAllIndicatorQueries() {
