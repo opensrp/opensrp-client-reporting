@@ -14,16 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.smartregister.reporting.contract.ReportContract;
-import org.smartregister.reporting.listener.PieChartSelectListener;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.view.NumericDisplayFactory;
 import org.smartregister.reporting.domain.NumericIndicatorVisualization;
-import org.smartregister.reporting.view.PieChartFactory;
 import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.listener.PieChartSelectListener;
+import org.smartregister.reporting.view.NumericDisplayFactory;
+import org.smartregister.reporting.view.PieChartFactory;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
-import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.sample.utils.ChartUtil;
 
 import java.util.ArrayList;
@@ -33,10 +32,10 @@ import java.util.Map;
 
 public class DashboardFragment extends Fragment implements ReportContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
 
+    private static ReportContract.Presenter presenter;
     private ViewGroup visualizationsViewGroup;
     private View pieChartView;
     private View numericIndicatorView;
-    private static ReportContract.Presenter presenter;
     private List<Map<String, IndicatorTally>> indicatorTallies;
 
     public DashboardFragment() {
@@ -131,6 +130,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
                 .chartListener(new ChartListener()).build();
 
         PieChartFactory pieChartFactory = new PieChartFactory();
+        pieChartIndicatorVisualization.setIndicatorNote(getString(R.string.sample_note));
         pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
 
         visualizationsViewGroup.addView(numericIndicatorView);
@@ -170,14 +170,6 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     public void onLoaderReset(@NonNull Loader<List<Map<String, IndicatorTally>>> loader) {
     }
 
-    private class ChartListener implements PieChartSelectListener {
-
-        @Override
-        public void handleOnSelectEvent(PieChartSlice sliceValue) {
-            Toast.makeText(getContext(), ChartUtil.getPieSelectionValue(sliceValue, getContext()), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private static class ReportIndicatorsLoader extends AsyncTaskLoader<List<Map<String, IndicatorTally>>> {
 
         public ReportIndicatorsLoader(Context context) {
@@ -188,6 +180,14 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         @Override
         public List<Map<String, IndicatorTally>> loadInBackground() {
             return presenter.fetchIndicatorsDailytallies();
+        }
+    }
+
+    private class ChartListener implements PieChartSelectListener {
+
+        @Override
+        public void handleOnSelectEvent(PieChartSlice sliceValue) {
+            Toast.makeText(getContext(), ChartUtil.getPieSelectionValue(sliceValue, getContext()), Toast.LENGTH_SHORT).show();
         }
     }
 }
