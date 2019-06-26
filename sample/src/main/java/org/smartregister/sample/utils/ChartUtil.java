@@ -30,7 +30,7 @@ public class ChartUtil {
      *
      * @param sliceValue the PieChartSlice selected
      * @param context    the context used to retrieve the String value from strings.xml
-     * @return
+     * @return the text to be displayed
      */
     public static String getPieSelectionValue(PieChartSlice sliceValue, Context context) {
         if (sliceValue.getColor() == YES_GREEN_SLICE_COLOR) {
