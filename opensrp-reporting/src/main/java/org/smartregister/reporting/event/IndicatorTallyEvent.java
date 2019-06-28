@@ -6,10 +6,6 @@ public class IndicatorTallyEvent extends BaseEvent {
 
     private TallyStatus status;
 
-    public IndicatorTallyEvent() {
-
-    }
-
     public TallyStatus getStatus() {
         return status;
     }

@@ -8,11 +8,11 @@ The current supported visualizations are
 
 1. Numeric display
 
-- This is used to display a lable and a value (count)
+    - This is used to display a lable and a value (count)
 
 2. PieChart
 
-- This is used to display ratios with different colors for the different ratios being displayed
+    - This is used to display ratios with different colors for the different ratios being displayed
 
 ## How the library works  
 
@@ -29,11 +29,11 @@ There are two approaches to generating the indicator tallies:
 
 1. Summation of all values stored
 
-- This is useful when aggregation is required. For instance if generating a tally for _'total number of people registered'_, the queries would store a count of people registered per day then when tallying the total would be a summation of all the values.  
+    - This is useful when aggregation is required. For instance if generating a tally for _'total number of people registered'_, the queries would store a count of people registered per day then when tallying the total would be a summation of all the values.  
 
 2. Getting the latest count
 
-- This applies when interested only in the count as at a particular point in time. For instance, _'Count of persons who have renewed their passports'_.  
+    - This applies when interested only in the count as at a particular point in time. For instance, _'Count of persons who have renewed their passports'_.  
 
 ## Integrating/using the In-App reporting library  
 
@@ -60,7 +60,7 @@ ChwIndicatorGeneratingJob.scheduleJob(ChwIndicatorGeneratingJob.TAG,
       TimeUnit.MINUTES.toMillis(org.smartregister.reporting.BuildConfig.REPORT_INDICATOR_GENERATION_MINUTES), TimeUnit.MINUTES.toMillis(1));
 ```
 
-The *REPORT_INDICATOR_GENERATION_MINUTES* default value is 2
+The *report indicator generating minutes* default value is 2
 
 Tables to persist the indicator defintions, queries and tallies should be created and the indicator data saved for use. 
 This should be done in a Repository class.
