@@ -42,22 +42,22 @@ There are two approaches to generating the indicator tallies:
 The library should be initialized in your module's Application class.
 
     ```java
-    // Init Reporting library
-    ReportingLibrary.init(context, getRepository(), null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        // Init Reporting library
+        ReportingLibrary.init(context, getRepository(), null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
     ```
 
 Since the library will schedule a job to run periodically to compute the indicator values, you should ensure the JobManager is initialized as well
 
     ```java
-    //init Job Manager
-    JobManager.create(this).addJobCreator(new ChwJobCreator());
+        //init Job Manager
+        JobManager.create(this).addJobCreator(new ChwJobCreator());
     ```
 
 The job that peridiocally generates the indicator tallies should be scheduled as below:
 
     ```java
-    ChwIndicatorGeneratingJob.scheduleJob(ChwIndicatorGeneratingJob.TAG,
-        TimeUnit.MINUTES.toMillis(org.smartregister.reporting.BuildConfig.REPORT_INDICATOR_GENERATION_MINUTES), TimeUnit.MINUTES.toMillis(1));
+        ChwIndicatorGeneratingJob.scheduleJob(ChwIndicatorGeneratingJob.TAG,
+            TimeUnit.MINUTES.toMillis(org.smartregister.reporting.BuildConfig.REPORT_INDICATOR_GENERATION_MINUTES), TimeUnit.MINUTES.toMillis(1));
     ```
 
 The _report indicator generating minutes_ default value is 15 minutes
@@ -66,22 +66,22 @@ Tables to persist the indicator defintions, queries and tallies should be create
 This should be done in a Repository class.
 
     ```java
-    // Create necessary tables
-    IndicatorRepository.createTable(database);
-    IndicatorQueryRepository.createTable(database);
-    DailyIndicatorCountRepository.createTable(database);
+        // Create necessary tables
+        IndicatorRepository.createTable(database);
+        IndicatorQueryRepository.createTable(database);
+        DailyIndicatorCountRepository.createTable(database);
 
-    // Initialize indicator data
-    ReportingLibrary reportingLibraryInstance = ReportingLibrary.getInstance();
-    // Check if indicator data initialized
-    boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
-            .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
-    boolean isUpdated = checkIfAppUpdated();
-    if (!indicatorDataInitialised || isUpdated) {
-        reportingLibraryInstance.initIndicatorData(indicatorsConfigFile, database); // This will persist the data in the DB
-        reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
-        reportingLibraryInstance.getContext().allSharedPreferences().savePreference(appVersionCodePref, String.valueOf(BuildConfig.VERSION_CODE));
-    }
+        // Initialize indicator data
+        ReportingLibrary reportingLibraryInstance = ReportingLibrary.getInstance();
+        // Check if indicator data initialized
+        boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
+                .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
+        boolean isUpdated = checkIfAppUpdated();
+        if (!indicatorDataInitialised || isUpdated) {
+            reportingLibraryInstance.initIndicatorData(indicatorsConfigFile, database); // This will persist the data in the DB
+            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
+            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(appVersionCodePref, String.valueOf(BuildConfig.VERSION_CODE));
+        }
     ```
 
 ### Displaying indicator visualizations
@@ -89,11 +89,11 @@ This should be done in a Repository class.
 First, fetch the indicator tallies. This would be ideally done in a background thread.
 
     ```java
-    @Nullable
-    @Override
-    public List<Map<String, IndicatorTally>> loadInBackground() {
-        return presenter.fetchIndicatorsDailytallies();
-    }
+        @Nullable
+        @Override
+        public List<Map<String, IndicatorTally>> loadInBackground() {
+            return presenter.fetchIndicatorsDailytallies();
+        }
     ```
 
 The above returns a list of tallies for all the indicators defined as they were stored. 
@@ -107,39 +107,39 @@ This visualization data object is what is used by the NumericDisplayFactory to g
 Create an instance of NumericDisplayFactory and use its `getIndicatorView(numericIndicatorData, context)` to get the numeric display view.
 
     ```java
-    // Generate numeric indicator visualization
-    NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(SampleDataDBUtil.numericIndicatorKey).getCount());
+        // Generate numeric indicator visualization
+        NumericIndicatorVisualization numericIndicatorData = new NumericIndicatorVisualization(getResources().getString(R.string.total_under_5_count), numericIndicatorValue.get(SampleDataDBUtil.numericIndicatorKey).getCount());
 
-    NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
-    numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, context);
+        NumericDisplayFactory numericIndicatorFactory = new NumericDisplayFactory();
+        numericIndicatorView = numericIndicatorFactory.getIndicatorView(numericIndicatorData, context);
     ```
 
 #### PieChart
 
 To display a PieChart, create an instance of PieChartIndicatorVisualization and initialize the chart label and chart data The chart data is a PieChartIndicatorData object and allows setting whether the PieChart labels, Slice values and colors.
 
-Create an instance of PieChartIndicatorData and use its getIndicatorView(pieChartIndicatorVisualization, context) to get the chart view for display.
+Create an instance of PieChartIndicatorData and use its getIndicatorView(pieChartIndicatorVisualization, context) to get the chart view for display
 
     ```java
-    // Generate pie chart
+        // Generate pie chart
 
-    // Define pie chart chartSlices
-    List<PieChartSlice> chartSlices = new ArrayList<>();
+        // Define pie chart chartSlices
+        List<PieChartSlice> chartSlices = new ArrayList<>();
 
-    PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(ChartUtil.pieChartYesIndicatorKey).getCount(), ChartUtil.YES_GREEN_SLICE_COLOR);
-    PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(ChartUtil.pieChartNoIndicatorKey).getCount(), ChartUtil.NO_RED_SLICE_COLOR);
-    chartSlices.add(yesSlice);
-    chartSlices.add(noSlice);
+        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(ChartUtil.pieChartYesIndicatorKey).getCount(), ChartUtil.YES_GREEN_SLICE_COLOR);
+        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(ChartUtil.pieChartNoIndicatorKey).getCount(), ChartUtil.NO_RED_SLICE_COLOR);
+        chartSlices.add(yesSlice);
+        chartSlices.add(noSlice);
 
-    // Build the chart
-    PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
-        .indicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label))
-        .chartHasLabels(true)
-        .chartHasLabelsOutside(true)
-        .chartHasCenterCircle(false)
-        .chartSlices(chartSlices)
-        .chartListener(new ChartListener()).build();
+        // Build the chart
+        PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
+            .indicatorLabel(getResources().getString(R.string.num_of_lieterate_children_0_60_label))
+            .chartHasLabels(true)
+            .chartHasLabelsOutside(true)
+            .chartHasCenterCircle(false)
+            .chartSlices(chartSlices)
+            .chartListener(new ChartListener()).build();
 
-    PieChartFactory pieChartFactory = new PieChartFactory();
-    pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
+        PieChartFactory pieChartFactory = new PieChartFactory();
+        pieChartView = pieChartFactory.getIndicatorView(pieChartIndicatorVisualization, getContext());
     ```
