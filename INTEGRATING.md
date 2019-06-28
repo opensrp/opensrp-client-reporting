@@ -120,7 +120,7 @@ To display a PieChart, create an instance of PieChartIndicatorVisualization and 
 
 Create an instance of PieChartIndicatorData and use its getIndicatorView(pieChartIndicatorVisualization, context) to get the chart view for display
 
-    ```java
+    ``` java
         // Generate pie chart
 
         // Define pie chart chartSlices
