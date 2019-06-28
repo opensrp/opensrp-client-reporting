@@ -2,6 +2,8 @@ package org.smartregister.reporting;
 
 import android.util.Log;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.domain.IndicatorQuery;
@@ -24,17 +26,26 @@ import java.util.List;
 
 public class ReportingLibrary {
 
+    private static ReportingLibrary instance;
     private Repository repository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorQueryRepository indicatorQueryRepository;
     private IndicatorRepository indicatorRepository;
     private EventClientRepository eventClientRepository;
     private Context context;
-    private static ReportingLibrary instance;
     private CommonFtsObject commonFtsObject;
     private int applicationVersion;
     private int databaseVersion;
     private Yaml yaml;
+    private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+
+    private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
+        this.repository = repository;
+        this.context = context;
+        this.commonFtsObject = commonFtsObject;
+        this.applicationVersion = applicationVersion;
+        this.databaseVersion = databaseVersion;
+    }
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         if (instance == null) {
@@ -49,18 +60,9 @@ public class ReportingLibrary {
         return instance;
     }
 
-    private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
-        this.repository = repository;
-        this.context = context;
-        this.commonFtsObject = commonFtsObject;
-        this.applicationVersion = applicationVersion;
-        this.databaseVersion = databaseVersion;
-    }
-
     public Repository getRepository() {
         return repository;
     }
-
 
     public DailyIndicatorCountRepository dailyIndicatorCountRepository() {
         if (dailyIndicatorCountRepository == null) {
@@ -110,7 +112,15 @@ public class ReportingLibrary {
         return databaseVersion;
     }
 
-    public void initIndicatorData(String configFilePath) {
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public void initIndicatorData(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
         try {
@@ -134,8 +144,13 @@ public class ReportingLibrary {
                     indicatorQueries.add(indicatorQuery);
                 }
             }
-            saveIndicators(reportIndicators);
-            saveIndicatorQueries(indicatorQueries);
+            if (sqLiteDatabase != null) {
+                saveIndicators(reportIndicators, sqLiteDatabase);
+                saveIndicatorQueries(indicatorQueries, sqLiteDatabase);
+            } else {
+                saveIndicators(reportIndicators);
+                saveIndicatorQueries(indicatorQueries);
+            }
         }
     }
 
@@ -159,10 +174,24 @@ public class ReportingLibrary {
         }
     }
 
+    private void saveIndicators(List<ReportIndicator> indicators, SQLiteDatabase sqLiteDatabase) {
+        this.indicatorRepository().truncateTable(sqLiteDatabase);
+        for (ReportIndicator indicator : indicators) {
+            this.indicatorRepository().add(indicator, sqLiteDatabase);
+        }
+    }
+
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
         this.indicatorQueryRepository().truncateTable();
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
+        }
+    }
+
+    private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries, SQLiteDatabase sqLiteDatabase) {
+        this.indicatorQueryRepository().truncateTable(sqLiteDatabase);
+        for (IndicatorQuery indicatorQuery : indicatorQueries) {
+            this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
     }
 }

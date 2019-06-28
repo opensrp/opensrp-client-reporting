@@ -6,6 +6,9 @@ import android.util.Log;
 
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
+import org.smartregister.reporting.domain.TallyStatus;
+import org.smartregister.reporting.event.EventBusHelper;
+import org.smartregister.reporting.event.IndicatorTallyEvent;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -19,8 +22,8 @@ import org.smartregister.reporting.repository.IndicatorRepository;
  */
 public class IndicatorGeneratorIntentService extends IntentService {
 
-    private ReportIndicatorDaoImpl reportIndicatorDao;
     public static String TAG = "IndicatorGeneratorIntentService";
+    private ReportIndicatorDaoImpl reportIndicatorDao;
 
     public IndicatorGeneratorIntentService() {
         super("IndicatorGeneratorIntentService");
@@ -31,7 +34,12 @@ public class IndicatorGeneratorIntentService extends IntentService {
         Log.i(TAG, "IndicatorGeneratorIntentService running");
         String lastProcessedDate = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
         Log.d(TAG, "LastProcessedDate " + lastProcessedDate);
+        IndicatorTallyEvent tallyEvent = new IndicatorTallyEvent();
+        tallyEvent.setStatus(TallyStatus.STARTED);
+        EventBusHelper.postEvent(tallyEvent);
         reportIndicatorDao.generateDailyIndicatorTallies(lastProcessedDate);
+        tallyEvent.setStatus(TallyStatus.COMPLETE);
+        EventBusHelper.postEvent(tallyEvent);
     }
 
     @Override

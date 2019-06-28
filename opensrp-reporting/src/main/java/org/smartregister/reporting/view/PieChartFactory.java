@@ -1,9 +1,9 @@
 package org.smartregister.reporting.view;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
@@ -31,31 +31,52 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
     @Override
     public View getIndicatorView(ReportingIndicatorVisualization visualization, Context context) {
 
-        PieChartIndicatorVisualization indicatorVisualization = (PieChartIndicatorVisualization) visualization;
-
-        ConstraintLayout rootLayout = (ConstraintLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
-
+        LinearLayout rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
         TextView chartLabelTextView = rootLayout.findViewById(R.id.pie_indicator_label);
-        chartLabelTextView.setText(indicatorVisualization.getIndicatorLabel());
+        TextView chartNoteTextView = rootLayout.findViewById(R.id.pie_note_label);
+        TextView numericValueTextView = rootLayout.findViewById(R.id.numeric_indicator_value);
 
-        PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
-
-        // Retrieve chart data
-        PieChartData chartData = new PieChartData();
+        PieChartIndicatorVisualization indicatorVisualization = (PieChartIndicatorVisualization) visualization;
         PieChartIndicatorData chartConfiguration = indicatorVisualization.getChartData();
-        chartData.setHasCenterCircle(chartConfiguration.hasCenterCircle());
-        chartData.setHasLabels(chartConfiguration.hasLabels());
-        chartData.setHasLabelsOutside(chartConfiguration.hasLabelsOutside());
+
+        chartLabelTextView.setText(indicatorVisualization.getIndicatorLabel());
+        if (indicatorVisualization.getIndicatorNote() != null) {
+            chartNoteTextView.setText(indicatorVisualization.getIndicatorNote());
+        } else {
+            // Nothing to show
+            chartNoteTextView.setVisibility(View.GONE);
+        }
 
         // Retrieve slice values
         List<SliceValue> sliceValues = new ArrayList<>();
+        List<PieChartSlice> chartSlices = chartConfiguration.getSlices();
         SliceValue value;
-        for (PieChartSlice slice : chartConfiguration.getSlices()) {
+        boolean showPieChart = false;
+        // Check if we have values to show in the chart
+        for (PieChartSlice slice : chartSlices) {
+            if (slice.getValue() > 0) {
+                showPieChart = true;
+            }
             value = new SliceValue();
             value.setColor(slice.getColor());
             value.setValue(slice.getValue());
             sliceValues.add(value);
         }
+
+        PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
+        if (!showPieChart) {
+            pieChartView.setVisibility(View.GONE);
+            return rootLayout;
+        }
+
+        // We have data to show so this isn't necessary
+        numericValueTextView.setVisibility(View.GONE);
+
+        // Retrieve chart data
+        PieChartData chartData = new PieChartData();
+        chartData.setHasCenterCircle(chartConfiguration.hasCenterCircle());
+        chartData.setHasLabels(chartConfiguration.hasLabels());
+        chartData.setHasLabelsOutside(chartConfiguration.hasLabelsOutside());
         chartData.setValues(sliceValues);
 
         pieChartView.setChartRotationEnabled(false);

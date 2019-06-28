@@ -1,6 +1,6 @@
 indicators:
   - key: "S_IND_001"
-    description: "Total Childrean"
+    description: "Total Children"
     indicatorQuery: "select count(*) from indicator_queries"
 
   - key: "S_IND_002"

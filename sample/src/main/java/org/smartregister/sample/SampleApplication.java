@@ -35,7 +35,7 @@ public class SampleApplication extends DrishtiApplication {
                 .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
         boolean isUpdated = checkIfAppUpdated();
         if (!indicatorDataInitialised || isUpdated) {
-            reportingLibraryInstance.initIndicatorData(indicatorsConfigFile); // This will persist the data in the DB
+            reportingLibraryInstance.initIndicatorData(indicatorsConfigFile, null); // This will persist the data in the DB
             reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
             reportingLibraryInstance.getContext().allSharedPreferences().savePreference(appVersionCodePref, String.valueOf(BuildConfig.VERSION_CODE));
         }

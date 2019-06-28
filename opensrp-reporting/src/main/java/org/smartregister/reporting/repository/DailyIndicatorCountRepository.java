@@ -5,16 +5,20 @@ import android.content.ContentValues;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * This DailyIndicatorCountRepository class handles saving daily computed indicator values
@@ -34,12 +38,15 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
             INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER NOT NULL, " + DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
+    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " + INDICATOR_DAILY_TALLY_TABLE + " ( " + INDICATOR_CODE + " , " + DAY + " ) ";
+
     public DailyIndicatorCountRepository(Repository repository) {
         super(repository);
     }
 
     public static void createTable(SQLiteDatabase database) {
         database.execSQL(CREATE_DAILY_TALLY_TABLE);
+        database.execSQL(CREATE_UNIQUE_CONSTRAINT);
     }
 
     public void add(IndicatorTally indicatorTally) {
@@ -48,6 +55,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         }
 
         SQLiteDatabase database = getWritableDatabase();
+        database.delete(INDICATOR_DAILY_TALLY_TABLE, INDICATOR_CODE + " = ? AND " + DAY + " = ? ",
+                new String[]{indicatorTally.getIndicatorCode(), new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt())});
         database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
@@ -58,31 +67,38 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, DAY};
 
-        Cursor cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
-
-        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                tallyMap = new HashMap<>();
-                IndicatorTally indicatorTally = new IndicatorTally();
-                indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-                indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
-                indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
-                indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
-                tallyMap.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
-                indicatorTallies.add(tallyMap);
-                cursor.moveToNext();
+        Cursor cursor = null;
+        try {
+            cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    tallyMap = new HashMap<>();
+                    IndicatorTally indicatorTally = new IndicatorTally();
+                    indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+                    indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+                    indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
+                    indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
+                    tallyMap.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), indicatorTally);
+                    indicatorTallies.add(tallyMap);
+                    cursor.moveToNext();
+                }
             }
-            cursor.close();
+        } catch (Exception ex) {
+            Timber.e(ex.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-
         return indicatorTallies;
     }
 
     public ContentValues createContentValues(IndicatorTally indicatorTally) {
         ContentValues values = new ContentValues();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
         values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
         values.put(INDICATOR_VALUE, indicatorTally.getCount());
-        values.put(DAY, Calendar.getInstance().getTimeInMillis());
+        values.put(DAY, dateFormat.format(indicatorTally.getCreatedAt()));
         return values;
     }
 }

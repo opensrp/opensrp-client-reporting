@@ -39,24 +39,24 @@ public class IndicatorRepository extends BaseRepository {
     }
 
     public void add(ReportIndicator indicator) {
+        add(indicator, getWritableDatabase());
+    }
+
+    public void add(ReportIndicator indicator, SQLiteDatabase database) {
         if (indicator == null) {
             return;
         }
-
-        SQLiteDatabase database = getWritableDatabase();
-
         database.insert(INDICATOR_TABLE, null, createContentValues(indicator));
     }
 
     public void truncateTable() {
-        SQLiteDatabase database = getWritableDatabase();
-        database.rawQuery("DELETE FROM " + INDICATOR_TABLE, null);
-        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
-        cursor.moveToFirst();
-        int rowCount = cursor.getCount();
-        if (rowCount > 0) {
-            database.rawQuery("DELETE FROM sqlite_sequence WHERE name = '" + INDICATOR_TABLE + "'", null);
-        }
+        truncateTable(getWritableDatabase());
+    }
+
+    public void truncateTable(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INDICATOR_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TABLE_INDICATOR);
+        sqLiteDatabase.delete("sqlite_sequence", "name = ?", new String[]{INDICATOR_TABLE});
     }
 
     public ReportIndicator getIndicatorByCode(String code) {
@@ -67,15 +67,17 @@ public class IndicatorRepository extends BaseRepository {
         String[] selectionArgs = {code};
 
         Cursor cursor = database.query(INDICATOR_TABLE, columns, selection, selectionArgs, null, null, null, null);
-
-        return buildReportIndicatorsFromCursor(cursor).get(0); // We're expecting only one
+        ReportIndicator reportIndicator = buildReportIndicatorsFromCursor(cursor).get(0); // We're expecting only one
+        cursor.close();
+        return reportIndicator;
     }
 
     public List<ReportIndicator> getAllIndicators() {
         SQLiteDatabase database = getReadableDatabase();
         Cursor cursor = database.query(INDICATOR_TABLE, null, null, null, null, null, null, null);
-
-        return buildReportIndicatorsFromCursor(cursor);
+        List<ReportIndicator> reportIndicators = buildReportIndicatorsFromCursor(cursor);
+        cursor.close();
+        return reportIndicators;
     }
 
     private List<ReportIndicator> buildReportIndicatorsFromCursor(Cursor cursor) {
@@ -92,9 +94,7 @@ public class IndicatorRepository extends BaseRepository {
                 reportIndicators.add(indicator);
                 cursor.moveToNext();
             }
-            cursor.close();
         }
-
         return reportIndicators;
     }
 
