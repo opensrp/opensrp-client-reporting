@@ -2,8 +2,7 @@
 
 OpenSRP Client Reporting Library
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/27dcbf45e12941acae3daa3bd310de95)](https://www.codacy.com/app/OpenSRP/opensrp-client-reporting?utm_source=github.com&utm_medium=referral&utm_content=OpenSRP/opensrp-client-reporting&utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/OpenSRP/opensrp-client-reporting.svg?branch=master)](https://travis-ci.org/OpenSRP/opensrp-client-reporting) [![Coverage Status](https://coveralls.io/repos/github/OpenSRP/opensrp-client-reporting/badge.svg?branch=master)](https://coveralls.io/github/OpenSRP/opensrp-client-reporting?branch=master)
+[![Build Status](https://travis-ci.org/OpenSRP/opensrp-client-reporting.svg?branch=master)](https://travis-ci.org/OpenSRP/opensrp-client-reporting) [![Coverage Status](https://coveralls.io/repos/github/OpenSRP/opensrp-client-reporting/badge.svg?branch=master)](https://coveralls.io/github/OpenSRP/opensrp-client-reporting?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/642391cacc03450b894b662eac7f30a3)](https://www.codacy.com/app/OpenSRP/opensrp-client-reporting?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenSRP/opensrp-client-reporting&amp;utm_campaign=Badge_Grade)
 
 ## Introduction
 
@@ -15,13 +14,13 @@ to show Charts e.g. PieCharts
 
 The current supported visualizations are  
 
-1. Numeric display
+  1. Numeric display
 
-    * This is used to display a lable and a value (count)
+      * This is used to display a lable and a value (count)
 
-2. PieChart
+  2. PieChart
 
-    * This is used to display ratios with different colors for the different ratios being displayed
+      * This is used to display ratios with different colors for the different ratios being displayed
 
 ## Displaying visualizations
 
