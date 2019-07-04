@@ -35,13 +35,10 @@ public class AggregationUtil {
         if (indicatorTallies != null && !indicatorTallies.isEmpty()) {
             for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {
                 for (String key : indicatorTallyMap.keySet()) {
-                    if (indicatorKey.equals(key)) {
-                       if(indicatorTallyMap.get(key).getCreatedAt() != null &&
-                               indicatorTallyMap.get(key).getCreatedAt().after(currentDate)){
-                           currentDate = indicatorTallyMap.get(key).getCreatedAt();
-                           count = indicatorTallyMap.get(key).getCount();
-                       }
-
+                    if (indicatorKey.equals(key) && indicatorTallyMap.get(key).getCreatedAt() != null &&
+                            indicatorTallyMap.get(key).getCreatedAt().after(currentDate)) {
+                        currentDate = indicatorTallyMap.get(key).getCreatedAt();
+                        count = indicatorTallyMap.get(key).getCount();
                     }
                 }
             }
