@@ -50,11 +50,11 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         super(repository);
     }
 
-    public void performMigrations(@NonNull Repository repository) {
+    public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (!Utils.isColumnExists(repository.getWritableDatabase(), INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE_SET)) {
-            addValueSetColumns();
-            aggregateDailyTallies();
+        if (Utils.isTableExists(database, INDICATOR_DAILY_TALLY_TABLE) && !Utils.isColumnExists(database, INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE_SET)) {
+            addValueSetColumns(database);
+            aggregateDailyTallies(database);
         }
     }
 
@@ -177,14 +177,10 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         return values;
     }
 
-    public void addValueSetColumns() {
+    public static void addValueSetColumns(@NonNull SQLiteDatabase database) {
         // Change indicator_value to be nullable
         // Add the two fields
         // Set the default for the is_value_set to false
-
-        SQLiteDatabase database = getWritableDatabase();
-
-        // DROP THE TABLE, CREATE A NEW TABLE
         database.execSQL("PRAGMA foreign_keys=off");
         database.beginTransaction();
 
@@ -210,7 +206,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL("PRAGMA foreign_keys=on;");
     }
 
-    public void aggregateDailyTallies() {
+    public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
 
     }
 

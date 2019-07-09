@@ -37,11 +37,11 @@ public class IndicatorQueryRepository extends BaseRepository {
         super(repository);
     }
 
-    public void performMigrations(@NonNull Repository repository) {
+    public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (!Utils.isColumnExists(repository.getWritableDatabase(), INDICATOR_QUERY_TABLE, INDICATOR_QUERY_IS_MULTI_RESULT)) {
-            addMultiResultFlagField();
-            aggregateDailyTallies();
+        if (Utils.isTableExists(database, INDICATOR_QUERY_TABLE) && !Utils.isColumnExists(database, INDICATOR_QUERY_TABLE, INDICATOR_QUERY_IS_MULTI_RESULT)) {
+            addMultiResultFlagField(database);
+            aggregateDailyTallies(database);
         }
     }
 
@@ -127,12 +127,10 @@ public class IndicatorQueryRepository extends BaseRepository {
     }
 
 
-    public void addMultiResultFlagField() {
+    public static void addMultiResultFlagField(@NonNull SQLiteDatabase database) {
         // Change indicator_value to be nullable
         // Add the two fields
         // Set the default for the is_value_set to false
-
-        SQLiteDatabase database = getWritableDatabase();
 
         // DROP THE TABLE, CREATE A NEW TABLE
         database.execSQL("PRAGMA foreign_keys=off");
@@ -145,7 +143,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         database.execSQL("PRAGMA foreign_keys=on;");
     }
 
-    public void aggregateDailyTallies() {
+    public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
 
     }
 

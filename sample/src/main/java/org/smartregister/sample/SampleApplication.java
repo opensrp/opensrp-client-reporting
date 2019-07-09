@@ -11,6 +11,8 @@ import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
 
+import timber.log.Timber;
+
 import static org.smartregister.util.Log.logError;
 
 public class SampleApplication extends DrishtiApplication {
@@ -25,6 +27,8 @@ public class SampleApplication extends DrishtiApplication {
 
         mInstance = this;
         context = Context.getInstance();
+        Timber.plant(new Timber.DebugTree());
+
         context.updateApplicationContext(getApplicationContext());
         CoreLibrary.init(context);
         repository = getRepository();

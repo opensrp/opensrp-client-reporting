@@ -1,5 +1,6 @@
 package org.smartregister.reporting;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class ReportingLibrary {
 
@@ -58,6 +61,18 @@ public class ReportingLibrary {
             throw new IllegalStateException(" Instance does not exist!!! Call " + ReportingLibrary.class.getName() + ".init() in the onCreate() method of your Application class");
         }
         return instance;
+    }
+
+    /**
+     * This method should be called in onUpgrade method of the Repository class where the migrations
+     * are already managed instead of writing new code to manage them
+     */
+    public void performMigrations(@NonNull SQLiteDatabase database) {
+        Timber.e("Running migrations");
+
+        IndicatorQueryRepository.performMigrations(database);
+        DailyIndicatorCountRepository.performMigrations(database);
+
     }
 
     public Repository getRepository() {

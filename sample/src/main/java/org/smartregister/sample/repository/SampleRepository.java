@@ -31,9 +31,10 @@ public class SampleRepository extends Repository {
     private String databasePassword = "db_pass";
     private static final String TAG = SampleRepository.class.getCanonicalName();
     private Context context;
+    private static final int DB_VERSION = 2;
 
     public SampleRepository(Context context, org.smartregister.Context openSRPContext) {
-        super(context, AllConstants.DATABASE_NAME, AllConstants.DATABASE_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
+        super(context, AllConstants.DATABASE_NAME, DB_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
         this.context = context;
     }
 
@@ -47,7 +48,9 @@ public class SampleRepository extends Repository {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO
+        if (oldVersion == 1 && newVersion == 2) {
+            ReportingLibrary.getInstance().performMigrations(db);
+        }
     }
 
     @Override
@@ -71,7 +74,7 @@ public class SampleRepository extends Repository {
             }
             return readableDatabase;
         } catch (Exception e) {
-            Log.e(TAG, "Database Error. " + e.getMessage());
+            Log.e(TAG, Log.getStackTraceString(e));
             return null;
         }
 
