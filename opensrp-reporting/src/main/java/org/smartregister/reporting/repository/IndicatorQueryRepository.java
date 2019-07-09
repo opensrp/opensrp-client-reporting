@@ -144,7 +144,7 @@ public class IndicatorQueryRepository extends BaseRepository {
     }
 
     public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
-
+        // Code to migrate the code over from incremental tallies should be written here
     }
 
 }

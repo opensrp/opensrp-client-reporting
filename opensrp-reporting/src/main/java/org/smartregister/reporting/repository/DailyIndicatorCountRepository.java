@@ -104,8 +104,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     public Map<String, IndicatorTally> getDailyTallies(@NonNull Date date) {
-        List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
-        Map<String, IndicatorTally> tallyMap = new HashMap<>();;
+        Map<String, IndicatorTally> tallyMap = new HashMap<>();
 
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, INDICATOR_VALUE_SET, INDICATOR_VALUE_SET_FLAG, DAY};
@@ -207,7 +206,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
-
+        // Code to migrate the code over from incremental tallies should be written here
     }
 
 }
