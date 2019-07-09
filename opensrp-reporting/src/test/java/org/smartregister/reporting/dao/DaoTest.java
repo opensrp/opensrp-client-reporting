@@ -98,8 +98,8 @@ public class DaoTest {
         reportEventDates.put("20190413", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse("2019-04-13 12:19:37"));
         reportEventDates.put("20190513", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse("2019-05-13 12:19:37"));
 
-        Map<String, String> indicatorQueries = new HashMap<>();
-        indicatorQueries.put("INDI-100", "select count(*) from table");
+        Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
+        indicatorQueries.put("INDI-100", new IndicatorQuery(1L, "INDI-100", "select count(*) from table", 4, false));
 
         PowerMockito.mockStatic(ReportingLibrary.class);
 

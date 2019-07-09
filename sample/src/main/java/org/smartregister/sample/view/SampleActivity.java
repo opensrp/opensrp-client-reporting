@@ -69,4 +69,8 @@ public class SampleActivity extends AppCompatActivity implements ReportContract.
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
