@@ -148,12 +148,16 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     private IndicatorTally processCursorRow(@NonNull Cursor cursor) {
         IndicatorTally indicatorTally = new IndicatorTally();
         indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-        indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
         indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
-        indicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
         indicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE_SET_FLAG)) == 1);
-        indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
 
+        if (indicatorTally.isValueSet()) {
+            indicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
+        } else {
+            indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+        }
+
+        indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
         return indicatorTally;
     }
 

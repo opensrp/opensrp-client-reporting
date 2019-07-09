@@ -1,5 +1,7 @@
 package org.smartregister.reporting.dao;
 
+import com.google.gson.Gson;
+
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -69,30 +71,48 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
         int count;
-        IndicatorTally tally;
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(lastProcessedDate, database);
-        Map<String, String> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
+        Map<String, IndicatorQuery> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
+
         if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
             String lastUpdatedDate = "";
             for (Map.Entry<String, Date> dates : reportEventDates.entrySet()) {
                 lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
-                for (Map.Entry<String, String> entry : indicatorQueries.entrySet()) {
-                    count = executeQueryAndReturnCount(entry.getValue(), dates.getKey(), database);
-                    if (count > 0) {
-                        tally = new IndicatorTally();
+                for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
+                    IndicatorQuery indicatorQuery = entry.getValue();
+                    IndicatorTally tally = null;
+
+                    if (indicatorQuery.isMultiResult()) {
+                        ArrayList<Object> result = executeQueryAndReturnMultiResult(indicatorQuery.getQuery(), dates.getKey(), database);
+
+                        if (result.size() > 0) {
+                            tally = new IndicatorTally();
+                            tally.setValueSet(new Gson().toJson(result));
+                        }
+                    } else {
+                        count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
+                        if (count > 0) {
+                            tally = new IndicatorTally();
+                            tally.setCount(count);
+                        }
+                    }
+
+                    if (tally != null) {
                         tally.setIndicatorCode(entry.getKey());
-                        tally.setCount(count);
+
                         try {
                             tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
                         } catch (ParseException e) {
                             tally.setCreatedAt(new Date());
                         }
+
                         dailyIndicatorCountRepository.add(tally);
                     }
                 }
             }
+
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
             Log.logDebug("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
@@ -154,6 +174,64 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
         }
         return count;
+    }
+
+
+    private ArrayList<Object> executeQueryAndReturnMultiResult(String queryString, String date, SQLiteDatabase database) {
+        // Use date in querying if specified
+        String query = "";
+        if (date != null) {
+            Log.logDebug("QUERY :" + queryString);
+            query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
+        }
+        Cursor cursor = null;
+        ArrayList<Object> rows = new ArrayList<>();
+        try {
+            cursor = database.rawQuery(query, null);
+            if (null != cursor) {
+                int cols = cursor.getColumnCount();
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+
+                    Object[] col = new Object[cols];
+
+                    for (int i = 0; i < cols; i++) {
+                        int type = cursor.getType(i);
+                        Object cellValue = null;
+
+                        if (type == Cursor.FIELD_TYPE_FLOAT) {
+                            cellValue = (Float) cursor.getFloat(i);
+                        } else if (type == Cursor.FIELD_TYPE_INTEGER) {
+                            cellValue = (Integer) cursor.getInt(i);
+                        } else if (type == Cursor.FIELD_TYPE_STRING) {
+                            cellValue = (String) cursor.getString(i);
+                        }
+
+                        // Types BLOB and NULL are ignored
+                        // Blob is not supposed to a reporting result & NULL is already defined in the cellValue at the top
+
+                        if (cols > 1) {
+                            col[i] = cellValue;
+                        } else {
+                            rows.add(cellValue);
+                        }
+                    }
+
+                    if (cols > 1) {
+                        rows.add(col);
+                    }
+
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.logError(e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return rows;
     }
 
     private Date formatDate(String date, String format) {
