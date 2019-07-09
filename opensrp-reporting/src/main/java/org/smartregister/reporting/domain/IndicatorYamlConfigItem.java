@@ -7,6 +7,7 @@ public class IndicatorYamlConfigItem {
     private String key;
     private String description;
     private String indicatorQuery;
+    private boolean isMultiResult;
 
     public String getKey() {
         return key;
@@ -30,5 +31,13 @@ public class IndicatorYamlConfigItem {
 
     public void setIndicatorQuery(String indicatorQuery) {
         this.indicatorQuery = indicatorQuery;
+    }
+
+    public boolean isMultiResult() {
+        return isMultiResult;
+    }
+
+    public void setMultiResult(boolean multiResult) {
+        isMultiResult = multiResult;
     }
 }

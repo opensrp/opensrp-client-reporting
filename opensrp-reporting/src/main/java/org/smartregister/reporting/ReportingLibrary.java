@@ -139,7 +139,10 @@ public class ReportingLibrary {
                 indicatorsConfig = (IndicatorsYamlConfig) indicatorObject;
                 for (IndicatorYamlConfigItem indicatorYamlConfigItem : indicatorsConfig.getIndicators()) {
                     indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
-                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getIndicatorQuery(), 0);
+                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
+                            , indicatorYamlConfigItem.getIndicatorQuery()
+                            , 0
+                            , indicatorYamlConfigItem.isMultiResult());
                     reportIndicators.add(indicator);
                     indicatorQueries.add(indicatorQuery);
                 }

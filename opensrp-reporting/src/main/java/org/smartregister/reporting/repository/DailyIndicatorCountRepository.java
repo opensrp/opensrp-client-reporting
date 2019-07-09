@@ -8,6 +8,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.util.Utils;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
@@ -51,7 +52,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public void performMigrations(@NonNull Repository repository) {
         // Perform migrations
-        if (!isColumnExists(repository.getWritableDatabase(), INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE_SET)) {
+        if (!Utils.isColumnExists(repository.getWritableDatabase(), INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE_SET)) {
             addValueSetColumns();
             aggregateDailyTallies();
         }
@@ -149,48 +150,27 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
         indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
         indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
+        indicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
+        indicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE_SET_FLAG)) == 1);
         indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
 
         return indicatorTally;
     }
 
-
     public ContentValues createContentValues(IndicatorTally indicatorTally) {
         ContentValues values = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
         values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
-        values.put(INDICATOR_VALUE, indicatorTally.getCount());
+
+        if (indicatorTally.isValueSet()) {
+            values.put(INDICATOR_VALUE_SET, indicatorTally.getValueSet());
+        } else {
+            values.put(INDICATOR_VALUE, indicatorTally.getCount());
+        }
+
+        values.put(INDICATOR_VALUE_SET_FLAG, indicatorTally.isValueSet());
         values.put(DAY, dateFormat.format(indicatorTally.getCreatedAt()));
         return values;
-    }
-
-    private boolean isColumnExists(@NonNull SQLiteDatabase sqliteDatabase,
-                                         @NonNull String tableName,
-                                         @NonNull String columnToFind) {
-        Cursor cursor = null;
-
-        try {
-            cursor = sqliteDatabase.rawQuery(
-                    "PRAGMA table_info(" + tableName + ")",
-                    null
-            );
-
-            int nameColumnIndex = cursor.getColumnIndexOrThrow("name");
-
-            while (cursor.moveToNext()) {
-                String name = cursor.getString(nameColumnIndex);
-
-                if (name.equals(columnToFind)) {
-                    return true;
-                }
-            }
-
-            return false;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
     }
 
     public void addValueSetColumns() {
