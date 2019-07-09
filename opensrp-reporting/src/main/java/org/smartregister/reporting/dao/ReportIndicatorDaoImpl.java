@@ -90,6 +90,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         if (result.size() > 0) {
                             tally = new IndicatorTally();
                             tally.setValueSet(new Gson().toJson(result));
+                            tally.setValueSetFlag(true);
                         }
                     } else {
                         count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
@@ -190,9 +191,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             cursor = database.rawQuery(query, null);
             if (null != cursor) {
                 int cols = cursor.getColumnCount();
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-
+                while (cursor.moveToNext()) {
                     Object[] col = new Object[cols];
 
                     for (int i = 0; i < cols; i++) {
@@ -209,7 +208,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
                         // Types BLOB and NULL are ignored
                         // Blob is not supposed to a reporting result & NULL is already defined in the cellValue at the top
-
                         if (cols > 1) {
                             col[i] = cellValue;
                         } else {

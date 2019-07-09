@@ -5,6 +5,7 @@ import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
@@ -120,6 +121,12 @@ public class SampleRepository extends Repository {
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
+
+
+    }
+
+    private static void addSampleEvents() {
+
     }
 
     private static void addSampleEvent() {
@@ -152,6 +159,19 @@ public class SampleRepository extends Repository {
             Log.e(TAG, "Error creating Event JSONObject");
         }
         eventClientRepository.addEvent(baseEntityId, jsonObject);
+    }
+
+    public static void addNewEvent() {
+        EventClientRepository eventClientRepository = ReportingLibrary.getInstance().eventClientRepository();
+        String baseEntityId = "3b6048d5-231d-4a11-a141-4c4358b8e401";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("eventDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(new Date()));
+            eventClientRepository.addEvent(baseEntityId, jsonObject);
+        } catch (JSONException ex) {
+            Log.e(TAG, Log.getStackTraceString(ex));
+        }
     }
 
 

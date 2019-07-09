@@ -6,6 +6,7 @@ import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.job.IndicatorGeneratorJobCreator;
+import org.smartregister.reporting.job.RecurringIndicatorGeneratingJob;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
@@ -49,6 +50,9 @@ public class SampleApplication extends DrishtiApplication {
         }
 
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
+
+        SampleRepository.addNewEvent();
+        RecurringIndicatorGeneratingJob.scheduleJobImmediately(RecurringIndicatorGeneratingJob.TAG);
     }
 
     public Repository getRepository() {

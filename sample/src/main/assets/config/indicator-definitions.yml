@@ -10,3 +10,8 @@ indicators:
   - key: "S_IND_003"
     description: "Total not immunized"
     indicatorQuery: "select count(*) from indicator_queries"
+
+  - key: "S_IND_004"
+    description: "A simple multi-result query"
+    indicatorQuery: "select indicator_code, count(*) as count from indicator_queries group by indicator_code UNION ALL select 'TOTAL', count(*) from indicator_queries"
+    isMultiResult: true
