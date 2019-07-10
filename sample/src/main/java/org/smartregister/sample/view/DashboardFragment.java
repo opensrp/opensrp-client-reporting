@@ -11,23 +11,13 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.domain.NumericIndicatorVisualization;
-import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
-import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.impl.ReportingModule;
-import org.smartregister.reporting.listener.PieChartSelectListener;
-import org.smartregister.reporting.view.NumericDisplayFactory;
-import org.smartregister.reporting.view.PieChartFactory;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
-import org.smartregister.sample.utils.ChartUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

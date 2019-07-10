@@ -10,7 +10,6 @@ import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
-
 import static org.smartregister.util.Log.logError;
 
 public class SampleApplication extends DrishtiApplication {

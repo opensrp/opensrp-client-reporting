@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.smartregister.reporting.BaseUnitTest.getDate;
+import static org.smartregister.reporting.BaseUnitTest.getDateTime;
+
 @RunWith(JUnit4.class)
 public class AggregationUtilTest {
     @Test
@@ -79,21 +82,5 @@ public class AggregationUtilTest {
         Assert.assertEquals(13, indicator2);
     }
 
-    private Date getDate(int year, int month, int date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1); //Months index begin from 0 - 11 i.e Jan: 0 ; Dec: 11
-        calendar.set(Calendar.DATE, date);
-        return calendar.getTime();
-    }
-    private Date getDateTime(int year, int month, int date, int hour, int min, int sec) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1); //Months index begin from 0 - 11 i.e Jan: 0 ; Dec: 11
-        calendar.set(Calendar.DATE, date);
-        calendar.set(Calendar.HOUR, hour);
-        calendar.set(Calendar.MINUTE, min);
-        calendar.set(Calendar.SECOND, sec);
-        return calendar.getTime();
-    }
+
 }
