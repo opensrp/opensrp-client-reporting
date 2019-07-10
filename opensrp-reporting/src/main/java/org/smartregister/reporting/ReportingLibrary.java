@@ -11,6 +11,8 @@ import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorYamlConfigItem;
 import org.smartregister.reporting.domain.IndicatorsYamlConfig;
 import org.smartregister.reporting.domain.ReportIndicator;
+import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
+import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -42,12 +44,27 @@ public class ReportingLibrary {
     private Yaml yaml;
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
+    private ArrayList<MultiResultProcessor> multiResultProcessors;
+    private MultiResultProcessor defaultMultiResultProcessor;
+
     private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         this.repository = repository;
         this.context = context;
         this.commonFtsObject = commonFtsObject;
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
+
+        this.multiResultProcessors = new ArrayList<>();
+        this.defaultMultiResultProcessor = new DefaultMultiResultProcessor();
+
+        // This should be removed when a unified Timber Tree is agreed on for OpenSRP Core and client apps usage
+        installDefaultTimberTree();
+    }
+
+    private void installDefaultTimberTree() {
+        if (Timber.treeCount() == 0) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
@@ -211,5 +228,23 @@ public class ReportingLibrary {
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
+    }
+
+    public void setDefaultMultiResultProcessor(@NonNull MultiResultProcessor defaultMultiResultProcessor) {
+        this.defaultMultiResultProcessor = defaultMultiResultProcessor;
+    }
+
+    public void addMultiResultProcessor(@NonNull MultiResultProcessor multiResultProcessor) {
+        this.multiResultProcessors.add(multiResultProcessor);
+    }
+
+    @NonNull
+    public ArrayList<MultiResultProcessor> getMultiResultProcessors() {
+        return multiResultProcessors;
+    }
+
+    @NonNull
+    public MultiResultProcessor getDefaultMultiResultProcessor() {
+        return defaultMultiResultProcessor;
     }
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class IndicatorTally {
     private Long id;
-    private int count = 0;
+    private float count = 0;
     private String indicatorCode;
     private Date createdAt;
 
@@ -27,7 +27,15 @@ public class IndicatorTally {
     }
 
     public int getCount() {
+        return (int) count;
+    }
+
+    public float getFloatCount() {
         return count;
+    }
+
+    public void setCount(float count) {
+        this.count = count;
     }
 
     public void setCount(int count) {
