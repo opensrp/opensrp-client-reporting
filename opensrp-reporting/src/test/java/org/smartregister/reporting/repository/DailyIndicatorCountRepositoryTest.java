@@ -19,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.repository.Repository;
 
@@ -51,7 +52,7 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void addIndicatorTallyInvokesWritableDBInsert() throws Exception {
         String dateFormat = "yyyyMMdd";
-        IndicatorTally indicatorTally = Mockito.mock(IndicatorTally.class);
+        CompositeIndicatorTally indicatorTally = Mockito.mock(CompositeIndicatorTally.class);
         PowerMockito.mockStatic(ReportingLibrary.class);
         PowerMockito.when(ReportingLibrary.getInstance()).thenReturn(reportingLibraryInstance);
         PowerMockito.when(reportingLibraryInstance.getDateFormat()).thenReturn(dateFormat);

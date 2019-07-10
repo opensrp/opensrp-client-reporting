@@ -6,8 +6,6 @@ public class IndicatorTally {
     private Long id;
     private int count = 0;
     private String indicatorCode;
-    private String valueSet;
-    private boolean isValueSet;
     private Date createdAt;
 
     public IndicatorTally(Long id, int count, String indicatorCode, Date createdAt) {
@@ -50,21 +48,5 @@ public class IndicatorTally {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getValueSet() {
-        return valueSet;
-    }
-
-    public void setValueSet(String valueSet) {
-        this.valueSet = valueSet;
-    }
-
-    public boolean isValueSet() {
-        return isValueSet;
-    }
-
-    public void setValueSetFlag(boolean valueSet) {
-        isValueSet = valueSet;
     }
 }

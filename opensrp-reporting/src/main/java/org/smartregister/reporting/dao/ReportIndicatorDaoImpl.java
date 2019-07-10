@@ -6,6 +6,7 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.ReportIndicator;
@@ -82,20 +83,20 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
                     IndicatorQuery indicatorQuery = entry.getValue();
-                    IndicatorTally tally = null;
+                    CompositeIndicatorTally tally = null;
 
                     if (indicatorQuery.isMultiResult()) {
                         ArrayList<Object> result = executeQueryAndReturnMultiResult(indicatorQuery.getQuery(), dates.getKey(), database);
 
                         if (result.size() > 0) {
-                            tally = new IndicatorTally();
+                            tally = new CompositeIndicatorTally();
                             tally.setValueSet(new Gson().toJson(result));
                             tally.setValueSetFlag(true);
                         }
                     } else {
                         count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
                         if (count > 0) {
-                            tally = new IndicatorTally();
+                            tally = new CompositeIndicatorTally();
                             tally.setCount(count);
                         }
                     }

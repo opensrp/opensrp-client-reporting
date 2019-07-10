@@ -2,11 +2,13 @@ package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.util.Utils;
 import org.smartregister.repository.BaseRepository;
@@ -63,7 +65,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL(CREATE_UNIQUE_CONSTRAINT);
     }
 
-    public void add(IndicatorTally indicatorTally) {
+    public void add(@Nullable CompositeIndicatorTally indicatorTally) {
         if (indicatorTally == null) {
             return;
         }
@@ -145,34 +147,34 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     private IndicatorTally processCursorRow(@NonNull Cursor cursor) {
-        IndicatorTally indicatorTally = new IndicatorTally();
-        indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-        indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
-        indicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE_SET_FLAG)) == 1);
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+        compositeIndicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
+        compositeIndicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE_SET_FLAG)) == 1);
 
-        if (indicatorTally.isValueSet()) {
-            indicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
+        if (compositeIndicatorTally.isValueSet()) {
+            compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
         } else {
-            indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
         }
 
-        indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
-        return indicatorTally;
+        compositeIndicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
+        return compositeIndicatorTally;
     }
 
-    public ContentValues createContentValues(IndicatorTally indicatorTally) {
+    public ContentValues createContentValues(@NonNull CompositeIndicatorTally compositeIndicatorTally) {
         ContentValues values = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
-        values.put(INDICATOR_CODE, indicatorTally.getIndicatorCode());
+        values.put(INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
 
-        if (indicatorTally.isValueSet()) {
-            values.put(INDICATOR_VALUE_SET, indicatorTally.getValueSet());
+        if (compositeIndicatorTally.isValueSet()) {
+            values.put(INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(INDICATOR_VALUE, indicatorTally.getCount());
+            values.put(INDICATOR_VALUE, compositeIndicatorTally.getCount());
         }
 
-        values.put(INDICATOR_VALUE_SET_FLAG, indicatorTally.isValueSet());
-        values.put(DAY, dateFormat.format(indicatorTally.getCreatedAt()));
+        values.put(INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());
+        values.put(DAY, dateFormat.format(compositeIndicatorTally.getCreatedAt()));
         return values;
     }
 
