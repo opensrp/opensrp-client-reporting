@@ -1,32 +1,33 @@
-package org.smartregister.reporting.impl.views;
+package org.smartregister.reporting.view;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.impl.ReportingUtil;
-import org.smartregister.reporting.impl.models.PieChartViewModel;
+import org.smartregister.reporting.util.ReportingUtil;
+import org.smartregister.reporting.model.PieChartDisplayModel;
 import org.smartregister.reporting.listener.PieChartSelectListener;
-import org.smartregister.reporting.view.PieChartFactory;
+import org.smartregister.reporting.factory.PieChartFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.smartregister.reporting.impl.ReportingUtil.getIndicatorView;
-import static org.smartregister.reporting.impl.ReportingUtil.getPieSelectionValue;
+import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
+import static org.smartregister.reporting.util.ReportingUtil.getPieSelectionValue;
 
 
-public class PieChartIndicatorView implements IndicatorView {
+public class PieChartIndicatorView implements ReportContract.IndicatorView {
 
     private Context context;
     private PieChartFactory pieChartFactory;
-    private PieChartViewModel pieChartViewModel;
+    private PieChartDisplayModel pieChartDisplayModel;
 
-    public PieChartIndicatorView(Context context, PieChartViewModel pieChartViewModel) {
+    public PieChartIndicatorView(Context context, PieChartDisplayModel pieChartDisplayModel) {
         pieChartFactory = new PieChartFactory();
-        this.pieChartViewModel = pieChartViewModel;
+        this.pieChartDisplayModel = pieChartDisplayModel;
         this.context = context;
     }
 
@@ -34,12 +35,12 @@ public class PieChartIndicatorView implements IndicatorView {
     public View createView() {
         PieChartIndicatorVisualization pieChartIndicatorVisualization = getPieChartVisualization();
 
-        if (pieChartViewModel.getIndicatorLabel() != null) {
-            pieChartIndicatorVisualization.setIndicatorLabel(pieChartViewModel.getIndicatorLabel());
+        if (pieChartDisplayModel.getIndicatorLabel() != null) {
+            pieChartIndicatorVisualization.setIndicatorLabel(pieChartDisplayModel.getIndicatorLabel());
         }
 
-        if (pieChartViewModel.getIndicatorNote() != null) {
-            pieChartIndicatorVisualization.setIndicatorNote(pieChartViewModel.getIndicatorNote());
+        if (pieChartDisplayModel.getIndicatorNote() != null) {
+            pieChartIndicatorVisualization.setIndicatorNote(pieChartDisplayModel.getIndicatorNote());
         }
 
         return getIndicatorView(pieChartIndicatorVisualization, pieChartFactory, context);
@@ -48,13 +49,13 @@ public class PieChartIndicatorView implements IndicatorView {
     private PieChartIndicatorVisualization getPieChartVisualization() {
         // Define pie chart chartSlices
         List<PieChartSlice> chartSlices = new ArrayList<>();
-        int yesCount = (int) pieChartViewModel.getYesSlice().getTotalCount();
-        int noCount = (int) pieChartViewModel.getNoSlice().getTotalCount();
+        int yesCount = (int) pieChartDisplayModel.getYesSlice().getTotalCount();
+        int noCount = (int) pieChartDisplayModel.getNoSlice().getTotalCount();
         chartSlices.add(new PieChartSlice(yesCount, ReportingUtil.YES_GREEN_SLICE_COLOR));
         chartSlices.add(new PieChartSlice(noCount, ReportingUtil.NO_RED_SLICE_COLOR));
         // Build the chart
         return new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
-                .indicatorLabel(context.getResources().getString(pieChartViewModel.getYesSlice().getLabelStringResource()))
+                .indicatorLabel(context.getResources().getString(pieChartDisplayModel.getYesSlice().getLabelStringResource()))
                 .chartHasLabels(true)
                 .chartHasLabelsOutside(true)
                 .chartHasCenterCircle(false)

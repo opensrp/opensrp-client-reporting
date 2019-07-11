@@ -1,4 +1,4 @@
-package org.smartregister.reporting.impl;
+package org.smartregister.reporting.util;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import org.smartregister.reporting.R;
+import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
-import org.smartregister.reporting.impl.models.IndicatorModel;
-import org.smartregister.reporting.impl.models.PieChartViewModel;
-import org.smartregister.reporting.impl.views.IndicatorView;
-import org.smartregister.reporting.view.IndicatorVisualisationFactory;
+import org.smartregister.reporting.model.IndicatorDisplayModel;
+import org.smartregister.reporting.model.PieChartDisplayModel;
+import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -40,20 +40,20 @@ public class ReportingUtil {
         return visualisationFactory.getIndicatorView(reportingIndicatorVisualization, context);
     }
 
-    public static IndicatorModel getIndicatorModel(IndicatorView.CountType countType, String indicatorCode,
-                                                   int labelResource, List<Map<String, IndicatorTally>> indicatorTallies) {
+    public static IndicatorDisplayModel getIndicatorModel(ReportContract.IndicatorView.CountType countType, String indicatorCode,
+                                                          int labelResource, List<Map<String, IndicatorTally>> indicatorTallies) {
         long count = 0;
-        if (countType == IndicatorView.CountType.STATIC_COUNT) {
+        if (countType == ReportContract.IndicatorView.CountType.STATIC_COUNT) {
             count = getTotalStaticCount(indicatorTallies, indicatorCode);
-        } else if ((countType == IndicatorView.CountType.LATEST_COUNT)) {
+        } else if ((countType == ReportContract.IndicatorView.CountType.LATEST_COUNT)) {
             count = getLatestCountBasedOnDate(indicatorTallies, indicatorCode);
         }
-        return new IndicatorModel(countType, indicatorCode, labelResource, count);
+        return new IndicatorDisplayModel(countType, indicatorCode, labelResource, count);
     }
 
-    public static PieChartViewModel getPieChartViewModel(IndicatorModel yesPart, IndicatorModel noPart,
-                                                         @Nullable String indicatorLabel, @Nullable String indicatorNote) {
-        return new PieChartViewModel(yesPart, noPart, indicatorLabel, indicatorNote);
+    public static PieChartDisplayModel getPieChartViewModel(IndicatorDisplayModel yesPart, IndicatorDisplayModel noPart,
+                                                            @Nullable String indicatorLabel, @Nullable String indicatorNote) {
+        return new PieChartDisplayModel(yesPart, noPart, indicatorLabel, indicatorNote);
     }
 
     /**

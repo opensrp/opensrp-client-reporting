@@ -14,19 +14,26 @@ import android.view.ViewGroup;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.impl.ReportingModule;
+import org.smartregister.reporting.model.IndicatorDisplayModel;
+import org.smartregister.reporting.view.NumericIndicatorView;
+import org.smartregister.reporting.view.PieChartIndicatorView;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
+import org.smartregister.sample.utils.ChartUtil;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
+import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.STATIC_COUNT;
+import static org.smartregister.reporting.util.ReportingUtil.getIndicatorModel;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartViewModel;
 
 public class DashboardFragment extends Fragment implements ReportContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
 
     private static ReportContract.Presenter presenter;
     private ViewGroup visualizationsViewGroup;
     private List<Map<String, IndicatorTally>> indicatorTallies;
-    private ReportingModule sampleReportingModule;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -40,11 +47,15 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // fetch Indicator data
         presenter = new SamplePresenter(this);
-        sampleReportingModule = new SampleReportModule();
         presenter.scheduleRecurringTallyJob();
         getLoaderManager().initLoader(0, null, this).forceLoad();
     }
@@ -63,25 +74,35 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
     }
 
-    private void buildVisualisations() {
-        visualizationsViewGroup.removeAllViews();
-        sampleReportingModule.setIndicatorTallies(indicatorTallies);
-        sampleReportingModule.generateReport(visualizationsViewGroup);
-    }
-
-
     @Override
     public void refreshUI() {
-        buildVisualisations();
+        buildVisualization(visualizationsViewGroup);
+    }
+
+    @Override
+    public void buildVisualization(ViewGroup mainLayout) {
+        visualizationsViewGroup.removeAllViews();
+        IndicatorDisplayModel indicator1 = getIndicatorModel(STATIC_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
+        mainLayout.addView(new NumericIndicatorView(mainLayout.getContext(), indicator1).createView());
+
+        IndicatorDisplayModel indicator2_1 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
+        IndicatorDisplayModel indicator2_2 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
+        mainLayout.addView(new PieChartIndicatorView(mainLayout.getContext(), getPieChartViewModel(indicator2_1, indicator2_2, null, mainLayout.getContext().getResources().getString(R.string.sample_note))).createView());
+
+    }
+
+    @Override
+    public List<Map<String, IndicatorTally>> getIndicatorTallies() {
+        return indicatorTallies;
+    }
+
+    @Override
+    public void setIndicatorTallies(List<Map<String, IndicatorTally>> indicatorTallies) {
+        this.indicatorTallies = indicatorTallies;
     }
 
     @NonNull
@@ -92,7 +113,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Map<String, IndicatorTally>>> loader, List<Map<String, IndicatorTally>> indicatorTallies) {
-        this.indicatorTallies = indicatorTallies;
+        setIndicatorTallies(indicatorTallies);
         refreshUI();
     }
 

@@ -1,23 +1,23 @@
-package org.smartregister.reporting.impl.models;
+package org.smartregister.reporting.model;
 
-public class PieChartViewModel {
-    private IndicatorModel yesSlice;
-    private IndicatorModel noSlice;
+public class PieChartDisplayModel {
+    private IndicatorDisplayModel yesSlice;
+    private IndicatorDisplayModel noSlice;
     private String indicatorLabel;
     private String indicatorNote;
 
-    public PieChartViewModel(IndicatorModel yesSlice, IndicatorModel noSlice, String indicatorLabel, String indicatorNote) {
+    public PieChartDisplayModel(IndicatorDisplayModel yesSlice, IndicatorDisplayModel noSlice, String indicatorLabel, String indicatorNote) {
         this.yesSlice = yesSlice;
         this.noSlice = noSlice;
         this.indicatorLabel = indicatorLabel;
         this.indicatorNote = indicatorNote;
     }
 
-    public IndicatorModel getYesSlice() {
+    public IndicatorDisplayModel getYesSlice() {
         return yesSlice;
     }
 
-    public IndicatorModel getNoSlice() {
+    public IndicatorDisplayModel getNoSlice() {
         return noSlice;
     }
 

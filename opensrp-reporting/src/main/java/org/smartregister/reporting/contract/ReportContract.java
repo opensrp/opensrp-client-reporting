@@ -1,5 +1,7 @@
 package org.smartregister.reporting.contract;
 
+import android.view.ViewGroup;
+
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.ReportIndicator;
@@ -18,6 +20,12 @@ public interface ReportContract {
     interface View {
         // Refresh UI to display latest indicator data
         void refreshUI();
+
+        void buildVisualization(ViewGroup mainLayout);
+
+        List<Map<String, IndicatorTally>> getIndicatorTallies();
+
+        void setIndicatorTallies(List<Map<String, IndicatorTally>> indicatorTallies);
     }
 
     interface Presenter {
@@ -45,5 +53,15 @@ public interface ReportContract {
 
         List<Map<String, IndicatorTally>> getIndicatorsDailyTallies();
 
+    }
+
+    interface IndicatorView {
+
+        android.view.View createView();
+
+        enum CountType {
+            STATIC_COUNT,
+            LATEST_COUNT
+        }
     }
 }

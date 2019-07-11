@@ -11,11 +11,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.R;
+import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.impl.models.IndicatorModel;
-import org.smartregister.reporting.impl.models.PieChartViewModel;
-import org.smartregister.reporting.impl.views.IndicatorView;
+import org.smartregister.reporting.model.IndicatorDisplayModel;
+import org.smartregister.reporting.model.PieChartDisplayModel;
+import org.smartregister.reporting.util.ReportingUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -91,21 +92,21 @@ public class ReportingUtilTest {
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3, tally4)));
 
         //Test get model with static count
-        IndicatorModel indicatorModel = ReportingUtil.getIndicatorModel(IndicatorView.CountType.STATIC_COUNT, "indicator1", 182998, indicatorTallies);
-        Assert.assertNotNull(indicatorModel);
-        Assert.assertEquals(12, indicatorModel.getTotalCount());
-        Assert.assertEquals("indicator1", indicatorModel.getIndicatorCode());
-        Assert.assertEquals(182998, indicatorModel.getLabelStringResource());
+        IndicatorDisplayModel indicatorDisplayModel = ReportingUtil.getIndicatorModel(ReportContract.IndicatorView.CountType.STATIC_COUNT, "indicator1", 182998, indicatorTallies);
+        Assert.assertNotNull(indicatorDisplayModel);
+        Assert.assertEquals(12, indicatorDisplayModel.getTotalCount());
+        Assert.assertEquals("indicator1", indicatorDisplayModel.getIndicatorCode());
+        Assert.assertEquals(182998, indicatorDisplayModel.getLabelStringResource());
 
         //Test get model with static count
-        IndicatorModel indicatorModel2 = ReportingUtil.getIndicatorModel(IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
-        Assert.assertNotNull(indicatorModel2);
-        Assert.assertEquals(13, indicatorModel2.getTotalCount());
-        Assert.assertEquals("indicator2", indicatorModel2.getIndicatorCode());
-        Assert.assertEquals(182999, indicatorModel2.getLabelStringResource());
+        IndicatorDisplayModel indicatorDisplayModel2 = ReportingUtil.getIndicatorModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
+        Assert.assertNotNull(indicatorDisplayModel2);
+        Assert.assertEquals(13, indicatorDisplayModel2.getTotalCount());
+        Assert.assertEquals("indicator2", indicatorDisplayModel2.getIndicatorCode());
+        Assert.assertEquals(182999, indicatorDisplayModel2.getLabelStringResource());
 
-        PieChartViewModel pieChartViewModel = ReportingUtil.getPieChartViewModel(indicatorModel, indicatorModel2, null, "Some note");
-        Assert.assertNotNull(pieChartViewModel);
+        PieChartDisplayModel pieChartDisplayModel = ReportingUtil.getPieChartViewModel(indicatorDisplayModel, indicatorDisplayModel2, null, "Some note");
+        Assert.assertNotNull(pieChartDisplayModel);
 
     }
 }

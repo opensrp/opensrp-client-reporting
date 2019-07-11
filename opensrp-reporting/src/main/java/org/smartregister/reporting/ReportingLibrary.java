@@ -168,28 +168,24 @@ public class ReportingLibrary {
     }
 
     private void saveIndicators(List<ReportIndicator> indicators) {
-        this.indicatorRepository().truncateTable();
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator);
         }
     }
 
     private void saveIndicators(List<ReportIndicator> indicators, SQLiteDatabase sqLiteDatabase) {
-        this.indicatorRepository().truncateTable(sqLiteDatabase);
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator, sqLiteDatabase);
         }
     }
 
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
-        this.indicatorQueryRepository().truncateTable();
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
         }
     }
 
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries, SQLiteDatabase sqLiteDatabase) {
-        this.indicatorQueryRepository().truncateTable(sqLiteDatabase);
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
