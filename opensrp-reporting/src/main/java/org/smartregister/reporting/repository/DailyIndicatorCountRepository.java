@@ -48,7 +48,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public static String INDICATOR_DAILY_TALLY_TABLE = "indicator_daily_tally";
 
     public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER, " +
+            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " REAL, " +
             INDICATOR_VALUE_SET + " TEXT, " + INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, " + DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
     private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " + INDICATOR_DAILY_TALLY_TABLE + " ( " + INDICATOR_CODE + " , " + DAY + " ) ";
@@ -222,7 +222,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
         } else {
-            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getFloat(cursor.getColumnIndex(INDICATOR_VALUE)));
         }
 
         compositeIndicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
@@ -237,7 +237,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             values.put(INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(INDICATOR_VALUE, compositeIndicatorTally.getCount());
+            values.put(INDICATOR_VALUE, compositeIndicatorTally.getFloatCount());
         }
 
         values.put(INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());

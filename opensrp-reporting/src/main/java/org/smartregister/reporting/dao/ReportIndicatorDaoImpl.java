@@ -74,7 +74,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
-        int count;
+        float count;
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(lastProcessedDate, database);
@@ -154,21 +154,29 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return result;
     }
 
-    private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
+    private float executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
             Log.logDebug("QUERY :" + queryString);
             query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
         }
+
         Cursor cursor = null;
-        int count = 0;
+        float count = 0;
         try {
             cursor = database.rawQuery(query, null);
             if (null != cursor) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
-                    count = cursor.getInt(0);
+
+                    int type = cursor.getType(0);
+
+                    if (type == Cursor.FIELD_TYPE_FLOAT) {
+                        count = (Float) cursor.getFloat(0);
+                    } else if (type == Cursor.FIELD_TYPE_INTEGER) {
+                        count = ((Integer) cursor.getInt(0)).floatValue();
+                    }
                 }
                 cursor.close();
             }
