@@ -29,11 +29,7 @@ public class DefaultMultiResultProcessor implements MultiResultProcessor {
 
     @Override
     public boolean canProcess(int cols, @NonNull String[] colNames) {
-        if (cols == 2 && colNames.length == 2) {
-            return true;
-        }
-
-        return false;
+        return cols == 2 && colNames.length == 2;
     }
 
     @NonNull
