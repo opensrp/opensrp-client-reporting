@@ -10,41 +10,40 @@ import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
-
 import static org.smartregister.util.Log.logError;
 
 public class SampleApplication extends DrishtiApplication {
 
-    private String indicatorsConfigFile = "config/indicator-definitions.yml";
-    private String indicatorDataInitialisedPref = "INDICATOR_DATA_INITIALISED";
-    private String appVersionCodePref = "APP_VERSION_CODE";
+    private static final String HAS_LOADED_SAMPLE_DATA = "has_loaded_sample_data";
+
+    public static synchronized SampleApplication getInstance() {
+        return (SampleApplication) mInstance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         mInstance = this;
         context = Context.getInstance();
         context.updateApplicationContext(getApplicationContext());
         CoreLibrary.init(context);
-        repository = getRepository();
-        ReportingLibrary.init(Context.getInstance(), repository, null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        ReportingLibrary.init(Context.getInstance(), getRepository(), null,
+                BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
         ReportingLibrary reportingLibraryInstance = ReportingLibrary.getInstance();
-        // Check if indicator data initialised
-        boolean indicatorDataInitialised = Boolean.parseBoolean(reportingLibraryInstance.getContext()
-                .allSharedPreferences().getPreference(indicatorDataInitialisedPref));
-        boolean isUpdated = checkIfAppUpdated();
-        if (!indicatorDataInitialised || isUpdated) {
-            reportingLibraryInstance.initIndicatorData(indicatorsConfigFile, null); // This will persist the data in the DB
-            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(indicatorDataInitialisedPref, "true");
-            reportingLibraryInstance.getContext().allSharedPreferences().savePreference(appVersionCodePref, String.valueOf(BuildConfig.VERSION_CODE));
-        }
+        String sampleIndicatorConfigFile = "config/indicator-definitions.yml";
+        reportingLibraryInstance.initIndicatorData(sampleIndicatorConfigFile, null);
 
-        if (!indicatorDataInitialised) {
+        if (!hasLoadedSampleData()) {
             SampleRepository.addSampleData();
+            context.allSharedPreferences().savePreference(HAS_LOADED_SAMPLE_DATA, "true");
         }
 
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
+    }
+
+    @Override
+    public void logoutCurrentUser() {
+
     }
 
     public Repository getRepository() {
@@ -59,22 +58,7 @@ public class SampleApplication extends DrishtiApplication {
         return repository;
     }
 
-    public static synchronized SampleApplication getInstance() {
-        return (SampleApplication) mInstance;
-    }
-
-    private boolean checkIfAppUpdated() {
-        String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(appVersionCodePref);
-        if (savedAppVersion.isEmpty()) {
-            return true;
-        } else {
-            int savedVersion = Integer.parseInt(savedAppVersion);
-            return (BuildConfig.VERSION_CODE > savedVersion);
-        }
-    }
-
-    @Override
-    public void logoutCurrentUser() {
-
+    private boolean hasLoadedSampleData() {
+        return Boolean.parseBoolean(context.allSharedPreferences().getPreference(HAS_LOADED_SAMPLE_DATA));
     }
 }
