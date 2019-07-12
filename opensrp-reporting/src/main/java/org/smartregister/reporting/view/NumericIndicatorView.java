@@ -5,8 +5,8 @@ import android.view.View;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.NumericIndicatorVisualization;
-import org.smartregister.reporting.model.IndicatorDisplayModel;
 import org.smartregister.reporting.factory.NumericDisplayFactory;
+import org.smartregister.reporting.model.IndicatorDisplayModel;
 
 import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
 

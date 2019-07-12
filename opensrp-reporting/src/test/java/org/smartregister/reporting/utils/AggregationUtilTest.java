@@ -8,9 +8,7 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.util.AggregationUtil;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

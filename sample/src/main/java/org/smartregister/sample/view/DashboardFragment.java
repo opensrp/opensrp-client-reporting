@@ -2,6 +2,7 @@ package org.smartregister.sample.view;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -85,14 +86,17 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
 
     @Override
     public void buildVisualization(ViewGroup mainLayout) {
-        visualizationsViewGroup.removeAllViews();
+        mainLayout.removeAllViews();
+        createSampleReportViews(mainLayout);
+    }
+
+    private void createSampleReportViews(ViewGroup mainLayout) {
         IndicatorDisplayModel indicator1 = getIndicatorModel(STATIC_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
         mainLayout.addView(new NumericIndicatorView(mainLayout.getContext(), indicator1).createView());
 
         IndicatorDisplayModel indicator2_1 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
         IndicatorDisplayModel indicator2_2 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
         mainLayout.addView(new PieChartIndicatorView(mainLayout.getContext(), getPieChartViewModel(indicator2_1, indicator2_2, null, mainLayout.getContext().getResources().getString(R.string.sample_note))).createView());
-
     }
 
     @Override

@@ -35,10 +35,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '2'
+            buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '15'
         }
         debug {
-            buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '2'
+            buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '15'
         }
     }
     dexOptions {

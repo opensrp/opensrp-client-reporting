@@ -7,10 +7,10 @@ import android.widget.Toast;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.util.ReportingUtil;
-import org.smartregister.reporting.model.PieChartDisplayModel;
-import org.smartregister.reporting.listener.PieChartSelectListener;
 import org.smartregister.reporting.factory.PieChartFactory;
+import org.smartregister.reporting.listener.PieChartSelectListener;
+import org.smartregister.reporting.model.PieChartDisplayModel;
+import org.smartregister.reporting.util.ReportingUtil;
 
 import java.util.ArrayList;
 import java.util.List;

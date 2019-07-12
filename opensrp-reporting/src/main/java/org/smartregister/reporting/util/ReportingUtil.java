@@ -10,9 +10,9 @@ import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
+import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 import org.smartregister.reporting.model.IndicatorDisplayModel;
 import org.smartregister.reporting.model.PieChartDisplayModel;
-import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 
 import java.util.List;
 import java.util.Map;
