@@ -40,7 +40,7 @@ public class AggregationUtilTest {
         tally2.put("indicator1", new IndicatorTally(null, 9, "indicator1", null));
         Map<String, IndicatorTally> tally3 = new HashMap<>();
         tally3.put("indicator2", new IndicatorTally(null, 7, "indicator2", null));
-        List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
+        List indicatorTallies = (Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
         long indicator1 = AggregationUtil.getStaticIndicatorCount(indicatorTallies, "indicator1");
         long indicator2 = AggregationUtil.getStaticIndicatorCount(indicatorTallies, "indicator2");
         Assert.assertEquals(12, indicator1);

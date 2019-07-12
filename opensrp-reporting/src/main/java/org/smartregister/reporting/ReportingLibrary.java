@@ -26,9 +26,9 @@ import java.util.List;
 
 public class ReportingLibrary {
 
-    private static boolean appOnDebugMode;
     private static final String APP_VERSION_CODE = "APP_VERSION_CODE";
     private static final String INDICATOR_DATA_INITIALISED = "INDICATOR_DATA_INITIALISED";
+    private static boolean appOnDebugMode;
     private static ReportingLibrary instance;
     private Repository repository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
@@ -140,9 +140,15 @@ public class ReportingLibrary {
      * @param sqLiteDatabase database to write the content obtained from the file
      */
     public void initIndicatorData(String configFilePath, SQLiteDatabase sqLiteDatabase) {
-
-        if (!appOnDebugMode && (!isAppUpdated() || hasInitializedIndicators())) {
+        if (hasInitializedIndicators(sqLiteDatabase)) {
             return;
+        }
+        readConfigFile(configFilePath, sqLiteDatabase);
+    }
+
+    private boolean hasInitializedIndicators(SQLiteDatabase sqLiteDatabase) {
+        if (!appOnDebugMode && (!isAppUpdated() || isIndicatorsInitialized())) {
+            return true;
         }
 
         if (sqLiteDatabase != null) {
@@ -152,7 +158,10 @@ public class ReportingLibrary {
             indicatorRepository.truncateTable();
             indicatorQueryRepository.truncateTable();
         }
+        return false;
+    }
 
+    private void readConfigFile(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
         try {
@@ -186,6 +195,20 @@ public class ReportingLibrary {
 
             context.allSharedPreferences().savePreference(INDICATOR_DATA_INITIALISED, "true");
             context.allSharedPreferences().savePreference(APP_VERSION_CODE, String.valueOf(BuildConfig.VERSION_CODE));
+        }
+    }
+
+    /**
+     * Method to initialize multiple files
+     * @param configFiles configuration files for the indicators
+     * @param sqLiteDatabase database to store the indicator queries
+     */
+    public void initMultipleIndicatorsData(List<String> configFiles, SQLiteDatabase sqLiteDatabase) {
+        if (hasInitializedIndicators(sqLiteDatabase)) {
+            return;
+        }
+        for (String configFile: configFiles){
+            readConfigFile(configFile, sqLiteDatabase);
         }
     }
 
@@ -236,7 +259,7 @@ public class ReportingLibrary {
 
     }
 
-    public boolean hasInitializedIndicators() {
+    private boolean isIndicatorsInitialized() {
         return Boolean.parseBoolean(context.allSharedPreferences().getPreference(INDICATOR_DATA_INITIALISED));
     }
 }
