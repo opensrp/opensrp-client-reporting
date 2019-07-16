@@ -48,7 +48,8 @@ public class ReportingUtil {
         return count;
     }
 
-    public static PieChartDisplayModel getPieChartDisplayModel(List<PieChartSlice> pieChartSlices, int indicatorLabel, int indicatorNote) {
+    public static PieChartDisplayModel getPieChartDisplayModel(List<PieChartSlice> pieChartSlices,
+                                                               Integer indicatorLabel, Integer indicatorNote) {
         return new PieChartDisplayModel(pieChartSlices, indicatorLabel, indicatorNote);
     }
 
