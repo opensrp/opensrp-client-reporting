@@ -2,7 +2,6 @@ package org.smartregister.sample.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,8 @@ import android.view.ViewGroup;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.model.IndicatorDisplayModel;
+import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.view.NumericIndicatorView;
 import org.smartregister.reporting.view.PieChartIndicatorView;
 import org.smartregister.sample.R;
@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
-import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.STATIC_COUNT;
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorModel;
-import static org.smartregister.reporting.util.ReportingUtil.getPieChartViewModel;
+import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.TOTAL_COUNT;
+import static org.smartregister.reporting.util.ReportingUtil.addPieChartSlices;
+import static org.smartregister.reporting.util.ReportingUtil.getIndicatorDisplayModel;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartDisplayModel;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
 
 public class DashboardFragment extends Fragment implements ReportContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
 
@@ -90,15 +92,6 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
         createSampleReportViews(mainLayout);
     }
 
-    private void createSampleReportViews(ViewGroup mainLayout) {
-        IndicatorDisplayModel indicator1 = getIndicatorModel(STATIC_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
-        mainLayout.addView(new NumericIndicatorView(mainLayout.getContext(), indicator1).createView());
-
-        IndicatorDisplayModel indicator2_1 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
-        IndicatorDisplayModel indicator2_2 = getIndicatorModel(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, R.string.num_of_lieterate_children_0_60_label, indicatorTallies);
-        mainLayout.addView(new PieChartIndicatorView(mainLayout.getContext(), getPieChartViewModel(indicator2_1, indicator2_2, null, mainLayout.getContext().getResources().getString(R.string.sample_note))).createView());
-    }
-
     @Override
     public List<Map<String, IndicatorTally>> getIndicatorTallies() {
         return indicatorTallies;
@@ -107,6 +100,15 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     @Override
     public void setIndicatorTallies(List<Map<String, IndicatorTally>> indicatorTallies) {
         this.indicatorTallies = indicatorTallies;
+    }
+
+    private void createSampleReportViews(ViewGroup mainLayout) {
+        NumericDisplayModel indicator1 = getIndicatorDisplayModel(TOTAL_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
+        mainLayout.addView(new NumericIndicatorView(getContext(), indicator1).createView());
+
+        PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, getResources().getString(R.string.yes_slice_label), getResources().getColor(R.color.colorPieChartGreen), indicatorTallies);
+        PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
+        mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note)).createView());
     }
 
     @NonNull

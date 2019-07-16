@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">opensrp-reporting</string>
     <string name="title_activity_reports">Dashboard</string>
-    <string name="yes_slice_label">Yes</string>
-    <string name="no_slice_label">No</string>
     <string name="test_indicator1">Test indicator1</string>
     <string name="test_indicator2">Test indicator 2</string>
     <string name="test_piechart_note">Test pie chart note</string>

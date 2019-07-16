@@ -1,31 +1,33 @@
 package org.smartregister.reporting.model;
 
-public class PieChartDisplayModel {
-    private IndicatorDisplayModel yesSlice;
-    private IndicatorDisplayModel noSlice;
-    private String indicatorLabel;
-    private String indicatorNote;
+import org.smartregister.reporting.domain.PieChartSlice;
 
-    public PieChartDisplayModel(IndicatorDisplayModel yesSlice, IndicatorDisplayModel noSlice, String indicatorLabel, String indicatorNote) {
-        this.yesSlice = yesSlice;
-        this.noSlice = noSlice;
+import java.util.List;
+
+public class PieChartDisplayModel {
+    private List<PieChartSlice> pieChartSlices;
+    private Integer indicatorLabel;
+    private Integer indicatorNote;
+
+    public PieChartDisplayModel(List<PieChartSlice> pieChartSlices, Integer indicatorLabel, Integer indicatorNote) {
+        this.pieChartSlices = pieChartSlices;
         this.indicatorLabel = indicatorLabel;
         this.indicatorNote = indicatorNote;
     }
 
-    public IndicatorDisplayModel getYesSlice() {
-        return yesSlice;
-    }
-
-    public IndicatorDisplayModel getNoSlice() {
-        return noSlice;
-    }
-
-    public String getIndicatorNote() {
+    public Integer getIndicatorNote() {
         return indicatorNote;
     }
 
-    public String getIndicatorLabel() {
+    public Integer getIndicatorLabel() {
         return indicatorLabel;
+    }
+
+    public List<PieChartSlice> getPieChartSlices() {
+        return pieChartSlices;
+    }
+
+    public void setPieChartSlices(List<PieChartSlice> pieChartSlices) {
+        this.pieChartSlices = pieChartSlices;
     }
 }

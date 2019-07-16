@@ -14,7 +14,6 @@ import org.smartregister.reporting.R;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.model.IndicatorDisplayModel;
 import org.smartregister.reporting.model.PieChartDisplayModel;
 import org.smartregister.reporting.util.ReportingUtil;
 
@@ -52,7 +51,7 @@ public class ReportingUtilTest {
     }
 
     @Test
-    public void testGetTotalStaticCount() {
+    public void testGetTotalCount() {
         Map<String, IndicatorTally> tally1 = new HashMap<>();
         tally1.put("indicator1", new IndicatorTally(null, 3, "indicator1", null));
         Map<String, IndicatorTally> tally2 = new HashMap<>();
@@ -60,8 +59,8 @@ public class ReportingUtilTest {
         Map<String, IndicatorTally> tally3 = new HashMap<>();
         tally3.put("indicator2", new IndicatorTally(null, 7, "indicator2", null));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
-        long indicator1 = ReportingUtil.getTotalStaticCount(indicatorTallies, "indicator1");
-        long indicator2 = ReportingUtil.getTotalStaticCount(indicatorTallies, "indicator2");
+        long indicator1 = ReportingUtil.getTotalCount(indicatorTallies, "indicator1");
+        long indicator2 = ReportingUtil.getTotalCount(indicatorTallies, "indicator2");
         Assert.assertEquals(12, indicator1);
         Assert.assertEquals(7, indicator2);
 
@@ -92,20 +91,20 @@ public class ReportingUtilTest {
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3, tally4)));
 
         //Test get model with static count
-        IndicatorDisplayModel indicatorDisplayModel = ReportingUtil.getIndicatorModel(ReportContract.IndicatorView.CountType.STATIC_COUNT, "indicator1", 182998, indicatorTallies);
-        Assert.assertNotNull(indicatorDisplayModel);
-        Assert.assertEquals(12, indicatorDisplayModel.getTotalCount());
-        Assert.assertEquals("indicator1", indicatorDisplayModel.getIndicatorCode());
-        Assert.assertEquals(182998, indicatorDisplayModel.getLabelStringResource());
+        NumericIndicatorModel numericIndicatorModel = ReportingUtil.getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
+        Assert.assertNotNull(numericIndicatorModel);
+        Assert.assertEquals(12, numericIndicatorModel.getCount());
+        Assert.assertEquals("indicator1", numericIndicatorModel.getIndicatorCode());
+        Assert.assertEquals(182998, numericIndicatorModel.getLabelStringResource());
 
         //Test get model with static count
-        IndicatorDisplayModel indicatorDisplayModel2 = ReportingUtil.getIndicatorModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
-        Assert.assertNotNull(indicatorDisplayModel2);
-        Assert.assertEquals(13, indicatorDisplayModel2.getTotalCount());
-        Assert.assertEquals("indicator2", indicatorDisplayModel2.getIndicatorCode());
-        Assert.assertEquals(182999, indicatorDisplayModel2.getLabelStringResource());
+        NumericIndicatorModel numericIndicatorModel2 = ReportingUtil.getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
+        Assert.assertNotNull(numericIndicatorModel2);
+        Assert.assertEquals(13, numericIndicatorModel2.getCount());
+        Assert.assertEquals("indicator2", numericIndicatorModel2.getIndicatorCode());
+        Assert.assertEquals(182999, numericIndicatorModel2.getLabelStringResource());
 
-        PieChartDisplayModel pieChartDisplayModel = ReportingUtil.getPieChartViewModel(indicatorDisplayModel, indicatorDisplayModel2, null, "Some note");
+        PieChartDisplayModel pieChartDisplayModel = ReportingUtil.getPieChartDisplayModel(numericIndicatorModel, numericIndicatorModel2, null, "Some note");
         Assert.assertNotNull(pieChartDisplayModel);
 
     }

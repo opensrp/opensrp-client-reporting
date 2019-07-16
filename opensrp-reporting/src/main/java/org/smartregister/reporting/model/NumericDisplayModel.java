@@ -3,19 +3,18 @@ package org.smartregister.reporting.model;
 
 import org.smartregister.reporting.contract.ReportContract;
 
-public class IndicatorDisplayModel {
+public class NumericDisplayModel {
 
+    private ReportContract.IndicatorView.CountType countType;
     private String indicatorCode;
     private int labelStringResource;
-    private ReportContract.IndicatorView.CountType countType;
-    private long totalCount;
+    private long count;
 
-
-    public IndicatorDisplayModel(ReportContract.IndicatorView.CountType countType, String indicatorCode, int labelStringResource, long count) {
+    public NumericDisplayModel(ReportContract.IndicatorView.CountType countType, String indicatorCode, int labelStringResource, long count) {
         this.countType = countType;
         this.indicatorCode = indicatorCode;
         this.labelStringResource = labelStringResource;
-        this.totalCount = count;
+        this.count = count;
     }
 
     public ReportContract.IndicatorView.CountType getCountType() {
@@ -30,11 +29,11 @@ public class IndicatorDisplayModel {
         return labelStringResource;
     }
 
-    public long getTotalCount() {
-        return totalCount;
+    public long getCount() {
+        return count;
     }
 
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
+    public void setCount(int count) {
+        this.count = count;
     }
 }

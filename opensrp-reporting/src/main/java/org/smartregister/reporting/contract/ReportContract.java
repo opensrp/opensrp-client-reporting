@@ -60,7 +60,7 @@ public interface ReportContract {
         android.view.View createView();
 
         enum CountType {
-            STATIC_COUNT,
+            TOTAL_COUNT,
             LATEST_COUNT
         }
     }
