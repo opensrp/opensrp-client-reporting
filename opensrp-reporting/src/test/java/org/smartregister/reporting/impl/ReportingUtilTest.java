@@ -1,20 +1,13 @@
 package org.smartregister.reporting.impl;
 
-import android.content.Context;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.smartregister.reporting.R;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.model.PieChartDisplayModel;
+import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.util.ReportingUtil;
 
 import java.util.Arrays;
@@ -23,31 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
+import static org.smartregister.reporting.util.ReportingUtil.getIndicatorDisplayModel;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportingUtilTest {
 
-    @Mock
-    private Context context;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    @Test
-    public void testGetPieSelectionValueReturnsYes() {
-        PieChartSlice pieChartSlice = new PieChartSlice(12, ReportingUtil.YES_GREEN_SLICE_COLOR);
-        Mockito.when(context.getString(R.string.yes_slice_label)).thenReturn("Yes");
-        Assert.assertEquals("Yes", ReportingUtil.getPieSelectionValue(pieChartSlice, context));
-    }
-
-    @Test
-    public void testGetPieSelectionValueReturnsNo() {
-        PieChartSlice pieChartSlice = new PieChartSlice(35, ReportingUtil.NO_RED_SLICE_COLOR);
-        Mockito.when(context.getString(R.string.yes_slice_label)).thenReturn("No");
-        Assert.assertEquals("No", ReportingUtil.getPieSelectionValue(pieChartSlice, context));
     }
 
     @Test
@@ -61,8 +40,8 @@ public class ReportingUtilTest {
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
         long indicator1 = ReportingUtil.getTotalCount(indicatorTallies, "indicator1");
         long indicator2 = ReportingUtil.getTotalCount(indicatorTallies, "indicator2");
-        Assert.assertEquals(12, indicator1);
-        Assert.assertEquals(7, indicator2);
+        assertEquals(12, indicator1);
+        assertEquals(7, indicator2);
 
     }
 
@@ -74,11 +53,11 @@ public class ReportingUtilTest {
         tally2.put("indicator2", new IndicatorTally(null, 9, "indicator2", getDateTime(2019, 3, 31, 10, 20, 20)));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2)));
         long indicator2 = ReportingUtil.getLatestCountBasedOnDate(indicatorTallies, "indicator2");
-        Assert.assertEquals(13, indicator2);
+        assertEquals(13, indicator2);
     }
 
     @Test
-    public void testGetIndicatorModelWithStaticTotalAndLatestCount() {
+    public void testGetIndicatorDisplayModelTotalAndLatestCount() {
         Map<String, IndicatorTally> tally1 = new HashMap<>();
         tally1.put("indicator1", new IndicatorTally(null, 3, "indicator1", null));
         Map<String, IndicatorTally> tally2 = new HashMap<>();
@@ -90,22 +69,18 @@ public class ReportingUtilTest {
 
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3, tally4)));
 
-        //Test get model with static count
-        NumericIndicatorModel numericIndicatorModel = ReportingUtil.getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
-        Assert.assertNotNull(numericIndicatorModel);
-        Assert.assertEquals(12, numericIndicatorModel.getCount());
-        Assert.assertEquals("indicator1", numericIndicatorModel.getIndicatorCode());
-        Assert.assertEquals(182998, numericIndicatorModel.getLabelStringResource());
+        //Test get model with total count
+        NumericDisplayModel NumericDisplayModel = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
+        assertNotNull(NumericDisplayModel);
+        assertEquals(12, NumericDisplayModel.getCount());
+        assertEquals("indicator1", NumericDisplayModel.getIndicatorCode());
+        assertEquals(182998, NumericDisplayModel.getLabelStringResource());
 
-        //Test get model with static count
-        NumericIndicatorModel numericIndicatorModel2 = ReportingUtil.getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
-        Assert.assertNotNull(numericIndicatorModel2);
-        Assert.assertEquals(13, numericIndicatorModel2.getCount());
-        Assert.assertEquals("indicator2", numericIndicatorModel2.getIndicatorCode());
-        Assert.assertEquals(182999, numericIndicatorModel2.getLabelStringResource());
-
-        PieChartDisplayModel pieChartDisplayModel = ReportingUtil.getPieChartDisplayModel(numericIndicatorModel, numericIndicatorModel2, null, "Some note");
-        Assert.assertNotNull(pieChartDisplayModel);
-
+        //Test get model with total count
+        NumericDisplayModel NumericDisplayModel2 = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
+        assertNotNull(NumericDisplayModel2);
+        assertEquals(13, NumericDisplayModel2.getCount());
+        assertEquals("indicator2", NumericDisplayModel2.getIndicatorCode());
+        assertEquals(182999, NumericDisplayModel2.getLabelStringResource());
     }
 }

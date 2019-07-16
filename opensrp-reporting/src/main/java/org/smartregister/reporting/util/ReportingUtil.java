@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.smartregister.reporting.util.AggregationUtil.getLatestIndicatorCount;
-import static org.smartregister.reporting.util.AggregationUtil.getStaticIndicatorCount;
 
 public class ReportingUtil {
 
     public static long getTotalCount(List<Map<String, IndicatorTally>> indicatorTallies, String indicatorKey) {
-        return getStaticIndicatorCount(indicatorTallies, indicatorKey);
+        return AggregationUtil.getTotalIndicatorCount(indicatorTallies, indicatorKey);
     }
 
     public static long getLatestCountBasedOnDate(List<Map<String, IndicatorTally>> indicatorTallies, String indicatorKey) {
