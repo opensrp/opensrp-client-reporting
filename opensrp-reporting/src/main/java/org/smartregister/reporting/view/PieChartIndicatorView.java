@@ -42,8 +42,12 @@ public class PieChartIndicatorView implements ReportContract.IndicatorView {
 
     private PieChartIndicatorVisualization getPieChartVisualization() {
         // Build the chart
+        String pieChartLabel = "No label provided"; //to avoid crash when string resource not provide
+        if (pieChartDisplayModel.getIndicatorLabel() != null) {
+            pieChartLabel = context.getResources().getString(pieChartDisplayModel.getIndicatorLabel());
+        }
         return new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
-                .indicatorLabel(context.getResources().getString(pieChartDisplayModel.getIndicatorLabel()))
+                .indicatorLabel(pieChartLabel)
                 .chartHasLabels(true)
                 .chartHasLabelsOutside(true)
                 .chartHasCenterCircle(false)
