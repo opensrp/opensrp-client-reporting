@@ -52,7 +52,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         truncateTable(getWritableDatabase());
     }
 
-    public void truncateTable(SQLiteDatabase sqLiteDatabase) {
+    private void truncateTable(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INDICATOR_QUERY_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_INDICATOR_QUERY);
         sqLiteDatabase.delete("sqlite_sequence", "name = ?", new String[]{INDICATOR_QUERY_TABLE});
