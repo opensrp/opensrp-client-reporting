@@ -26,8 +26,8 @@ import java.util.List;
 
 public class ReportingLibrary {
 
-    private static final String APP_VERSION_CODE = "APP_VERSION_CODE";
-    private static final String INDICATOR_DATA_INITIALISED = "INDICATOR_DATA_INITIALISED";
+    public static final String APP_VERSION_CODE = "APP_VERSION_CODE";
+    public static final String INDICATOR_DATA_INITIALISED = "INDICATOR_DATA_INITIALISED";
     private static boolean appOnDebugMode;
     private static ReportingLibrary instance;
     private Repository repository;
@@ -60,7 +60,7 @@ public class ReportingLibrary {
 
     public static ReportingLibrary getInstance() {
         if (instance == null) {
-            throw new IllegalStateException(" Instance does not exist!!! Call " + ReportingLibrary.class.getName() + ".init() in the onCreate() method of your Application class");
+            throw new IllegalStateException("Instance does not exist!!! Call " + ReportingLibrary.class.getName() + ".init() in the onCreate() method of your Application class");
         }
         return instance;
     }
@@ -221,7 +221,7 @@ public class ReportingLibrary {
     }
 
     private Iterable<Object> loadIndicatorsFromFile(String configFilePath) throws IOException {
-        InputStreamReader inputStreamReader = new InputStreamReader(Context.getInstance().applicationContext().getAssets().open(configFilePath));
+        InputStreamReader inputStreamReader = new InputStreamReader(context.applicationContext().getAssets().open(configFilePath));
         return yaml.loadAll(inputStreamReader);
     }
 
