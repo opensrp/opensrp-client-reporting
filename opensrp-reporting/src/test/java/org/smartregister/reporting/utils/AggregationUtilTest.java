@@ -8,12 +8,13 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.util.AggregationUtil;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.smartregister.reporting.BaseUnitTest.getDate;
+import static org.smartregister.reporting.BaseUnitTest.getDateTime;
 
 @RunWith(JUnit4.class)
 public class AggregationUtilTest {
@@ -21,14 +22,14 @@ public class AggregationUtilTest {
     public void tesStaticIndicatorCountWithEmptyIndicatorsMap() {
         Map<String, IndicatorTally> tally1 = Collections.emptyMap();
         List indicatorTallies = Collections.unmodifiableList(Collections.singletonList(tally1));
-        long indicator1 = AggregationUtil.getStaticIndicatorCount(indicatorTallies, "indicator1");
+        long indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
         Assert.assertEquals(0, indicator1);
 
     }
 
     @Test
     public void testStaticIndicatorCountWithNullList() {
-        long indicator1 = AggregationUtil.getStaticIndicatorCount(null, "indicator1");
+        long indicator1 = AggregationUtil.getTotalIndicatorCount(null, "indicator1");
         Assert.assertEquals(0, indicator1);
     }
 
@@ -41,8 +42,8 @@ public class AggregationUtilTest {
         Map<String, IndicatorTally> tally3 = new HashMap<>();
         tally3.put("indicator2", new IndicatorTally(null, 7, "indicator2", null));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
-        long indicator1 = AggregationUtil.getStaticIndicatorCount(indicatorTallies, "indicator1");
-        long indicator2 = AggregationUtil.getStaticIndicatorCount(indicatorTallies, "indicator2");
+        long indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
+        long indicator2 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator2");
         Assert.assertEquals(12, indicator1);
         Assert.assertEquals(7, indicator2);
 
@@ -51,7 +52,6 @@ public class AggregationUtilTest {
     @Test
     public void testLatestIndicatorCount() {
         Map<String, IndicatorTally> tally1 = new HashMap<>();
-
         tally1.put("indicator1", new IndicatorTally(null, 3, "indicator1", getDate(2019, 3, 31)));
         Map<String, IndicatorTally> tally2 = new HashMap<>();
         tally2.put("indicator1", new IndicatorTally(null, 19, "indicator1", getDate(2019, 4, 30)));
@@ -77,23 +77,5 @@ public class AggregationUtilTest {
         long indicator2 = AggregationUtil.getLatestIndicatorCount(indicatorTallies, "indicator2");
         Assert.assertEquals(3, indicator1);
         Assert.assertEquals(13, indicator2);
-    }
-
-    private Date getDate(int year, int month, int date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1); //Months index begin from 0 - 11 i.e Jan: 0 ; Dec: 11
-        calendar.set(Calendar.DATE, date);
-        return calendar.getTime();
-    }
-    private Date getDateTime(int year, int month, int date, int hour, int min, int sec) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1); //Months index begin from 0 - 11 i.e Jan: 0 ; Dec: 11
-        calendar.set(Calendar.DATE, date);
-        calendar.set(Calendar.HOUR, hour);
-        calendar.set(Calendar.MINUTE, min);
-        calendar.set(Calendar.SECOND, sec);
-        return calendar.getTime();
     }
 }
