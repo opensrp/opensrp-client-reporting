@@ -52,7 +52,6 @@ public class AggregationUtilTest {
     @Test
     public void testLatestIndicatorCount() {
         Map<String, IndicatorTally> tally1 = new HashMap<>();
-
         tally1.put("indicator1", new IndicatorTally(null, 3, "indicator1", getDate(2019, 3, 31)));
         Map<String, IndicatorTally> tally2 = new HashMap<>();
         tally2.put("indicator1", new IndicatorTally(null, 19, "indicator1", getDate(2019, 4, 30)));
@@ -79,6 +78,4 @@ public class AggregationUtilTest {
         Assert.assertEquals(3, indicator1);
         Assert.assertEquals(13, indicator2);
     }
-
-
 }
