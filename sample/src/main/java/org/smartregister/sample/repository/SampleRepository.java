@@ -75,7 +75,7 @@ public class SampleRepository extends Repository {
             }
             return readableDatabase;
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Timber.e(e);
             return null;
         }
 

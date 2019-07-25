@@ -14,6 +14,7 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.yaml.snakeyaml.TypeDescription;
@@ -29,8 +30,6 @@ import timber.log.Timber;
 
 public class ReportingLibrary {
 
-    public static final String APP_VERSION_CODE = "APP_VERSION_CODE";
-    public static final String INDICATOR_DATA_INITIALISED = "INDICATOR_DATA_INITIALISED";
     private static boolean appOnDebugMode;
     private static ReportingLibrary instance;
     private Repository repository;
@@ -52,6 +51,11 @@ public class ReportingLibrary {
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
         initRepositories();
+
+        // Install a default Timber tree in case the importing client app does not do that
+        if (Timber.treeCount() == 0) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     public static void init(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
@@ -80,11 +84,10 @@ public class ReportingLibrary {
      * are already managed instead of writing new code to manage them
      */
     public void performMigrations(@NonNull SQLiteDatabase database) {
-        Timber.e("Running migrations");
+        Timber.i("Running Reporting Library migrations");
 
         IndicatorQueryRepository.performMigrations(database);
         DailyIndicatorCountRepository.performMigrations(database);
-
     }
 
     public Repository getRepository() {
@@ -211,8 +214,8 @@ public class ReportingLibrary {
                 saveIndicatorQueries(indicatorQueries);
             }
 
-            context.allSharedPreferences().savePreference(INDICATOR_DATA_INITIALISED, "true");
-            context.allSharedPreferences().savePreference(APP_VERSION_CODE, String.valueOf(BuildConfig.VERSION_CODE));
+            context.allSharedPreferences().savePreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED, "true");
+            context.allSharedPreferences().savePreference(Constants.PrefKey.APP_VERSION_CODE, String.valueOf(BuildConfig.VERSION_CODE));
         }
     }
 
@@ -268,7 +271,7 @@ public class ReportingLibrary {
     }
 
     private boolean isAppUpdated() {
-        String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(APP_VERSION_CODE);
+        String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(Constants.PrefKey.APP_VERSION_CODE);
         if (savedAppVersion.isEmpty()) {
             return true;
         } else {
@@ -278,6 +281,6 @@ public class ReportingLibrary {
     }
 
     private boolean isIndicatorsInitialized() {
-        return Boolean.parseBoolean(context.allSharedPreferences().getPreference(INDICATOR_DATA_INITIALISED));
+        return Boolean.parseBoolean(context.allSharedPreferences().getPreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED));
     }
 }

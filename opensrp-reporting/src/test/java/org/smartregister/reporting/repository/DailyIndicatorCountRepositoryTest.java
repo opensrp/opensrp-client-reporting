@@ -20,6 +20,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
@@ -72,12 +73,12 @@ public class DailyIndicatorCountRepositoryTest {
 
     @Test
     public void getDailyTalliesShouldInvokeQueryAndReturnEmptyHashMap() {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{DailyIndicatorCountRepository.ID
-                , DailyIndicatorCountRepository.INDICATOR_CODE
-                , DailyIndicatorCountRepository.INDICATOR_VALUE
-                , DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                , DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                , DailyIndicatorCountRepository.DAY}
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY}
                 , 0);
 
         Mockito.doReturn(sqLiteDatabase)
@@ -87,9 +88,9 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.doReturn(matrixCursor)
                 .when(sqLiteDatabase)
                 .query(
-                        ArgumentMatchers.eq(DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                        ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
                         , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
-                        , ArgumentMatchers.eq(DailyIndicatorCountRepository.DAY + " = ? AND " + " < ?")
+                        , ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.DAY + " = ? AND " + " < ?")
                         , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2))
                         , ArgumentMatchers.isNull(String.class)
                         , ArgumentMatchers.isNull(String.class)
@@ -99,9 +100,9 @@ public class DailyIndicatorCountRepositoryTest {
         Map<String, IndicatorTally> tallyMap = dailyIndicatorCountRepositorySpy.getDailyTallies(new Date(System.currentTimeMillis()));
 
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
-                .query(ArgumentMatchers.eq(DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                .query(ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
                         , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
-                        , ArgumentMatchers.eq(DailyIndicatorCountRepository.DAY + " >= ? AND " + DailyIndicatorCountRepository.DAY + " < ?")
+                        , ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.DAY + " >= ? AND " + Constants.DailyIndicatorCountRepository.DAY + " < ?")
                         , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2))
                         , ArgumentMatchers.isNull(String.class)
                         , ArgumentMatchers.isNull(String.class)
