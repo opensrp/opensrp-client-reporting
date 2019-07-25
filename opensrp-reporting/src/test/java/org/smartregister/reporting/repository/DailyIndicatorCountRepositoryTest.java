@@ -2,6 +2,7 @@ package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
 
+import net.sqlcipher.Cursor;
 import net.sqlcipher.MatrixCursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -18,6 +19,7 @@ import org.mockito.hamcrest.MockitoHamcrest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.util.Constants;
@@ -134,5 +136,33 @@ public class DailyIndicatorCountRepositoryTest {
 
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
                 .endTransaction();
+    }
+
+    @Test
+    public void processCursorRowShouldReturnValueSetWhenCursorIsValueSetRow() {
+        String[] columns = {Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY};
+
+        long id = 89;
+        String indicatorCode = "SND_100";
+        String valueSet = "[['male', 90], ['female', 100]";
+
+        MatrixCursor matrixCursor = new MatrixCursor(columns, 1);
+        matrixCursor.addRow(new Object[]{id, indicatorCode, 0L, valueSet, 1, System.currentTimeMillis()});
+
+        matrixCursor.moveToNext();
+
+        IndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
+                , ReflectionHelpers.ClassParameter.from(Cursor.class, matrixCursor));
+
+
+        Assert.assertTrue(indicatorTally.isValueSet());
+        Assert.assertEquals(valueSet, indicatorTally.getValueSet());
+        Assert.assertEquals(indicatorCode, indicatorTally.getIndicatorCode());
+        Assert.assertEquals(id, indicatorTally.getId().longValue());
     }
 }
