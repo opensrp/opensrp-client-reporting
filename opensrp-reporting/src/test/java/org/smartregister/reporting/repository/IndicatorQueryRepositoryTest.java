@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.hamcrest.MockitoHamcrest;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,9 +60,9 @@ public class IndicatorQueryRepositoryTest {
         indicatorQueryRepositorySpy.findQueryByIndicatorCode(indicatorCode);
 
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(
-                ArgumentMatchers.eq(IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
+                ArgumentMatchers.eq(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
                 , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(5))
-                , ArgumentMatchers.eq(IndicatorQueryRepository.QUERY + " = ?")
+                , ArgumentMatchers.eq(Constants.IndicatorQueryRepository.QUERY + " = ?")
                 , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(1))
                 , ArgumentMatchers.isNull(String.class)
                 , ArgumentMatchers.isNull(String.class)

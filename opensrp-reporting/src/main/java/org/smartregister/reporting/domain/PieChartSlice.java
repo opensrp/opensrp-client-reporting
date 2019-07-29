@@ -2,11 +2,13 @@ package org.smartregister.reporting.domain;
 
 
 public class PieChartSlice {
+    private String label;
     private float value;
     private int color;
 
-    public PieChartSlice(float value, int color) {
+    public PieChartSlice(float value, String label, int color) {
         this.value = value;
+        this.label = label;
         this.color = color;
     }
 
@@ -28,5 +30,13 @@ public class PieChartSlice {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

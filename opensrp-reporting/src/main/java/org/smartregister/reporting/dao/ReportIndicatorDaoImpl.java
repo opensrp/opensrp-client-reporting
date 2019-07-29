@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * The ReportIndicatorDao allows for processing of Indicators. This class acts as the Interactor for
  * Presenters and also allows for use in other Services
@@ -120,7 +122,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
 
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
-            Log.logDebug("generateDailyIndicatorTallies: Generate daily tallies complete");
+            Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
@@ -158,7 +160,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Log.logDebug("QUERY :" + queryString);
+            Timber.i("QUERY : %s", queryString);
             query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
         }
         Cursor cursor = null;
@@ -173,7 +175,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 cursor.close();
             }
         } catch (Exception e) {
-            Log.logError(e.getMessage());
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -186,7 +188,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Log.logDebug("QUERY :" + queryString);
+            Timber.i("QUERY : %s", queryString);
             query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
         }
         Cursor cursor = null;
@@ -229,7 +231,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 cursor.close();
             }
         } catch (Exception e) {
-            Log.logError(e.getMessage());
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -243,7 +245,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             return new SimpleDateFormat(format, Locale.getDefault()).parse(date);
         } catch (ParseException pe) {
             // Oh no!
-            Log.logError(TAG, "Error parsing the db date");
+            Timber.e(pe);
             return null;
         }
     }

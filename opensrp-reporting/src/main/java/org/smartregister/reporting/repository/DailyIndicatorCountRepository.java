@@ -15,6 +15,7 @@ import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.exception.MultiResultProcessorException;
 import org.smartregister.reporting.processor.MultiResultProcessor;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.reporting.util.Utils;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
@@ -39,19 +40,16 @@ import timber.log.Timber;
 
 public class DailyIndicatorCountRepository extends BaseRepository {
 
-    public static String ID = "_id";
-    public static String INDICATOR_CODE = "indicator_code";
-    public static String INDICATOR_VALUE = "indicator_value";
-    public static String DAY = "day";
-    public static String INDICATOR_VALUE_SET = "indicator_value_set";
-    public static String INDICATOR_VALUE_SET_FLAG = "indicator_is_value_set";
-    public static String INDICATOR_DAILY_TALLY_TABLE = "indicator_daily_tally";
+    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+            + "(" + Constants.DailyIndicatorCountRepository.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " TEXT NOT NULL, " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+            + " INTEGER, " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET + " TEXT, "
+            + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, "
+            + Constants.DailyIndicatorCountRepository.DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
-    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-            INDICATOR_CODE + " TEXT NOT NULL, " + INDICATOR_VALUE + " INTEGER, " +
-            INDICATOR_VALUE_SET + " TEXT, " + INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, " + DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
-
-    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " + INDICATOR_DAILY_TALLY_TABLE + " ( " + INDICATOR_CODE + " , " + DAY + " ) ";
+    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON "
+            + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " ( " + Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+            + " , " + Constants.DailyIndicatorCountRepository.DAY + " ) ";
 
     public DailyIndicatorCountRepository(Repository repository) {
         super(repository);
@@ -59,7 +57,9 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (Utils.isTableExists(database, INDICATOR_DAILY_TALLY_TABLE) && !Utils.isColumnExists(database, INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE_SET)) {
+        if (Utils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                && !Utils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)) {
             addValueSetColumns(database);
             aggregateDailyTallies(database);
         }
@@ -76,9 +76,10 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         }
 
         SQLiteDatabase database = getWritableDatabase();
-        database.delete(INDICATOR_DAILY_TALLY_TABLE, INDICATOR_CODE + " = ? AND " + DAY + " = ? ",
-                new String[]{indicatorTally.getIndicatorCode(), new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt())});
-        database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
+        database.delete(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND " + Constants.DailyIndicatorCountRepository.DAY + " = ? "
+                , new String[]{indicatorTally.getIndicatorCode(), new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt())});
+        database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
     public List<Map<String, IndicatorTally>> getAllDailyTallies() {
@@ -86,11 +87,17 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         Map<String, IndicatorTally> tallyMap;
 
         SQLiteDatabase database = getReadableDatabase();
-        String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, INDICATOR_VALUE_SET, INDICATOR_VALUE_SET_FLAG, DAY};
+        String[] columns = {Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY};
 
         Cursor cursor = null;
         try {
-            cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, null, null, null, null, null, null);
+            cursor = database.query(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                    , columns, null, null, null, null, null, null);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
                 ArrayList<MultiResultProcessor> multiResultProcessors = ReportingLibrary.getInstance().getMultiResultProcessors();
@@ -176,7 +183,12 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         Map<String, IndicatorTally> tallyMap = new HashMap<>();
 
         SQLiteDatabase database = getReadableDatabase();
-        String[] columns = {ID, INDICATOR_CODE, INDICATOR_VALUE, INDICATOR_VALUE_SET, INDICATOR_VALUE_SET_FLAG, DAY};
+        String[] columns = {Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY};
 
         Cursor cursor = null;
 
@@ -193,9 +205,11 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         long dayEndMillis = dayStart.getTimeInMillis();
 
         try {
-            cursor = database.query(INDICATOR_DAILY_TALLY_TABLE, columns, DAY + " >= ? AND " + DAY + " < ?",
-                    new String[]{String.valueOf(dayStartMillis), String.valueOf(dayEndMillis)}, null,
-                    null, null, null);
+            cursor = database.query(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                    , columns
+                    , Constants.DailyIndicatorCountRepository.DAY + " >= ? AND " + Constants.DailyIndicatorCountRepository.DAY + " < ?",
+                    new String[]{String.valueOf(dayStartMillis), String.valueOf(dayEndMillis)}
+                    , null,null, null, null);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
@@ -252,22 +266,23 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL("PRAGMA foreign_keys=off");
         database.beginTransaction();
 
-        database.execSQL("ALTER TABLE " + INDICATOR_DAILY_TALLY_TABLE + " RENAME TO old_" + INDICATOR_DAILY_TALLY_TABLE);
+        database.execSQL("ALTER TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                + " RENAME TO old_" + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
         database.execSQL(CREATE_DAILY_TALLY_TABLE);
 
         String copyDataSQL = String.format("INSERT INTO %s(%s, %s, %s) SELECT %s, %s, %s FROM old_%s",
-                INDICATOR_DAILY_TALLY_TABLE,
-                INDICATOR_CODE,
-                INDICATOR_VALUE,
-                DAY,
-                INDICATOR_CODE,
-                INDICATOR_VALUE,
-                DAY,
-                INDICATOR_DAILY_TALLY_TABLE);
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_CODE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
+                Constants.DailyIndicatorCountRepository.DAY,
+                Constants.DailyIndicatorCountRepository.INDICATOR_CODE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
+                Constants.DailyIndicatorCountRepository.DAY,
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
 
         // Copy over the data
         database.execSQL(copyDataSQL);
-        database.execSQL("DROP TABLE old_" + INDICATOR_DAILY_TALLY_TABLE);
+        database.execSQL("DROP TABLE old_" + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
 
         database.setTransactionSuccessful();
         database.endTransaction();
