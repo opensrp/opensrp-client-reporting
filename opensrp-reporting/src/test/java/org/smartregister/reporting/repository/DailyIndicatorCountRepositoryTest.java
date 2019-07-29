@@ -2,8 +2,12 @@ package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.MatrixCursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.hamcrest.collection.IsArrayWithSize;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,15 +15,20 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ReportingLibrary.class)
@@ -62,5 +71,98 @@ public class DailyIndicatorCountRepositoryTest {
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
                 ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));
+    }
+
+    @Test
+    public void getDailyTalliesShouldInvokeQueryAndReturnEmptyHashMap() {
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY}
+                , 0);
+
+        Mockito.doReturn(sqLiteDatabase)
+                .when(dailyIndicatorCountRepositorySpy)
+                .getReadableDatabase();
+
+        Mockito.doReturn(matrixCursor)
+                .when(sqLiteDatabase)
+                .query(
+                        ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
+                        , ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.DAY + " = ? AND " + " < ?")
+                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2))
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class));
+
+        Map<String, IndicatorTally> tallyMap = dailyIndicatorCountRepositorySpy.getDailyTallies(new Date(System.currentTimeMillis()));
+
+        Mockito.verify(sqLiteDatabase, Mockito.times(1))
+                .query(ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
+                        , ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.DAY + " >= ? AND " + Constants.DailyIndicatorCountRepository.DAY + " < ?")
+                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2))
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class)
+                        , ArgumentMatchers.isNull(String.class));
+
+        Assert.assertEquals(0, tallyMap.size());
+    }
+
+    @Test
+    public void performMigrationsShouldInvokeWriteMethods() {
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"name"}, 1);
+        matrixCursor.addRow(new Object[]{"indicator_daily_tally"});
+
+        Mockito.doReturn(matrixCursor)
+                .when(sqLiteDatabase)
+                .rawQuery(
+                        ArgumentMatchers.eq("SELECT name FROM sqlite_master WHERE type='table' AND name='indicator_daily_tally'")
+                        , Mockito.nullable(String[].class));
+
+        Mockito.doReturn(new MatrixCursor(new String[]{"name"}))
+                .when(sqLiteDatabase)
+                .rawQuery(ArgumentMatchers.eq("PRAGMA table_info(indicator_daily_tally)")
+                        , Mockito.nullable(String[].class));
+
+        dailyIndicatorCountRepositorySpy.performMigrations(sqLiteDatabase);
+        Mockito.verify(sqLiteDatabase, Mockito.times(1))
+                .execSQL(Mockito.eq("PRAGMA foreign_keys=off"));
+
+        Mockito.verify(sqLiteDatabase, Mockito.times(1))
+                .endTransaction();
+    }
+
+    @Test
+    public void processCursorRowShouldReturnValueSetWhenCursorIsValueSetRow() {
+        String[] columns = {Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY};
+
+        long id = 89;
+        String indicatorCode = "SND_100";
+        String valueSet = "[['male', 90], ['female', 100]";
+
+        MatrixCursor matrixCursor = new MatrixCursor(columns, 1);
+        matrixCursor.addRow(new Object[]{id, indicatorCode, 0L, valueSet, 1, System.currentTimeMillis()});
+
+        matrixCursor.moveToNext();
+
+        IndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
+                , ReflectionHelpers.ClassParameter.from(Cursor.class, matrixCursor));
+
+
+        Assert.assertTrue(indicatorTally.isValueSet());
+        Assert.assertEquals(valueSet, indicatorTally.getValueSet());
+        Assert.assertEquals(indicatorCode, indicatorTally.getIndicatorCode());
+        Assert.assertEquals(id, indicatorTally.getId().longValue());
     }
 }

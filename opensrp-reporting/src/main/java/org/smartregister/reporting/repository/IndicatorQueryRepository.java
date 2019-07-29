@@ -1,11 +1,15 @@
 package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.util.Constants;
+import org.smartregister.reporting.util.Utils;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
@@ -20,17 +24,23 @@ import java.util.Map;
  */
 public class IndicatorQueryRepository extends BaseRepository {
 
-    public static final String ID = "_id";
-    public static String QUERY = "indicator_query";
-    public static String INDICATOR_CODE = "indicator_code";
-    public static String DB_VERSION = "db_version";
-    public static String INDICATOR_QUERY_TABLE = "indicator_queries";
-
-    public static String CREATE_TABLE_INDICATOR_QUERY = "CREATE TABLE " + INDICATOR_QUERY_TABLE + "(" + ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-            QUERY + " TEXT NOT NULL, " + INDICATOR_CODE + " TEXT NOT NULL, " + DB_VERSION + " INTEGER)";
+    public static String CREATE_TABLE_INDICATOR_QUERY = "CREATE TABLE " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+            + "(" + Constants.IndicatorQueryRepository.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + Constants.IndicatorQueryRepository.QUERY + " TEXT NOT NULL, " + Constants.IndicatorQueryRepository.INDICATOR_CODE
+            + " TEXT NOT NULL, " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT + " BOOLEAN NOT NULL DEFAULT 0, "
+            + Constants.IndicatorQueryRepository.DB_VERSION + " INTEGER)";
 
     public IndicatorQueryRepository(Repository repository) {
         super(repository);
+    }
+
+    public static void performMigrations(@NonNull SQLiteDatabase database) {
+        // Perform migrations
+        if (Utils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
+                && !Utils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) {
+            addMultiResultFlagField(database);
+            aggregateDailyTallies(database);
+        }
     }
 
     public static void createTable(SQLiteDatabase database) {
@@ -45,7 +55,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         if (indicatorQuery == null) {
             return;
         }
-        sqLiteDatabase.insert(INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
+        sqLiteDatabase.insert(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, null, createContentValues(indicatorQuery));
     }
 
     public void truncateTable() {
@@ -53,19 +63,22 @@ public class IndicatorQueryRepository extends BaseRepository {
     }
 
     public void truncateTable(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + INDICATOR_QUERY_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE);
         sqLiteDatabase.execSQL(CREATE_TABLE_INDICATOR_QUERY);
-        sqLiteDatabase.delete("sqlite_sequence", "name = ?", new String[]{INDICATOR_QUERY_TABLE});
+        sqLiteDatabase.delete("sqlite_sequence", "name = ?", new String[]{Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE});
     }
 
-    public Map<String, String> getAllIndicatorQueries() {
-        Map<String, String> queries = new HashMap<>();
+    public Map<String, IndicatorQuery> getAllIndicatorQueries() {
+        Map<String, IndicatorQuery> queries = new HashMap<>();
         SQLiteDatabase database = getReadableDatabase();
-        String[] columns = {INDICATOR_CODE, QUERY};
-        Cursor cursor = database.query(INDICATOR_QUERY_TABLE, columns, null, null, null, null, null, null);
+        String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
+                , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.DB_VERSION};
+        Cursor cursor = database.query(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, columns
+                , null, null, null, null, null, null);
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                queries.put(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)), cursor.getString(cursor.getColumnIndex(QUERY)));
+                queries.put(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_CODE)), processCursorRow(cursor));
                 cursor.moveToNext();
             }
             cursor.close();
@@ -73,32 +86,70 @@ public class IndicatorQueryRepository extends BaseRepository {
         return queries;
     }
 
-    public String findQueryByIndicatorCode(String indicatorCode) {
-
+    @Nullable
+    public IndicatorQuery findQueryByIndicatorCode(String indicatorCode) {
         SQLiteDatabase database = getReadableDatabase();
-        String indicatorQuery = "";
-        String[] columns = {QUERY};
-        String selection = QUERY + " = ?";
+        IndicatorQuery indicatorQuery = null;
+        String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
+                , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.DB_VERSION};
+        String selection = Constants.IndicatorQueryRepository.QUERY + " = ?";
         String[] selectionArgs = {indicatorCode};
 
-        Cursor cursor = database.query(INDICATOR_QUERY_TABLE, columns, selection, selectionArgs, null, null, null, null);
+        Cursor cursor = database.query(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, columns, selection, selectionArgs
+                , null, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                indicatorQuery = cursor.getString(cursor.getColumnIndex(QUERY));
+                indicatorQuery = processCursorRow(cursor);
             }
             cursor.close();
         }
+
         return indicatorQuery;
     }
 
     public ContentValues createContentValues(IndicatorQuery indicatorQuery) {
         ContentValues values = new ContentValues();
-        values.put(ID, indicatorQuery.getId());
-        values.put(QUERY, indicatorQuery.getQuery());
-        values.put(INDICATOR_CODE, indicatorQuery.getIndicatorCode());
-        values.put(DB_VERSION, indicatorQuery.getDbVersion());
+        values.put(Constants.IndicatorQueryRepository.ID, indicatorQuery.getId());
+        values.put(Constants.IndicatorQueryRepository.QUERY, indicatorQuery.getQuery());
+        values.put(Constants.IndicatorQueryRepository.INDICATOR_CODE, indicatorQuery.getIndicatorCode());
+        values.put(Constants.IndicatorQueryRepository.DB_VERSION, indicatorQuery.getDbVersion());
+        values.put(Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT, indicatorQuery.isMultiResult());
         return values;
+    }
+
+    private IndicatorQuery processCursorRow(@NonNull Cursor cursor) {
+        IndicatorQuery indicatorQuery = new IndicatorQuery();
+        indicatorQuery.setId(cursor.getLong(cursor.getColumnIndex(Constants.IndicatorQueryRepository.ID)));
+        indicatorQuery.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_CODE)));
+        indicatorQuery.setQuery(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.QUERY)));
+        indicatorQuery.setMultiResult(cursor.getInt(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) == 1);
+        indicatorQuery.setDbVersion(cursor.getInt(cursor.getColumnIndex(Constants.IndicatorQueryRepository.DB_VERSION)));
+
+        return indicatorQuery;
+    }
+
+
+    public static void addMultiResultFlagField(@NonNull SQLiteDatabase database) {
+        // Change indicator_value to be nullable
+        // Add the two fields
+        // Set the default for the is_value_set to false
+
+        // DROP THE TABLE, CREATE A NEW TABLE
+        database.execSQL("PRAGMA foreign_keys=off");
+        database.beginTransaction();
+
+        database.execSQL("ALTER TABLE " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+                + " ADD COLUMN " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT + " BOOLEAN NOT NULL DEFAULT 0");
+
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        database.execSQL("PRAGMA foreign_keys=on;");
+    }
+
+    public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
+        // Code to migrate the code over from incremental tallies should be written here
     }
 
 }

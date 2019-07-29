@@ -5,6 +5,7 @@ import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
@@ -31,9 +32,10 @@ public class SampleRepository extends Repository {
     private String databasePassword = "db_pass";
     private static final String TAG = SampleRepository.class.getCanonicalName();
     private Context context;
+    private static final int DB_VERSION = 2;
 
     public SampleRepository(Context context, org.smartregister.Context openSRPContext) {
-        super(context, AllConstants.DATABASE_NAME, AllConstants.DATABASE_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
+        super(context, AllConstants.DATABASE_NAME, DB_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
         this.context = context;
     }
 
@@ -47,7 +49,9 @@ public class SampleRepository extends Repository {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO
+        if (oldVersion == 1 && newVersion == 2) {
+            ReportingLibrary.getInstance().performMigrations(db);
+        }
     }
 
     @Override
@@ -71,7 +75,7 @@ public class SampleRepository extends Repository {
             }
             return readableDatabase;
         } catch (Exception e) {
-            Log.e(TAG, "Database Error. " + e.getMessage());
+            Timber.e(e);
             return null;
         }
 
@@ -117,6 +121,12 @@ public class SampleRepository extends Repository {
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
+
+
+    }
+
+    private static void addSampleEvents() {
+
     }
 
     private static void addSampleEvent() {
@@ -149,6 +159,19 @@ public class SampleRepository extends Repository {
             Log.e(TAG, "Error creating Event JSONObject");
         }
         eventClientRepository.addEvent(baseEntityId, jsonObject);
+    }
+
+    public static void addNewEvent() {
+        EventClientRepository eventClientRepository = ReportingLibrary.getInstance().eventClientRepository();
+        String baseEntityId = "3b6048d5-231d-4a11-a141-4c4358b8e401";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("eventDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(new Date()));
+            eventClientRepository.addEvent(baseEntityId, jsonObject);
+        } catch (JSONException ex) {
+            Log.e(TAG, Log.getStackTraceString(ex));
+        }
     }
 
 

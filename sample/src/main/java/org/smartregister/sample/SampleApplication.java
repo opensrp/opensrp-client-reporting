@@ -6,9 +6,13 @@ import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.job.IndicatorGeneratorJobCreator;
+import org.smartregister.reporting.job.RecurringIndicatorGeneratingJob;
 import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
+
+
+import timber.log.Timber;
 
 import static org.smartregister.util.Log.logError;
 
@@ -25,6 +29,8 @@ public class SampleApplication extends DrishtiApplication {
         super.onCreate();
         mInstance = this;
         context = Context.getInstance();
+        Timber.plant(new Timber.DebugTree());
+
         context.updateApplicationContext(getApplicationContext());
         CoreLibrary.init(context);
         ReportingLibrary.init(Context.getInstance(), getRepository(), null,
@@ -39,6 +45,9 @@ public class SampleApplication extends DrishtiApplication {
         }
 
         JobManager.create(this).addJobCreator(new IndicatorGeneratorJobCreator());
+
+        SampleRepository.addNewEvent();
+        RecurringIndicatorGeneratingJob.scheduleJobImmediately(RecurringIndicatorGeneratingJob.TAG);
     }
 
     @Override
