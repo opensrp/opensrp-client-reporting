@@ -139,9 +139,13 @@ public class ReportingLibrary {
                 indicatorsConfig = (IndicatorsYamlConfig) indicatorObject;
                 for (IndicatorYamlConfigItem indicatorYamlConfigItem : indicatorsConfig.getIndicators()) {
                     indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
-                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getIndicatorQuery(), 0);
+
+                    String query = indicatorYamlConfigItem.getIndicatorQuery();
+                    if(!query.trim().isEmpty()) {
+                        indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey(), query, 0);
+                        indicatorQueries.add(indicatorQuery);
+                    }
                     reportIndicators.add(indicator);
-                    indicatorQueries.add(indicatorQuery);
                 }
             }
             if (sqLiteDatabase != null) {
