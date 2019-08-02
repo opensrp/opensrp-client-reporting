@@ -156,7 +156,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         String query = "";
         if (date != null) {
             query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
-            Timber.i("QUERY : %s", queryString);
+            Timber.i("QUERY : %s", query);
         }
         Cursor cursor = null;
         int count = 0;
