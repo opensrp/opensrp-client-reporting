@@ -14,7 +14,9 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.reporting.util.Constants;
+import org.smartregister.reporting.util.ReportingUtil;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.yaml.snakeyaml.TypeDescription;
@@ -43,6 +45,7 @@ public class ReportingLibrary {
     private int databaseVersion;
     private Yaml yaml;
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+    private AppProperties appProperties;
 
     private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         this.repository = repository;
@@ -51,6 +54,7 @@ public class ReportingLibrary {
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
         initRepositories();
+        this.appProperties = ReportingUtil.getProperties(this.context.applicationContext());
 
         // Install a default Timber tree in case the importing client app does not do that
         if (Timber.treeCount() == 0) {
@@ -286,5 +290,9 @@ public class ReportingLibrary {
 
     private boolean isIndicatorsInitialized() {
         return Boolean.parseBoolean(context.allSharedPreferences().getPreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED));
+    }
+
+    public AppProperties getAppProperties() {
+        return appProperties;
     }
 }

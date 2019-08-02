@@ -12,6 +12,7 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.util.Log;
 
@@ -155,7 +156,12 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
+            if(!ReportingLibrary.getInstance().getAppProperties().hasProperty(AppProperties.KEY.COUNT_INCREMENTAL)
+                    || ReportingLibrary.getInstance().getAppProperties().getPropertyBoolean(AppProperties.KEY.COUNT_INCREMENTAL)) {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+            } else {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
+            }
             Timber.i("QUERY : %s", query);
         }
         Cursor cursor = null;

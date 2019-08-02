@@ -1,6 +1,7 @@
 package org.smartregister.reporting.util;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.view.View;
 
 import org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType;
@@ -11,14 +12,18 @@ import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.model.PieChartDisplayModel;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 import static org.smartregister.reporting.util.AggregationUtil.getLatestIndicatorCount;
 
 public class ReportingUtil {
+    public static final String APP_PROPERTIES_FILE = "app.properties";
 
     public static long getTotalCount(List<Map<String, IndicatorTally>> indicatorTallies, String indicatorKey) {
         return AggregationUtil.getTotalIndicatorCount(indicatorTallies, indicatorKey);
@@ -62,5 +67,18 @@ public class ReportingUtil {
         List<PieChartSlice> pieChartSlices = new ArrayList<>();
         Collections.addAll(pieChartSlices, chartSlices);
         return pieChartSlices;
+    }
+
+    public static AppProperties getProperties(android.content.Context context) {
+        AppProperties properties = new AppProperties();
+        try {
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open(APP_PROPERTIES_FILE);
+            properties.load(inputStream);
+        } catch (Exception e) {
+            Timber.e(e, "GrowthMonitoringUtils --> getProperties");
+        }
+        return properties;
+
     }
 }
