@@ -69,7 +69,7 @@ public class ReportingUtil {
         return pieChartSlices;
     }
 
-    public static AppProperties getProperties(android.content.Context context) {
+    public static AppProperties getProperties(Context context) {
         AppProperties properties = new AppProperties();
         try {
             AssetManager assetManager = context.getAssets();
