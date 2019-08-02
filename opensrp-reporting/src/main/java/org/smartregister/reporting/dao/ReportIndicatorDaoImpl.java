@@ -14,7 +14,6 @@ import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.EventClientRepository;
-import org.smartregister.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +37,9 @@ import timber.log.Timber;
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + "eventDate as updatedAt" + " from "
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
+
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
     private IndicatorQueryRepository indicatorQueryRepository;
