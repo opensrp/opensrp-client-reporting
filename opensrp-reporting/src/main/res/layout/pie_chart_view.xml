@@ -3,8 +3,7 @@
     android:id="@+id/pie_chart_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/pie_chart_contents"
@@ -19,7 +18,7 @@
             style="@style/IndicatorLabelStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/numeric_indicator_value"
+            android:layout_toStartOf="@id/numeric_indicator_value"
             android:text="This is a sample label that exposes just how the view is rendered" />
 
         <TextView
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:text="0" />
 
         <TextView
@@ -36,7 +35,9 @@
             style="@style/IndicatorNoteStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/pie_indicator_label"
+            android:layout_below="@id/pie_indicator_label"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
             android:text="Sample Note" />
 
     </RelativeLayout>
@@ -44,7 +45,8 @@
     <lecho.lib.hellocharts.view.PieChartView
         android:id="@+id/pie_chart"
         android:layout_width="wrap_content"
-        android:layout_height="250dp" />
+        android:layout_height="250dp"
+        />
 
     <View
         android:id="@+id/pie_chart_split_line"

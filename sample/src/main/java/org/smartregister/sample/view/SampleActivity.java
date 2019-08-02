@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.sample.R;
 
-public class SampleActivity extends AppCompatActivity implements ReportContract.View {
+public class SampleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +40,6 @@ public class SampleActivity extends AppCompatActivity implements ReportContract.
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
 
-    @Override
-    public void refreshUI() {
-
-    }
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -69,4 +64,8 @@ public class SampleActivity extends AppCompatActivity implements ReportContract.
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

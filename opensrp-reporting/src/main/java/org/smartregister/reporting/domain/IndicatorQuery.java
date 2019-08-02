@@ -5,12 +5,14 @@ public class IndicatorQuery {
     private String indicatorCode;
     private String query;
     private int dbVersion;
+    private boolean isMultiResult;
 
-    public IndicatorQuery(Long id, String indicatorCode, String query, int dbVersion) {
+    public IndicatorQuery(Long id, String indicatorCode, String query, int dbVersion, boolean isMultiResult) {
         this.id = id;
         this.indicatorCode = indicatorCode;
         this.query = query;
         this.dbVersion = dbVersion;
+        this.isMultiResult = isMultiResult;
     }
 
     public IndicatorQuery() {
@@ -46,5 +48,13 @@ public class IndicatorQuery {
 
     public void setDbVersion(int dbVersion) {
         this.dbVersion = dbVersion;
+    }
+
+    public boolean isMultiResult() {
+        return isMultiResult;
+    }
+
+    public void setMultiResult(boolean multiResult) {
+        isMultiResult = multiResult;
     }
 }

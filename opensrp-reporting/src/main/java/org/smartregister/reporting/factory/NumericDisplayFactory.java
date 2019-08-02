@@ -1,7 +1,6 @@
-package org.smartregister.reporting.view;
+package org.smartregister.reporting.factory;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
