@@ -33,7 +33,7 @@ import java.util.Map;
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + "eventDate as updatedAt" + " from "
             + EventClientRepository.Table.event.name();
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -132,8 +132,10 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Log.logDebug("QUERY :" + queryString);
-            query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
+            //Log.logDebug("QUERY :" + queryString);
+            //query = queryString.contains("%s") ? String.format(queryString, date.split(" ")[0]) : queryString;
+            query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
+            Log.logDebug("QUERY :" + query  );
         }
         Cursor cursor = null;
         int count = 0;
