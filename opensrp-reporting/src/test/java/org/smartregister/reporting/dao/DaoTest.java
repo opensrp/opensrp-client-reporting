@@ -115,7 +115,6 @@ public class DaoTest {
         Mockito.when(indicatorQueryRepository.getAllIndicatorQueries()).thenReturn(indicatorQueries);
         Mockito.when(context.allSharedPreferences()).thenReturn(sharedPreferences);
         PowerMockito.when(reportingLibrary.getAppProperties()).thenReturn(appProperties);
-        PowerMockito.when(appProperties.hasProperty("reporting.incremental")).thenReturn(true);
 
         daoSpy.generateDailyIndicatorTallies(lastProcessedDate);
         Mockito.verify(sharedPreferences, Mockito.times(1)).savePreference(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
