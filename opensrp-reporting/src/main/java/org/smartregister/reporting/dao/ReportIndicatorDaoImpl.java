@@ -16,8 +16,8 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.EventClientRepository;
-import org.smartregister.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +43,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
+
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
     private IndicatorQueryRepository indicatorQueryRepository;
@@ -160,8 +161,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Timber.i("QUERY : %s", queryString);
-            query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
+            if(!ReportingLibrary.getInstance().getAppProperties().hasProperty(AppProperties.KEY.COUNT_INCREMENTAL)
+                    || ReportingLibrary.getInstance().getAppProperties().getPropertyBoolean(AppProperties.KEY.COUNT_INCREMENTAL)) {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+            } else {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
+            }
+            Timber.i("QUERY : %s", query);
         }
         Cursor cursor = null;
         int count = 0;

@@ -16,7 +16,9 @@ import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.reporting.util.Constants;
+import org.smartregister.reporting.util.ReportingUtil;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.yaml.snakeyaml.TypeDescription;
@@ -45,6 +47,7 @@ public class ReportingLibrary {
     private int databaseVersion;
     private Yaml yaml;
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+    private AppProperties appProperties;
 
     private ArrayList<MultiResultProcessor> multiResultProcessors;
     private MultiResultProcessor defaultMultiResultProcessor;
@@ -55,17 +58,19 @@ public class ReportingLibrary {
         this.commonFtsObject = commonFtsObject;
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
+        initRepositories();
+        this.appProperties = ReportingUtil.getProperties(this.context.applicationContext());
 
         this.multiResultProcessors = new ArrayList<>();
         this.defaultMultiResultProcessor = new DefaultMultiResultProcessor();
-      
+
         // Install a default Timber tree in case the importing client app does not do that
         // This should be removed when a unified Timber Tree is agreed on for OpenSRP Core and client apps usage
         installDefaultTimberTree();
-      
+
         initRepositories();
     }
-  
+
     private void installDefaultTimberTree() {
         if (Timber.treeCount() == 0) {
             Timber.plant(new Timber.DebugTree());
@@ -212,12 +217,16 @@ public class ReportingLibrary {
                 indicatorsConfig = (IndicatorsYamlConfig) indicatorObject;
                 for (IndicatorYamlConfigItem indicatorYamlConfigItem : indicatorsConfig.getIndicators()) {
                     indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
-                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
-                            , indicatorYamlConfigItem.getIndicatorQuery()
-                            , 0
-                            , indicatorYamlConfigItem.isMultiResult());
+
+                    String query = indicatorYamlConfigItem.getIndicatorQuery();
+                    if(!query.trim().isEmpty()) {
+                        indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
+                                , indicatorYamlConfigItem.getIndicatorQuery()
+                                , 0
+                                , indicatorYamlConfigItem.isMultiResult());
+                        indicatorQueries.add(indicatorQuery);
+                    }
                     reportIndicators.add(indicator);
-                    indicatorQueries.add(indicatorQuery);
                 }
             }
             if (sqLiteDatabase != null) {
@@ -283,7 +292,7 @@ public class ReportingLibrary {
             this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
     }
-  
+
     private boolean isAppUpdated() {
         String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(Constants.PrefKey.APP_VERSION_CODE);
         if (savedAppVersion.isEmpty()) {
@@ -296,7 +305,11 @@ public class ReportingLibrary {
     private boolean isIndicatorsInitialized() {
         return Boolean.parseBoolean(context.allSharedPreferences().getPreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED));
     }
-  
+
+    public AppProperties getAppProperties() {
+        return appProperties;
+    }
+
     public void setDefaultMultiResultProcessor(@NonNull MultiResultProcessor defaultMultiResultProcessor) {
         this.defaultMultiResultProcessor = defaultMultiResultProcessor;
     }
