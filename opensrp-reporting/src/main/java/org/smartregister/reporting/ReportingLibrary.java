@@ -223,9 +223,11 @@ public class ReportingLibrary {
                         indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
                                 , indicatorYamlConfigItem.getIndicatorQuery()
                                 , 0
-                                , indicatorYamlConfigItem.isMultiResult());
+                                , indicatorYamlConfigItem.isMultiResult()
+                                , indicatorYamlConfigItem.getExpectedIndicators());
                         indicatorQueries.add(indicatorQuery);
                     }
+
                     reportIndicators.add(indicator);
                 }
             }

@@ -169,7 +169,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     @Nullable
-    private List<IndicatorTally> processMultipleTallies(@NonNull MultiResultProcessor defaultMultiResultProcessor
+    public static List<IndicatorTally> processMultipleTallies(@NonNull MultiResultProcessor defaultMultiResultProcessor
             , @NonNull CompositeIndicatorTally compositeIndicatorTally) {
         try {
             return defaultMultiResultProcessor.processMultiResultTally(compositeIndicatorTally);

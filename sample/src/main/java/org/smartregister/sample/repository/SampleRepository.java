@@ -50,9 +50,7 @@ public class SampleRepository extends Repository {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion == 2) {
-            ReportingLibrary.getInstance().performMigrations(db);
-        }
+        ReportingLibrary.getInstance().performMigrations(db);
     }
 
     @Override
