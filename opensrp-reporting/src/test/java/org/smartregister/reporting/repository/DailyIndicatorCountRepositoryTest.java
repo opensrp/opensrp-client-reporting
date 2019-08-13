@@ -157,7 +157,7 @@ public class DailyIndicatorCountRepositoryTest {
 
         matrixCursor.moveToNext();
 
-        IndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
+        CompositeIndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
                 , ReflectionHelpers.ClassParameter.from(Cursor.class, matrixCursor));
 
 
