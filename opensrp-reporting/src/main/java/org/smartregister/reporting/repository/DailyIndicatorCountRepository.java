@@ -229,33 +229,33 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     private CompositeIndicatorTally processCursorRow(@NonNull Cursor cursor) {
         CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
-        compositeIndicatorTally.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-        compositeIndicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(INDICATOR_CODE)));
-        compositeIndicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE_SET_FLAG)) == 1);
+        compositeIndicatorTally.setId(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.ID)));
+        compositeIndicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_CODE)));
+        compositeIndicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG)) == 1);
 
         if (compositeIndicatorTally.isValueSet()) {
-            compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(INDICATOR_VALUE_SET)));
+            compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)));
         } else {
-            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
         }
 
-        compositeIndicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(DAY))));
+        compositeIndicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.DAY))));
         return compositeIndicatorTally;
     }
 
     public ContentValues createContentValues(@NonNull CompositeIndicatorTally compositeIndicatorTally) {
         ContentValues values = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
-        values.put(INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
+        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
 
         if (compositeIndicatorTally.isValueSet()) {
-            values.put(INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(INDICATOR_VALUE, compositeIndicatorTally.getCount());
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, compositeIndicatorTally.getCount());
         }
 
-        values.put(INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());
-        values.put(DAY, dateFormat.format(compositeIndicatorTally.getCreatedAt()));
+        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());
+        values.put(Constants.DailyIndicatorCountRepository.DAY, dateFormat.format(compositeIndicatorTally.getCreatedAt()));
         return values;
     }
 
