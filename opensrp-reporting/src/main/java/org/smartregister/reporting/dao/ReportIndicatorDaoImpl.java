@@ -2,6 +2,8 @@ package org.smartregister.reporting.dao;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -16,12 +18,12 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
-import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.EventClientRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,8 +41,9 @@ import timber.log.Timber;
  */
 
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
-
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
+    public static String DAILY_TALLY_DATE_FORMAT = "yyyy-MM-dd";
+
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
 
@@ -80,13 +83,19 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         int count;
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
-        LinkedHashMap<String, Date> reportEventDates = getReportEventDates(lastProcessedDate, database);
+        Date timeNow = Calendar.getInstance().getTime();
+        LinkedHashMap<String, Date> reportEventDates = getReportEventDates(timeNow, lastProcessedDate, database);
+
         Map<String, IndicatorQuery> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
 
         if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
-            String lastUpdatedDate = "";
+            String lastUpdatedDate = null;
+
             for (Map.Entry<String, Date> dates : reportEventDates.entrySet()) {
-                lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
+                if (dates.getValue().getTime() != timeNow.getTime()) {
+                    lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
+                }
+
                 for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
                     IndicatorQuery indicatorQuery = entry.getValue();
                     CompositeIndicatorTally tally = null;
@@ -123,12 +132,17 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 }
             }
 
-            ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
+            if (!TextUtils.isEmpty(lastUpdatedDate)) {
+                ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
+            }
+
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
-    private LinkedHashMap<String, Date> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
+    @VisibleForTesting
+    @NonNull
+    protected LinkedHashMap<String, Date> getReportEventDates(@NonNull Date timeNow, @Nullable String lastProcessedDate, @NonNull SQLiteDatabase database) {
 
         ArrayList<HashMap<String, String>> values;
         if (lastProcessedDate == null || lastProcessedDate.isEmpty()) {
@@ -137,7 +151,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             values = dailyIndicatorCountRepository.rawQuery(database, PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " > '" + lastProcessedDate + "'" + " order by eventDate asc"));
         }
 
-        LinkedHashMap<String, Date> result = new LinkedHashMap<>();
+        LinkedHashMap<String, Date> reportEventDates = new LinkedHashMap<>();
 
         Date eventDate;
         Date updateDate;
@@ -145,29 +159,31 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             eventDate = formatDate(val.get(EventClientRepository.event_column.eventDate.name()), eventDateFormat);
             updateDate = formatDate(val.get(EventClientRepository.event_column.updatedAt.name()), eventDateFormat);
 
-            String keyDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(eventDate);
+            String keyDate = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).format(eventDate);
 
-            if (result.get(keyDate) != null && updateDate != null) {
-                if (result.get(keyDate).getTime() < updateDate.getTime()) {
-                    result.put(keyDate, updateDate);
+            if (reportEventDates.get(keyDate) != null && updateDate != null) {
+                if (reportEventDates.get(keyDate).getTime() < updateDate.getTime()) {
+                    reportEventDates.put(keyDate, updateDate);
                 }
             } else {
-                result.put(keyDate, updateDate);
+                reportEventDates.put(keyDate, updateDate);
             }
         }
-        return result;
+
+        String dateToday = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).format(timeNow);
+
+        if (reportEventDates.get(dateToday) == null) {
+            reportEventDates.put(dateToday, timeNow);
+        }
+
+        return reportEventDates;
     }
 
     private int executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            if(!ReportingLibrary.getInstance().getAppProperties().hasProperty(AppProperties.KEY.COUNT_INCREMENTAL)
-                    || ReportingLibrary.getInstance().getAppProperties().getPropertyBoolean(AppProperties.KEY.COUNT_INCREMENTAL)) {
-                query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
-            } else {
-                query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
-            }
+            query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
             Timber.i("QUERY : %s", query);
         }
         Cursor cursor = null;
@@ -197,7 +213,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         String query = "";
         if (date != null) {
             Timber.i("QUERY : %s", queryString);
-            query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
+            query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
         }
         Cursor cursor = null;
         ArrayList<Object> rows = new ArrayList<>();

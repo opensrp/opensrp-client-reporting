@@ -12,6 +12,7 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.exception.MultiResultProcessorException;
@@ -89,8 +90,15 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         SQLiteDatabase database = getWritableDatabase();
         database.delete(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
-                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND " + Constants.DailyIndicatorCountRepository.DAY + " = ? "
-                , new String[]{indicatorTally.getIndicatorCode(), new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault()).format(indicatorTally.getCreatedAt())});
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND "
+                        + Constants.DailyIndicatorCountRepository.DAY + " = ? "
+                , new String[]{
+                        indicatorTally.getIndicatorCode(),
+                        new SimpleDateFormat(
+                                ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT,
+                                Locale.getDefault()).format(indicatorTally.getCreatedAt()
+                        )
+        });
         database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
@@ -335,7 +343,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public ContentValues createContentValues(@NonNull CompositeIndicatorTally compositeIndicatorTally) {
         ContentValues values = new ContentValues();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
         values.put(Constants.DailyIndicatorCountRepository.INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
 
         if (compositeIndicatorTally.isValueSet()) {
