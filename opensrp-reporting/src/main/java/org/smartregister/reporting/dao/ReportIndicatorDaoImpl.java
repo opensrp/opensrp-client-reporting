@@ -2,7 +2,6 @@ package org.smartregister.reporting.dao;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 
@@ -14,7 +13,6 @@ import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.ReportIndicator;
-import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -102,13 +100,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                             tally.setValueSetFlag(true);
                             tally.setValueSet(new Gson().toJson(result));
                             tally.setExpectedIndicators(indicatorQuery.getExpectedIndicators());
-
-                            if (indicatorQuery.getExpectedIndicators() != null && indicatorQuery.getExpectedIndicators().size() > 0) {
-                                ArrayList<Object> finalMultiResult = extractExpectedIndicatorsFromMultiResult(indicatorQuery, tally, result);
-                                finalMultiResult.add(0, result.get(0));
-                                tally.setValueSet(new Gson().toJson(finalMultiResult));
-                            }
-
                         }
                     } else {
                         count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
@@ -135,29 +126,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
-    }
-
-    @VisibleForTesting
-    public ArrayList<Object> extractExpectedIndicatorsFromMultiResult(@NonNull IndicatorQuery indicatorQuery, @NonNull CompositeIndicatorTally tally, @NonNull ArrayList<Object> tallyDecomposedValueSet) {
-        HashMap<String, Float> tallies =  extractIndicatorTallies(tallyDecomposedValueSet
-                , ReportingLibrary.getInstance().getDefaultMultiResultProcessor()
-                , ReportingLibrary.getInstance().getMultiResultProcessors()
-                , tally);
-
-        ArrayList<Object> finalMultiResult = new ArrayList<>();
-
-        List<String> expectedIndicators = indicatorQuery.getExpectedIndicators();
-
-        for (String expectedIndicator: expectedIndicators) {
-            Float indicatorValue = 0F;
-            if (tallies.get(expectedIndicator) != null) {
-                indicatorValue = tallies.get(expectedIndicator);
-            }
-
-            finalMultiResult.add(new Object[]{expectedIndicator, indicatorValue});
-        }
-
-        return finalMultiResult;
     }
 
     private LinkedHashMap<String, Date> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
@@ -301,48 +269,5 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     public void setIndicatorRepository(IndicatorRepository indicatorRepository) {
         this.indicatorRepository = indicatorRepository;
-    }
-
-    @NonNull
-    @VisibleForTesting
-    public HashMap<String, Float> extractIndicatorTallies(ArrayList<Object> compositeTallyDecomposedValueSet, @NonNull MultiResultProcessor defaultMultiResultProcessor
-            , @NonNull ArrayList<MultiResultProcessor> multiResultProcessors, @NonNull CompositeIndicatorTally compositeIndicatorTally) {
-
-        HashMap<String, Float> tallies = new HashMap<>();
-        List<IndicatorTally> uncondensedTallies = null;
-
-        if (compositeTallyDecomposedValueSet.size() > 1) {
-            Object[] objectFieldNames = (Object[]) compositeTallyDecomposedValueSet.get(0);
-            String[] fieldNames = new String[objectFieldNames.length];
-
-            for (int i = 0; i < objectFieldNames.length; i++) {
-                fieldNames[i] = (String) objectFieldNames[i];
-            }
-
-            if (defaultMultiResultProcessor.canProcess(fieldNames.length,fieldNames)) {
-                uncondensedTallies = DailyIndicatorCountRepository.processMultipleTallies(defaultMultiResultProcessor, compositeIndicatorTally);
-            } else {
-                for (MultiResultProcessor multiResultProcessor: multiResultProcessors) {
-                    if (multiResultProcessor.canProcess(fieldNames.length, fieldNames)) {
-                        uncondensedTallies = DailyIndicatorCountRepository.processMultipleTallies(multiResultProcessor, compositeIndicatorTally);
-                    }
-                }
-            }
-        }
-
-        if (uncondensedTallies != null) {
-            for (IndicatorTally indicatorTally: uncondensedTallies) {
-                Float value = tallies.get(indicatorTally.getIndicatorCode());
-                if (value != null) {
-                    value = value + indicatorTally.getFloatCount();
-                } else {
-                    value = indicatorTally.getFloatCount();
-                }
-
-                tallies.put(indicatorTally.getIndicatorCode(), value);
-            }
-        }
-
-        return tallies;
     }
 }
