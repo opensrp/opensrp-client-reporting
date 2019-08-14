@@ -221,7 +221,5 @@ public class DailyIndicatorCountRepositoryTest {
         Assert.assertEquals(0, finalTallies.get(0).getCount());
         Assert.assertEquals(0, finalTallies.get(1).getCount());
         Assert.assertEquals(0, finalTallies.get(2).getCount());
-
-
     }
 }

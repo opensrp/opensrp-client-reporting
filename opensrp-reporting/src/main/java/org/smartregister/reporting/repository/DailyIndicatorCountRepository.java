@@ -63,7 +63,17 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                 && !Utils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)) {
             addValueSetColumns(database);
-            aggregateDailyTallies(database);
+        }
+
+        if (Utils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)) {
+            // If there are multiple indicator tallies for a single day the we need to aggregate
+            ArrayList<Object[]> results = Utils.performQuery(database,
+                    "SELECT count(*) AS total_count FROM indicator_daily_tally GROUP BY indicator_code" +
+                            ", strftime('%Y-%m-%d', day), indicator_is_value_set ORDER BY total_count DESC LIMIT 1");
+
+            if (results.size() > 0 & ((int) results.get(0)[0]) > 1) {
+                aggregateDailyTallies(database);
+            }
         }
     }
 
@@ -371,6 +381,38 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
         // Code to migrate the code over from incremental tallies should be written here
+        database.execSQL("PRAGMA foreign_keys=off");
+        database.beginTransaction();
+
+        // Read all the indicator counts & clear the table
+
+        database.execSQL("CREATE TABLE indicator_daily_tally_old(_id INTEGER NOT NULL PRIMARY KEY, indicator_code TEXT NOT NULL, indicator_value INTEGER, indicator_value_set TEXT, indicator_is_value_set BOOLEAN NOT NULL default 0, day DATETIME NOT NULL DEFAULT (DATETIME('now')))");
+        database.execSQL("INSERT INTO indicator_daily_tally_old SELECT * FROM indicator_daily_tally");
+
+        // Delete the old values
+        database.execSQL("DELETE FROM indicator_daily_tally");
+        database.execSQL(String.format("INSERT INTO %s(%s, %s, %s, %s) SELECT %s, sum(%s), %s, strftime('%Y-%m-%d', %s) FROM %s GROUP BY %s, strftime('%Y-%m-%d', %s), %s"
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY
+                // SELECT args START HERE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.DAY
+                , "indicator_daily_tally_old"
+                // GROUP BY args START HERE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.DAY
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG));
+
+        database.execSQL("DROP TABLE indicator_daily_tally_old");
+
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        database.execSQL("PRAGMA foreign_keys=on;");
     }
 
 }
