@@ -104,25 +104,9 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                             tally.setExpectedIndicators(indicatorQuery.getExpectedIndicators());
 
                             if (indicatorQuery.getExpectedIndicators() != null && indicatorQuery.getExpectedIndicators().size() > 0) {
-                                HashMap<String, Float> tallies =  extractIndicatorTallies(result
-                                        , ReportingLibrary.getInstance().getDefaultMultiResultProcessor()
-                                        , ReportingLibrary.getInstance().getMultiResultProcessors()
-                                        , tally);
-
-                                result = new ArrayList<>();
-
-                                List<String> expectedIndicators = indicatorQuery.getExpectedIndicators();
-
-                                for (String expectedIndicator: expectedIndicators) {
-                                    Float indicatorValue = 0F;
-                                    if (tallies.get(expectedIndicator) != null) {
-                                        indicatorValue = tallies.get(expectedIndicator);
-                                    }
-
-                                    result.add(new Object[]{expectedIndicator, indicatorValue});
-                                }
-
-                                tally.setValueSet(new Gson().toJson(result));
+                                ArrayList<Object> finalMultiResult = extractExpectedIndicatorsFromMultiResult(indicatorQuery, tally, result);
+                                finalMultiResult.add(0, result.get(0));
+                                tally.setValueSet(new Gson().toJson(finalMultiResult));
                             }
 
                         }
@@ -151,6 +135,29 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
+    }
+
+    @VisibleForTesting
+    public ArrayList<Object> extractExpectedIndicatorsFromMultiResult(@NonNull IndicatorQuery indicatorQuery, @NonNull CompositeIndicatorTally tally, @NonNull ArrayList<Object> tallyDecomposedValueSet) {
+        HashMap<String, Float> tallies =  extractIndicatorTallies(tallyDecomposedValueSet
+                , ReportingLibrary.getInstance().getDefaultMultiResultProcessor()
+                , ReportingLibrary.getInstance().getMultiResultProcessors()
+                , tally);
+
+        ArrayList<Object> finalMultiResult = new ArrayList<>();
+
+        List<String> expectedIndicators = indicatorQuery.getExpectedIndicators();
+
+        for (String expectedIndicator: expectedIndicators) {
+            Float indicatorValue = 0F;
+            if (tallies.get(expectedIndicator) != null) {
+                indicatorValue = tallies.get(expectedIndicator);
+            }
+
+            finalMultiResult.add(new Object[]{expectedIndicator, indicatorValue});
+        }
+
+        return finalMultiResult;
     }
 
     private LinkedHashMap<String, Date> getReportEventDates(String lastProcessedDate, SQLiteDatabase database) {
@@ -216,6 +223,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return count;
     }
 
+    @NonNull
     private ArrayList<Object> executeQueryAndReturnMultiResult(@NonNull String queryString, @Nullable String date, @NonNull SQLiteDatabase database) {
         // Use date in querying if specified
         String query = "";
@@ -272,6 +280,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return rows;
     }
 
+    @Nullable
     private Date formatDate(String date, String format) {
         try {
             return new SimpleDateFormat(format, Locale.getDefault()).parse(date);
@@ -294,15 +303,16 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         this.indicatorRepository = indicatorRepository;
     }
 
+    @NonNull
     @VisibleForTesting
-    public HashMap<String, Float> extractIndicatorTallies(ArrayList<Object> compositeTallies, @NonNull MultiResultProcessor defaultMultiResultProcessor
+    public HashMap<String, Float> extractIndicatorTallies(ArrayList<Object> compositeTallyDecomposedValueSet, @NonNull MultiResultProcessor defaultMultiResultProcessor
             , @NonNull ArrayList<MultiResultProcessor> multiResultProcessors, @NonNull CompositeIndicatorTally compositeIndicatorTally) {
 
         HashMap<String, Float> tallies = new HashMap<>();
         List<IndicatorTally> uncondensedTallies = null;
 
-        if (compositeTallies.size() > 1) {
-            Object[] objectFieldNames = (Object[]) compositeTallies.get(0);
+        if (compositeTallyDecomposedValueSet.size() > 1) {
+            Object[] objectFieldNames = (Object[]) compositeTallyDecomposedValueSet.get(0);
             String[] fieldNames = new String[objectFieldNames.length];
 
             for (int i = 0; i < objectFieldNames.length; i++) {

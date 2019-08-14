@@ -61,7 +61,7 @@ public class IndicatorQueryRepositoryTest {
 
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(
                 ArgumentMatchers.eq(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
-                , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(5))
+                , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
                 , ArgumentMatchers.eq(Constants.IndicatorQueryRepository.QUERY + " = ?")
                 , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(1))
                 , ArgumentMatchers.isNull(String.class)
