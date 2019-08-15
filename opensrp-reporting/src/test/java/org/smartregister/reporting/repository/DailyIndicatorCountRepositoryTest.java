@@ -23,6 +23,8 @@ import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
+import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
@@ -30,6 +32,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -221,5 +224,30 @@ public class DailyIndicatorCountRepositoryTest {
         Assert.assertEquals(0, finalTallies.get(0).getCount());
         Assert.assertEquals(0, finalTallies.get(1).getCount());
         Assert.assertEquals(0, finalTallies.get(2).getCount());
+    }
+
+    @Test
+    public void extractIndicatorTalliesFromMultiResultShouldAddSingleIndicatorTalliesToMapWhenGivenCompositeIndicatorTally() {
+
+        DefaultMultiResultProcessor defaultMultiResultProcessor = new DefaultMultiResultProcessor();
+        ArrayList<MultiResultProcessor> multiResultProcessors = new ArrayList<>();
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setIndicatorCode("ISN");
+        compositeIndicatorTally.setCreatedAt(Calendar.getInstance().getTime());
+        compositeIndicatorTally.setValueSetFlag(true);
+        compositeIndicatorTally.setValueSet("[['gender', 'count'], ['Male', 98.56], ['Female', 89]]");
+
+
+        HashMap<String, IndicatorTally> tallyMap = new HashMap<>();
+
+        ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "extractIndicatorTalliesFromMultiResult"
+                , ReflectionHelpers.ClassParameter.from(Map.class, tallyMap)
+                , ReflectionHelpers.ClassParameter.from(MultiResultProcessor.class, defaultMultiResultProcessor)
+                , ReflectionHelpers.ClassParameter.from(ArrayList.class, multiResultProcessors)
+                , ReflectionHelpers.ClassParameter.from(CompositeIndicatorTally.class, compositeIndicatorTally));
+
+        Assert.assertEquals(2, tallyMap.size());
+        Assert.assertTrue(tallyMap.containsKey("ISN_Female"));
+        Assert.assertTrue(tallyMap.containsKey("ISN_Male"));
     }
 }
