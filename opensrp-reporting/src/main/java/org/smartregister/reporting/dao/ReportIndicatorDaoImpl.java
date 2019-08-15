@@ -16,8 +16,8 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.EventClientRepository;
-import org.smartregister.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * The ReportIndicatorDao allows for processing of Indicators. This class acts as the Interactor for
@@ -41,6 +43,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
+
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
     private IndicatorQueryRepository indicatorQueryRepository;
@@ -120,7 +123,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
 
             ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
-            Log.logDebug("generateDailyIndicatorTallies: Generate daily tallies complete");
+            Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
@@ -158,8 +161,13 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Log.logDebug("QUERY :" + queryString);
-            query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
+            if(!ReportingLibrary.getInstance().getAppProperties().hasProperty(AppProperties.KEY.COUNT_INCREMENTAL)
+                    || ReportingLibrary.getInstance().getAppProperties().getPropertyBoolean(AppProperties.KEY.COUNT_INCREMENTAL)) {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+            } else {
+                query = queryString.contains("%s") ? queryString.replaceAll("%s", date.split(" ")[0]) : queryString;
+            }
+            Timber.i("QUERY : %s", query);
         }
 
         Cursor cursor = null;
@@ -181,7 +189,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 cursor.close();
             }
         } catch (Exception e) {
-            Log.logError(e.getMessage());
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -194,7 +202,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
-            Log.logDebug("QUERY :" + queryString);
+            Timber.i("QUERY : %s", queryString);
             query = queryString.contains("'%s'") ? String.format(queryString, date) : queryString;
         }
         Cursor cursor = null;
@@ -237,7 +245,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 cursor.close();
             }
         } catch (Exception e) {
-            Log.logError(e.getMessage());
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -251,7 +259,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             return new SimpleDateFormat(format, Locale.getDefault()).parse(date);
         } catch (ParseException pe) {
             // Oh no!
-            Log.logError(TAG, "Error parsing the db date");
+            Timber.e(pe);
             return null;
         }
     }

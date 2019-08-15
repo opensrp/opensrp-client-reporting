@@ -10,8 +10,8 @@ import java.util.Map;
  * @author Elly Nerdstone
  */
 public class AggregationUtil {
-    public static long getStaticIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
-                                               String indicatorKey) {
+    public static long getTotalIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
+                                              String indicatorKey) {
         long count = 0;
         if (indicatorTallies != null && !indicatorTallies.isEmpty()) {
             for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {

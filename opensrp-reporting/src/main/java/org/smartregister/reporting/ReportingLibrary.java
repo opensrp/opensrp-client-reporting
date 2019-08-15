@@ -16,6 +16,9 @@ import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.AppProperties;
+import org.smartregister.reporting.util.Constants;
+import org.smartregister.reporting.util.ReportingUtil;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.yaml.snakeyaml.TypeDescription;
@@ -31,6 +34,7 @@ import timber.log.Timber;
 
 public class ReportingLibrary {
 
+    private static boolean appOnDebugMode;
     private static ReportingLibrary instance;
     private Repository repository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
@@ -43,6 +47,7 @@ public class ReportingLibrary {
     private int databaseVersion;
     private Yaml yaml;
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+    private AppProperties appProperties;
 
     private ArrayList<MultiResultProcessor> multiResultProcessors;
     private MultiResultProcessor defaultMultiResultProcessor;
@@ -53,12 +58,17 @@ public class ReportingLibrary {
         this.commonFtsObject = commonFtsObject;
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
+        initRepositories();
+        this.appProperties = ReportingUtil.getProperties(this.context.applicationContext());
 
         this.multiResultProcessors = new ArrayList<>();
         this.defaultMultiResultProcessor = new DefaultMultiResultProcessor();
 
+        // Install a default Timber tree in case the importing client app does not do that
         // This should be removed when a unified Timber Tree is agreed on for OpenSRP Core and client apps usage
         installDefaultTimberTree();
+
+        initRepositories();
     }
 
     private void installDefaultTimberTree() {
@@ -71,13 +81,21 @@ public class ReportingLibrary {
         if (instance == null) {
             instance = new ReportingLibrary(context, repository, commonFtsObject, applicationVersion, databaseVersion);
         }
+        appOnDebugMode = BuildConfig.DEBUG;
     }
 
     public static ReportingLibrary getInstance() {
         if (instance == null) {
-            throw new IllegalStateException(" Instance does not exist!!! Call " + ReportingLibrary.class.getName() + ".init() in the onCreate() method of your Application class");
+            throw new IllegalStateException("Instance does not exist!!! Call " + ReportingLibrary.class.getName() + ".init() in the onCreate() method of your Application class");
         }
         return instance;
+    }
+
+    private void initRepositories() {
+        this.dailyIndicatorCountRepository = new DailyIndicatorCountRepository(getRepository());
+        this.indicatorQueryRepository = new IndicatorQueryRepository(getRepository());
+        this.indicatorRepository = new IndicatorRepository(getRepository());
+        this.eventClientRepository = new EventClientRepository(getRepository());
     }
 
     /**
@@ -85,11 +103,10 @@ public class ReportingLibrary {
      * are already managed instead of writing new code to manage them
      */
     public void performMigrations(@NonNull SQLiteDatabase database) {
-        Timber.e("Running migrations");
+        Timber.i("Running Reporting Library migrations");
 
         IndicatorQueryRepository.performMigrations(database);
         DailyIndicatorCountRepository.performMigrations(database);
-
     }
 
     public Repository getRepository() {
@@ -152,7 +169,36 @@ public class ReportingLibrary {
         this.dateFormat = dateFormat;
     }
 
+    /***
+     * Method that initializes the indicator queries.
+     * Indicator queries are only read once on release mode but when on debug queries are refreshed
+     * with content from the config files
+     * @param configFilePath path of file containing the indicator definitions
+     * @param sqLiteDatabase database to write the content obtained from the file
+     */
     public void initIndicatorData(String configFilePath, SQLiteDatabase sqLiteDatabase) {
+        if (hasInitializedIndicators(sqLiteDatabase)) {
+            return;
+        }
+        readConfigFile(configFilePath, sqLiteDatabase);
+    }
+
+    private boolean hasInitializedIndicators(SQLiteDatabase sqLiteDatabase) {
+        if (!appOnDebugMode && (!isAppUpdated() || isIndicatorsInitialized())) {
+            return true;
+        }
+
+        if (sqLiteDatabase != null) {
+            indicatorRepository.truncateTable(sqLiteDatabase);
+            indicatorQueryRepository.truncateTable(sqLiteDatabase);
+        } else {
+            indicatorRepository.truncateTable();
+            indicatorQueryRepository.truncateTable();
+        }
+        return false;
+    }
+
+    private void readConfigFile(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
         try {
@@ -171,12 +217,16 @@ public class ReportingLibrary {
                 indicatorsConfig = (IndicatorsYamlConfig) indicatorObject;
                 for (IndicatorYamlConfigItem indicatorYamlConfigItem : indicatorsConfig.getIndicators()) {
                     indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
-                    indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
-                            , indicatorYamlConfigItem.getIndicatorQuery()
-                            , 0
-                            , indicatorYamlConfigItem.isMultiResult());
+
+                    String query = indicatorYamlConfigItem.getIndicatorQuery();
+                    if(!query.trim().isEmpty()) {
+                        indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
+                                , indicatorYamlConfigItem.getIndicatorQuery()
+                                , 0
+                                , indicatorYamlConfigItem.isMultiResult());
+                        indicatorQueries.add(indicatorQuery);
+                    }
                     reportIndicators.add(indicator);
-                    indicatorQueries.add(indicatorQuery);
                 }
             }
             if (sqLiteDatabase != null) {
@@ -186,6 +236,23 @@ public class ReportingLibrary {
                 saveIndicators(reportIndicators);
                 saveIndicatorQueries(indicatorQueries);
             }
+
+            context.allSharedPreferences().savePreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED, "true");
+            context.allSharedPreferences().savePreference(Constants.PrefKey.APP_VERSION_CODE, String.valueOf(BuildConfig.VERSION_CODE));
+        }
+    }
+
+    /**
+     * Method to initialize multiple files
+     * @param configFiles configuration files for the indicators
+     * @param sqLiteDatabase database to store the indicator queries
+     */
+    public void initMultipleIndicatorsData(List<String> configFiles, SQLiteDatabase sqLiteDatabase) {
+        if (hasInitializedIndicators(sqLiteDatabase)) {
+            return;
+        }
+        for (String configFile: configFiles){
+            readConfigFile(configFile, sqLiteDatabase);
         }
     }
 
@@ -198,36 +265,49 @@ public class ReportingLibrary {
     }
 
     private Iterable<Object> loadIndicatorsFromFile(String configFilePath) throws IOException {
-        InputStreamReader inputStreamReader = new InputStreamReader(Context.getInstance().applicationContext().getAssets().open(configFilePath));
+        InputStreamReader inputStreamReader = new InputStreamReader(context.applicationContext().getAssets().open(configFilePath));
         return yaml.loadAll(inputStreamReader);
     }
 
     private void saveIndicators(List<ReportIndicator> indicators) {
-        this.indicatorRepository().truncateTable();
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator);
         }
     }
 
     private void saveIndicators(List<ReportIndicator> indicators, SQLiteDatabase sqLiteDatabase) {
-        this.indicatorRepository().truncateTable(sqLiteDatabase);
         for (ReportIndicator indicator : indicators) {
             this.indicatorRepository().add(indicator, sqLiteDatabase);
         }
     }
 
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries) {
-        this.indicatorQueryRepository().truncateTable();
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery);
         }
     }
 
     private void saveIndicatorQueries(List<IndicatorQuery> indicatorQueries, SQLiteDatabase sqLiteDatabase) {
-        this.indicatorQueryRepository().truncateTable(sqLiteDatabase);
         for (IndicatorQuery indicatorQuery : indicatorQueries) {
             this.indicatorQueryRepository().add(indicatorQuery, sqLiteDatabase);
         }
+    }
+
+    private boolean isAppUpdated() {
+        String savedAppVersion = ReportingLibrary.getInstance().getContext().allSharedPreferences().getPreference(Constants.PrefKey.APP_VERSION_CODE);
+        if (savedAppVersion.isEmpty()) {
+            return true;
+        } else {
+            return (BuildConfig.VERSION_CODE > Integer.parseInt(savedAppVersion));
+        }
+    }
+
+    private boolean isIndicatorsInitialized() {
+        return Boolean.parseBoolean(context.allSharedPreferences().getPreference(Constants.PrefKey.INDICATOR_DATA_INITIALISED));
+    }
+
+    public AppProperties getAppProperties() {
+        return appProperties;
     }
 
     public void setDefaultMultiResultProcessor(@NonNull MultiResultProcessor defaultMultiResultProcessor) {

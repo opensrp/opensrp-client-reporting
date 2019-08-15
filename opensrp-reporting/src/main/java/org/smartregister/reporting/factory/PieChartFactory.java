@@ -1,4 +1,4 @@
-package org.smartregister.reporting.view;
+package org.smartregister.reporting.factory;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import org.smartregister.reporting.R;
 import org.smartregister.reporting.domain.PieChartIndicatorData;
 import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
 import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.domain.PieSliceValue;
 import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
 import org.smartregister.reporting.listener.PieChartSelectListener;
 
@@ -49,25 +50,18 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
 
         // Retrieve slice values
         List<SliceValue> sliceValues = new ArrayList<>();
-        List<PieChartSlice> chartSlices = chartConfiguration.getSlices();
-        SliceValue value;
         boolean showPieChart = false;
         // Check if we have values to show in the chart
-        for (PieChartSlice slice : chartSlices) {
+        for (PieChartSlice slice : chartConfiguration.getSlices()) {
             if (slice.getValue() > 0) {
                 showPieChart = true;
             }
-            value = new SliceValue();
-            value.setColor(slice.getColor());
-            value.setValue(slice.getValue());
-            sliceValues.add(value);
+            sliceValues.add(new PieSliceValue()
+                    .setCallOutLabel(slice.getLabel())
+                    .setColor(slice.getColor())
+                    .setValue(slice.getValue()));
         }
 
-        PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
-        if (!showPieChart) {
-            pieChartView.setVisibility(View.GONE);
-            return rootLayout;
-        }
 
         // We have data to show so this isn't necessary
         numericValueTextView.setVisibility(View.GONE);
@@ -78,6 +72,12 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
         chartData.setHasLabels(chartConfiguration.hasLabels());
         chartData.setHasLabelsOutside(chartConfiguration.hasLabelsOutside());
         chartData.setValues(sliceValues);
+
+        PieChartView pieChartView = rootLayout.findViewById(R.id.pie_chart);
+        if (!showPieChart) {
+            pieChartView.setVisibility(View.GONE);
+            return rootLayout;
+        }
 
         pieChartView.setChartRotationEnabled(false);
         pieChartView.setCircleFillRatio(0.8f);
@@ -96,10 +96,15 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
 
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
-            PieChartSlice sliceValue = new PieChartSlice();
-            sliceValue.setColor(value.getColor());
-            sliceValue.setValue(value.getValue());
-            listener.handleOnSelectEvent(sliceValue);
+            if (value instanceof PieSliceValue) {
+                PieSliceValue pieSliceValue = (PieSliceValue) value;
+                PieChartSlice sliceValue = new PieChartSlice();
+                sliceValue.setColor(pieSliceValue.getColor());
+                sliceValue.setValue(pieSliceValue.getValue());
+                sliceValue.setLabel(pieSliceValue.getCallOutLabel());
+                listener.handleOnSelectEvent(sliceValue);
+            }
+
         }
 
         @Override
