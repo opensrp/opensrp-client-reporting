@@ -21,7 +21,6 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
-import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.Repository;
 
@@ -61,9 +60,6 @@ public class DaoTest {
     private AllSharedPreferences sharedPreferences;
 
     private ReportIndicatorDaoImpl daoSpy;
-
-    @Mock
-    private AppProperties appProperties;
 
     @Before
     public void setUp() {
@@ -111,12 +107,9 @@ public class DaoTest {
         Mockito.when(reportingLibrary.getRepository()).thenReturn(repository);
         Mockito.when(reportingLibrary.getContext()).thenReturn(context);
         Mockito.when(repository.getWritableDatabase()).thenReturn(sqLiteDatabase);
-        PowerMockito.doReturn(reportEventDates).when(daoSpy, "getReportEventDates", ArgumentMatchers.anyString(), ArgumentMatchers.any(SQLiteDatabase.class));
+        PowerMockito.doReturn(reportEventDates).when(daoSpy, "getReportEventDates", ArgumentMatchers.any(Date.class), ArgumentMatchers.anyString(), ArgumentMatchers.any(SQLiteDatabase.class));
         Mockito.when(indicatorQueryRepository.getAllIndicatorQueries()).thenReturn(indicatorQueries);
         Mockito.when(context.allSharedPreferences()).thenReturn(sharedPreferences);
-        PowerMockito.when(reportingLibrary.getAppProperties()).thenReturn(appProperties);
-        PowerMockito.when(appProperties.hasProperty("reporting.incremental")).thenReturn(true);
-        PowerMockito.when(appProperties.getPropertyBoolean("reporting.incremental")).thenReturn(true);
 
         daoSpy.generateDailyIndicatorTallies(lastProcessedDate);
         Mockito.verify(sharedPreferences, Mockito.times(1)).savePreference(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());

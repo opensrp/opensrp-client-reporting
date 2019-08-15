@@ -107,7 +107,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         Map<String, IndicatorTally> tallyMap;
 
         SQLiteDatabase database = getReadableDatabase();
-        String[] queryArgs = {
+        Object[] queryArgs = {
                 Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
                 , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
@@ -265,7 +265,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         SQLiteDatabase database = getReadableDatabase();
 
-        String[] queryArgs = {
+        Object[] queryArgs = {
                 Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
                 , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
