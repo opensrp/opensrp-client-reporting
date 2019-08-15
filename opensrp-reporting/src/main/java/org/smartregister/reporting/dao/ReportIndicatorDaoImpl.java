@@ -1,11 +1,15 @@
 package org.smartregister.reporting.dao;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.gson.Gson;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.ReportIndicator;
@@ -85,20 +89,21 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
                     IndicatorQuery indicatorQuery = entry.getValue();
-                    IndicatorTally tally = null;
+                    CompositeIndicatorTally tally = null;
 
                     if (indicatorQuery.isMultiResult()) {
                         ArrayList<Object> result = executeQueryAndReturnMultiResult(indicatorQuery.getQuery(), dates.getKey(), database);
 
-                        if (result.size() > 0) {
-                            tally = new IndicatorTally();
+                        // If the size contains actual result other than the column names which are at index 0
+                        if (result.size() > 1) {
+                            tally = new CompositeIndicatorTally();
                             tally.setValueSet(new Gson().toJson(result));
                             tally.setValueSetFlag(true);
                         }
                     } else {
                         count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
                         if (count > 0) {
-                            tally = new IndicatorTally();
+                            tally = new CompositeIndicatorTally();
                             tally.setCount(count);
                         }
                     }
@@ -185,8 +190,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return count;
     }
 
-
-    private ArrayList<Object> executeQueryAndReturnMultiResult(String queryString, String date, SQLiteDatabase database) {
+    private ArrayList<Object> executeQueryAndReturnMultiResult(@NonNull String queryString, @Nullable String date, @NonNull SQLiteDatabase database) {
         // Use date in querying if specified
         String query = "";
         if (date != null) {
@@ -199,6 +203,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             cursor = database.rawQuery(query, null);
             if (null != cursor) {
                 int cols = cursor.getColumnCount();
+                rows.add(cursor.getColumnNames());
+
                 while (cursor.moveToNext()) {
                     Object[] col = new Object[cols];
 

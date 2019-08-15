@@ -11,6 +11,8 @@ import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorYamlConfigItem;
 import org.smartregister.reporting.domain.IndicatorsYamlConfig;
 import org.smartregister.reporting.domain.ReportIndicator;
+import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
+import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -47,6 +49,9 @@ public class ReportingLibrary {
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
     private AppProperties appProperties;
 
+    private ArrayList<MultiResultProcessor> multiResultProcessors;
+    private MultiResultProcessor defaultMultiResultProcessor;
+
     private ReportingLibrary(Context context, Repository repository, CommonFtsObject commonFtsObject, int applicationVersion, int databaseVersion) {
         this.repository = repository;
         this.context = context;
@@ -56,7 +61,17 @@ public class ReportingLibrary {
         initRepositories();
         this.appProperties = ReportingUtil.getProperties(this.context.applicationContext());
 
+        this.multiResultProcessors = new ArrayList<>();
+        this.defaultMultiResultProcessor = new DefaultMultiResultProcessor();
+
         // Install a default Timber tree in case the importing client app does not do that
+        // This should be removed when a unified Timber Tree is agreed on for OpenSRP Core and client apps usage
+        installDefaultTimberTree();
+
+        initRepositories();
+    }
+
+    private void installDefaultTimberTree() {
         if (Timber.treeCount() == 0) {
             Timber.plant(new Timber.DebugTree());
         }
@@ -285,7 +300,6 @@ public class ReportingLibrary {
         } else {
             return (BuildConfig.VERSION_CODE > Integer.parseInt(savedAppVersion));
         }
-
     }
 
     private boolean isIndicatorsInitialized() {
@@ -294,5 +308,23 @@ public class ReportingLibrary {
 
     public AppProperties getAppProperties() {
         return appProperties;
+    }
+
+    public void setDefaultMultiResultProcessor(@NonNull MultiResultProcessor defaultMultiResultProcessor) {
+        this.defaultMultiResultProcessor = defaultMultiResultProcessor;
+    }
+
+    public void addMultiResultProcessor(@NonNull MultiResultProcessor multiResultProcessor) {
+        this.multiResultProcessors.add(multiResultProcessor);
+    }
+
+    @NonNull
+    public ArrayList<MultiResultProcessor> getMultiResultProcessors() {
+        return multiResultProcessors;
+    }
+
+    @NonNull
+    public MultiResultProcessor getDefaultMultiResultProcessor() {
+        return defaultMultiResultProcessor;
     }
 }

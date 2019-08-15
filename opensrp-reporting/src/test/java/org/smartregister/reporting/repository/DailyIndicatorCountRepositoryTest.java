@@ -21,6 +21,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
@@ -54,7 +55,7 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void addIndicatorTallyInvokesWritableDBInsert() throws Exception {
         String dateFormat = "yyyyMMdd";
-        IndicatorTally indicatorTally = Mockito.mock(IndicatorTally.class);
+        CompositeIndicatorTally indicatorTally = Mockito.mock(CompositeIndicatorTally.class);
         PowerMockito.mockStatic(ReportingLibrary.class);
         PowerMockito.when(ReportingLibrary.getInstance()).thenReturn(reportingLibraryInstance);
         PowerMockito.when(reportingLibraryInstance.getDateFormat()).thenReturn(dateFormat);
@@ -156,7 +157,7 @@ public class DailyIndicatorCountRepositoryTest {
 
         matrixCursor.moveToNext();
 
-        IndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
+        CompositeIndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
                 , ReflectionHelpers.ClassParameter.from(Cursor.class, matrixCursor));
 
 

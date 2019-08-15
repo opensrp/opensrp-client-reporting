@@ -2,12 +2,19 @@ package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.exception.MultiResultProcessorException;
+import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.reporting.util.Utils;
 import org.smartregister.repository.BaseRepository;
@@ -63,7 +70,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL(CREATE_UNIQUE_CONSTRAINT);
     }
 
-    public void add(IndicatorTally indicatorTally) {
+    public void add(@Nullable CompositeIndicatorTally indicatorTally) {
         if (indicatorTally == null) {
             return;
         }
@@ -92,11 +99,23 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             cursor = database.query(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                     , columns, null, null, null, null, null, null);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
+                ArrayList<MultiResultProcessor> multiResultProcessors = ReportingLibrary.getInstance().getMultiResultProcessors();
+
                 while (!cursor.isAfterLast()) {
                     tallyMap = new HashMap<>();
-                    IndicatorTally indicatorTally = processCursorRow(cursor);
-                    tallyMap.put(indicatorTally.getIndicatorCode(), indicatorTally);
-                    indicatorTallies.add(tallyMap);
+                    CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
+
+                    if (compositeIndicatorTally.isValueSet()) {
+                        extractIndicatorTalliesFromMultiResult(tallyMap, defaultMultiResultProcessor, multiResultProcessors, compositeIndicatorTally);
+                    } else {
+                        tallyMap.put(compositeIndicatorTally.getIndicatorCode(), compositeIndicatorTally);
+                    }
+
+                    if (tallyMap.size() > 0) {
+                        indicatorTallies.add(tallyMap);
+                    }
+
                     cursor.moveToNext();
                 }
             }
@@ -108,6 +127,56 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             }
         }
         return indicatorTallies;
+    }
+
+    /**
+     * Inserts the uncondensed {@link IndicatorTally}s from the {@link CompositeIndicatorTally} into the tallyMap passed as
+     * the first parameter
+     *
+     * @param tallyMap
+     * @param defaultMultiResultProcessor
+     * @param multiResultProcessors
+     * @param compositeIndicatorTally
+     */
+    private void extractIndicatorTalliesFromMultiResult(@NonNull Map<String, IndicatorTally> tallyMap, @NonNull MultiResultProcessor defaultMultiResultProcessor
+            , @NonNull ArrayList<MultiResultProcessor> multiResultProcessors, @NonNull CompositeIndicatorTally compositeIndicatorTally) {
+        ArrayList<Object[]> compositeTallies = new Gson().fromJson(compositeIndicatorTally.getValueSet(), new TypeToken<List<Object[]>>(){}.getType());
+        List<IndicatorTally> uncondensedTallies = null;
+        if (compositeTallies.size() > 1) {
+            Object[] objectFieldNames = compositeTallies.get(0);
+            String[] fieldNames = new String[objectFieldNames.length];
+
+            for (int i = 0; i < objectFieldNames.length; i++) {
+                fieldNames[i] = (String) objectFieldNames[i];
+            }
+
+            if (defaultMultiResultProcessor.canProcess(fieldNames.length,fieldNames)) {
+                uncondensedTallies = processMultipleTallies(defaultMultiResultProcessor, compositeIndicatorTally);
+            } else {
+                for (MultiResultProcessor multiResultProcessor: multiResultProcessors) {
+                    if (multiResultProcessor.canProcess(fieldNames.length, fieldNames)) {
+                        uncondensedTallies = processMultipleTallies(multiResultProcessor, compositeIndicatorTally);
+                    }
+                }
+            }
+        }
+
+        if (uncondensedTallies != null) {
+            for (IndicatorTally indicatorTally: uncondensedTallies) {
+                tallyMap.put(indicatorTally.getIndicatorCode(), indicatorTally);
+            }
+        }
+    }
+
+    @Nullable
+    private List<IndicatorTally> processMultipleTallies(@NonNull MultiResultProcessor defaultMultiResultProcessor
+            , @NonNull CompositeIndicatorTally compositeIndicatorTally) {
+        try {
+            return defaultMultiResultProcessor.processMultiResultTally(compositeIndicatorTally);
+        } catch (MultiResultProcessorException ex) {
+            Timber.e(ex);
+            return null;
+        }
     }
 
     public Map<String, IndicatorTally> getDailyTallies(@NonNull Date date) {
@@ -143,8 +212,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                     , null,null, null, null);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    IndicatorTally indicatorTally = processCursorRow(cursor);
-                    tallyMap.put(indicatorTally.getIndicatorCode(), indicatorTally);
+                    CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
+                    tallyMap.put(compositeIndicatorTally.getIndicatorCode(), compositeIndicatorTally);
                     cursor.moveToNext();
                 }
             }
@@ -158,35 +227,35 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         return tallyMap;
     }
 
-    private IndicatorTally processCursorRow(@NonNull Cursor cursor) {
-        IndicatorTally indicatorTally = new IndicatorTally();
-        indicatorTally.setId(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.ID)));
-        indicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_CODE)));
-        indicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG)) == 1);
+    private CompositeIndicatorTally processCursorRow(@NonNull Cursor cursor) {
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setId(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.ID)));
+        compositeIndicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_CODE)));
+        compositeIndicatorTally.setValueSetFlag(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG)) == 1);
 
-        if (indicatorTally.isValueSet()) {
-            indicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)));
+        if (compositeIndicatorTally.isValueSet()) {
+            compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)));
         } else {
-            indicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
         }
 
-        indicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.DAY))));
-        return indicatorTally;
+        compositeIndicatorTally.setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.DAY))));
+        return compositeIndicatorTally;
     }
 
-    public ContentValues createContentValues(IndicatorTally indicatorTally) {
+    public ContentValues createContentValues(@NonNull CompositeIndicatorTally compositeIndicatorTally) {
         ContentValues values = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(ReportingLibrary.getInstance().getDateFormat(), Locale.getDefault());
-        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_CODE, indicatorTally.getIndicatorCode());
+        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
 
-        if (indicatorTally.isValueSet()) {
-            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET, indicatorTally.getValueSet());
+        if (compositeIndicatorTally.isValueSet()) {
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, indicatorTally.getCount());
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, compositeIndicatorTally.getCount());
         }
 
-        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG, indicatorTally.isValueSet());
-        values.put(Constants.DailyIndicatorCountRepository.DAY, dateFormat.format(indicatorTally.getCreatedAt()));
+        values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());
+        values.put(Constants.DailyIndicatorCountRepository.DAY, dateFormat.format(compositeIndicatorTally.getCreatedAt()));
         return values;
     }
 
