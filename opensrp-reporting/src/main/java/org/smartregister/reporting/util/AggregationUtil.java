@@ -10,14 +10,14 @@ import java.util.Map;
  * @author Elly Nerdstone
  */
 public class AggregationUtil {
-    public static long getTotalIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
+    public static float getTotalIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
                                               String indicatorKey) {
-        long count = 0;
+        float count = 0;
         if (indicatorTallies != null && !indicatorTallies.isEmpty()) {
             for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {
                 for (String key : indicatorTallyMap.keySet()) {
                     if (indicatorKey.equals(key)) {
-                        count += indicatorTallyMap.get(key).getCount();
+                        count += indicatorTallyMap.get(key).getFloatCount();
                     }
                 }
             }
@@ -26,9 +26,9 @@ public class AggregationUtil {
         return count;
     }
 
-    public static long getLatestIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
+    public static float getLatestIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
                                                String indicatorKey) {
-        long count = 0;
+        float count = 0;
         //Back date
         Date currentDate = new Date(Long.MIN_VALUE);
 
@@ -38,7 +38,7 @@ public class AggregationUtil {
                     if (indicatorKey.equals(key) && indicatorTallyMap.get(key).getCreatedAt() != null &&
                             indicatorTallyMap.get(key).getCreatedAt().after(currentDate)) {
                         currentDate = indicatorTallyMap.get(key).getCreatedAt();
-                        count = indicatorTallyMap.get(key).getCount();
+                        count = indicatorTallyMap.get(key).getFloatCount();
                     }
                 }
             }

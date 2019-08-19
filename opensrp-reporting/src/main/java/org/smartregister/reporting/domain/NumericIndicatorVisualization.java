@@ -8,9 +8,9 @@ package org.smartregister.reporting.domain;
  * @author allan
  */
 public class NumericIndicatorVisualization extends ReportingIndicatorVisualization {
-    private long value;
+    private float value;
 
-    public NumericIndicatorVisualization(String indicatorLabel, long value) {
+    public NumericIndicatorVisualization(String indicatorLabel, float value) {
         super(indicatorLabel);
         this.value = value;
     }
@@ -19,11 +19,11 @@ public class NumericIndicatorVisualization extends ReportingIndicatorVisualizati
 
     }
 
-    public long getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 }
