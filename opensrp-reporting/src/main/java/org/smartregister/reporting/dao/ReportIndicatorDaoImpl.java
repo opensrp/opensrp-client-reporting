@@ -46,6 +46,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
+    private static String eventDateFormatNonIncremental = "yyyy-MM-dd";
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
@@ -112,7 +113,12 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         tally.setIndicatorCode(entry.getKey());
 
                         try {
-                            tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
+                            if(!ReportingLibrary.getInstance().getAppProperties().hasProperty(AppProperties.KEY.COUNT_INCREMENTAL)
+                                    || ReportingLibrary.getInstance().getAppProperties().getPropertyBoolean(AppProperties.KEY.COUNT_INCREMENTAL)) {
+                                tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
+                            } else {
+                                tally.setCreatedAt(new SimpleDateFormat(eventDateFormatNonIncremental, Locale.getDefault()).parse(dates.getKey()));
+                            }
                         } catch (ParseException e) {
                             tally.setCreatedAt(new Date());
                         }
