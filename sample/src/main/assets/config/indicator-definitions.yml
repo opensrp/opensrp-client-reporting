@@ -15,3 +15,7 @@ indicators:
     description: "A simple multi-result query"
     indicatorQuery: "select indicator_code, count(*) as count from indicator_queries group by indicator_code UNION ALL select 'TOTAL', count(*) from indicator_queries"
     isMultiResult: true
+
+  - key: "S_IND_005"
+    description: "A float count"
+    indicatorQuery: "select (count(indicator_code) * 0.11) from indicator_queries"

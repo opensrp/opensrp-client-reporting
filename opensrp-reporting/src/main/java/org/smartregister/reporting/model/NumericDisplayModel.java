@@ -8,9 +8,9 @@ public class NumericDisplayModel {
     private ReportContract.IndicatorView.CountType countType;
     private String indicatorCode;
     private int labelStringResource;
-    private long count;
+    private float count;
 
-    public NumericDisplayModel(ReportContract.IndicatorView.CountType countType, String indicatorCode, int labelStringResource, long count) {
+    public NumericDisplayModel(ReportContract.IndicatorView.CountType countType, String indicatorCode, int labelStringResource, float count) {
         this.countType = countType;
         this.indicatorCode = indicatorCode;
         this.labelStringResource = labelStringResource;
@@ -29,7 +29,7 @@ public class NumericDisplayModel {
         return labelStringResource;
     }
 
-    public long getCount() {
+    public float getCount() {
         return count;
     }
 
