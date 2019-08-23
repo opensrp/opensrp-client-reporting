@@ -22,15 +22,15 @@ public class AggregationUtilTest {
     public void tesStaticIndicatorCountWithEmptyIndicatorsMap() {
         Map<String, IndicatorTally> tally1 = Collections.emptyMap();
         List indicatorTallies = Collections.unmodifiableList(Collections.singletonList(tally1));
-        long indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
-        Assert.assertEquals(0, indicator1);
+        float indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
+        Assert.assertEquals(0, indicator1, 0);
 
     }
 
     @Test
     public void testStaticIndicatorCountWithNullList() {
-        long indicator1 = AggregationUtil.getTotalIndicatorCount(null, "indicator1");
-        Assert.assertEquals(0, indicator1);
+        float indicator1 = AggregationUtil.getTotalIndicatorCount(null, "indicator1");
+        Assert.assertEquals(0, indicator1, 0);
     }
 
     @Test
@@ -42,10 +42,10 @@ public class AggregationUtilTest {
         Map<String, IndicatorTally> tally3 = new HashMap<>();
         tally3.put("indicator2", new IndicatorTally(null, 7, "indicator2", null));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
-        long indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
-        long indicator2 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator2");
-        Assert.assertEquals(12, indicator1);
-        Assert.assertEquals(7, indicator2);
+        float indicator1 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator1");
+        float indicator2 = AggregationUtil.getTotalIndicatorCount(indicatorTallies, "indicator2");
+        Assert.assertEquals(12, indicator1, 0);
+        Assert.assertEquals(7, indicator2, 0);
 
     }
 
@@ -73,9 +73,9 @@ public class AggregationUtilTest {
         tally10.put("indicator2", new IndicatorTally(null, 7, "indicator2", getDate(2019, 2, 23)));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(
                 Arrays.asList(tally1, tally2, tally3, tally4, tally5, tally6, tally7, tally8, tally9, tally10)));
-        long indicator1 = AggregationUtil.getLatestIndicatorCount(indicatorTallies, "indicator1");
-        long indicator2 = AggregationUtil.getLatestIndicatorCount(indicatorTallies, "indicator2");
-        Assert.assertEquals(3, indicator1);
-        Assert.assertEquals(13, indicator2);
+        float indicator1 = AggregationUtil.getLatestIndicatorCount(indicatorTallies, "indicator1");
+        float indicator2 = AggregationUtil.getLatestIndicatorCount(indicatorTallies, "indicator2");
+        Assert.assertEquals(3, indicator1, 0);
+        Assert.assertEquals(13, indicator2, 0);
     }
 }

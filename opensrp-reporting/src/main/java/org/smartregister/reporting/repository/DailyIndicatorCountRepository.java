@@ -44,15 +44,15 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
             + "(" + Constants.DailyIndicatorCountRepository.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " TEXT NOT NULL, "
-            + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE + " INTEGER, "
-            + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET + " TEXT, "
+            + Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " TEXT NOT NULL, " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+            + " REAL, " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET + " TEXT, "
             + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, "
             + Constants.DailyIndicatorCountRepository.DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
-    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON "
-            + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " ( " + Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-            + " , " + Constants.DailyIndicatorCountRepository.DAY + " ) ";
+    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " +
+            Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " ( " +
+            Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " , "
+            + Constants.DailyIndicatorCountRepository.DAY + " ) ";
 
     public DailyIndicatorCountRepository(Repository repository) {
         super(repository);
@@ -326,7 +326,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)));
         } else {
-            compositeIndicatorTally.setCount(cursor.getInt(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getFloat(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
         }
 
         if (cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS) != -1) {
@@ -349,7 +349,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, compositeIndicatorTally.getCount());
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, compositeIndicatorTally.getFloatCount());
         }
 
         values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG, compositeIndicatorTally.isValueSet());

@@ -38,10 +38,10 @@ public class ReportingUtilTest {
         Map<String, IndicatorTally> tally3 = new HashMap<>();
         tally3.put("indicator2", new IndicatorTally(null, 7, "indicator2", null));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3)));
-        long indicator1 = ReportingUtil.getTotalCount(indicatorTallies, "indicator1");
-        long indicator2 = ReportingUtil.getTotalCount(indicatorTallies, "indicator2");
-        assertEquals(12, indicator1);
-        assertEquals(7, indicator2);
+        float indicator1 = ReportingUtil.getTotalCount(indicatorTallies, "indicator1");
+        float indicator2 = ReportingUtil.getTotalCount(indicatorTallies, "indicator2");
+        assertEquals(12, indicator1, 0);
+        assertEquals(7, indicator2, 0);
 
     }
 
@@ -52,8 +52,8 @@ public class ReportingUtilTest {
         Map<String, IndicatorTally> tally2 = new HashMap<>();
         tally2.put("indicator2", new IndicatorTally(null, 9, "indicator2", getDateTime(2019, 3, 31, 10, 20, 20)));
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2)));
-        long indicator2 = ReportingUtil.getLatestCountBasedOnDate(indicatorTallies, "indicator2");
-        assertEquals(13, indicator2);
+        float indicator2 = ReportingUtil.getLatestCountBasedOnDate(indicatorTallies, "indicator2");
+        assertEquals(13, indicator2, 0);
     }
 
     @Test
@@ -72,14 +72,14 @@ public class ReportingUtilTest {
         //Test get model with total count
         NumericDisplayModel NumericDisplayModel = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
         assertNotNull(NumericDisplayModel);
-        assertEquals(12, NumericDisplayModel.getCount());
+        assertEquals(12, NumericDisplayModel.getCount(), 0);
         assertEquals("indicator1", NumericDisplayModel.getIndicatorCode());
         assertEquals(182998, NumericDisplayModel.getLabelStringResource());
 
         //Test get model with total count
         NumericDisplayModel NumericDisplayModel2 = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
         assertNotNull(NumericDisplayModel2);
-        assertEquals(13, NumericDisplayModel2.getCount());
+        assertEquals(13, NumericDisplayModel2.getCount(), 0);
         assertEquals("indicator2", NumericDisplayModel2.getIndicatorCode());
         assertEquals(182999, NumericDisplayModel2.getLabelStringResource());
     }
