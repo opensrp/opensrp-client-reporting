@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RevealProgressWidgetView">
+        <attr name="progressBarBackgroundColor" format="color" />
+        <attr name="progressBarForegroundColor" format="color" />
+        <attr name="title" format="string" />
+        <attr name="subTitle" format="string" />
+        <attr name="progress" format="integer" />
+    </declare-styleable>
+</resources>
