@@ -45,7 +45,7 @@ For pie charts display. You can use the following code snippet.
    PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
    mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note)).createView());
 ```
-### Reveal indicator widget
+### Progress indicator
 This indicator widget basically has a progressbar, main title(Label) and a sub title. 
 
 The following are the configurable properties

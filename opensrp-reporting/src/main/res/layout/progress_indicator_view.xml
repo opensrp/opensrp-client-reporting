@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:layout_weight="1"
-        android:progressDrawable="@drawable/reveal_progress_widget_drawable" />
+        android:progressDrawable="@drawable/progress_indicator_bg" />
 
     <TextView
         android:id="@+id/sub_title_textview"
