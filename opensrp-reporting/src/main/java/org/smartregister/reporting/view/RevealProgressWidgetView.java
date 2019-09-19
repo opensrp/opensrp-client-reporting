@@ -4,11 +4,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -97,8 +101,8 @@ public class RevealProgressWidgetView extends LinearLayout {
     private void resetLayoutParams(TypedArray typedArray) {
         progress = progress > 0 ? progress : typedArray.getInteger(R.styleable.RevealProgressWidgetView_progress, 0);
 
-        progressBarBackgroundColor = progressBarBackgroundColor > 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarBackgroundColor, Color.BLACK);
-        progressBarForegroundColor = progressBarForegroundColor > 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarForegroundColor, ContextCompat.getColor(getContext(), R.color.colorAccent));
+        progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarForegroundColor, 0);
+        progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarBackgroundColor, 0);
 
         title = TextUtils.isEmpty(title) ? typedArray.getString(R.styleable.RevealProgressWidgetView_title) : title;
         title = TextUtils.isEmpty(title) ? progress + "%" : title;
@@ -116,26 +120,27 @@ public class RevealProgressWidgetView extends LinearLayout {
         ProgressBar progressBarView = findViewById(R.id.progressbar_view);
         progressBarView.setProgress(progress);
 
-     /*
-        ColorStateList themeColorStateList = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.progressBackgroundTint},
-                        new int[]{android.R.attr.state_enabled},
-                        new int[]{android.R.attr.state_focused, android.R.attr.state_pressed},
-                        new int[]{-android.R.attr.state_enabled},
-                        new int[]{} // this should be empty to make default color as we want
-                },
-                new int[]{
-                        Color.RED,
-                        Color.GRAY,
-                        Color.GREEN,
-                        Color.YELLOW,
-                        Color.BLUE
-                }
-        );
-        DrawableCompat.setTintList(progressBarView.getProgressDrawable(), themeColorStateList);
-        */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+            LayerDrawable progressBarDrawable = (LayerDrawable) progressBarView.getProgressDrawable().mutate();
+            Drawable backgroundDrawable = progressBarDrawable.getDrawable(0).mutate();
+            ClipDrawable clipDrawable = (ClipDrawable) progressBarDrawable.getDrawable(1).mutate();
+
+            if (progressBarBackgroundColor != 0)
+                backgroundDrawable.setColorFilter(progressBarBackgroundColor, PorterDuff.Mode.SRC_IN);
+
+            if (progressBarForegroundColor != 0) {
+
+                GradientDrawable gdDefault = new GradientDrawable();
+                gdDefault.setColor(progressBarForegroundColor);
+                gdDefault.setCornerRadius(10);
+                gdDefault.setStroke(2, progressBarBackgroundColor);
+
+                clipDrawable.setDrawable(gdDefault);
+
+
+            }
+        }
     }
 
     @Override
@@ -194,6 +199,10 @@ public class RevealProgressWidgetView extends LinearLayout {
         return progressBarBackgroundColor;
     }
 
+    /**
+     * Only works for API 23 and onwards other use a custom drawable xml to customize style
+     */
+    @TargetApi(Build.VERSION_CODES.M)
     public void setProgressBarBackgroundColor(int progressBarBackgroundColor) {
         this.progressBarBackgroundColor = progressBarBackgroundColor;
         refreshLayout();
@@ -203,6 +212,10 @@ public class RevealProgressWidgetView extends LinearLayout {
         return progressBarForegroundColor;
     }
 
+    /**
+     * Only works for API 23 and onwards other use a custom drawable xml to customize style
+     */
+    @TargetApi(Build.VERSION_CODES.M)
     public void setProgressBarForegroundColor(int progressBarForegroundColor) {
         this.progressBarForegroundColor = progressBarForegroundColor;
         refreshLayout();
@@ -212,6 +225,9 @@ public class RevealProgressWidgetView extends LinearLayout {
         return title;
     }
 
+    /**
+     * Sets title of indicator (top text)
+     */
     public void setTitle(String title) {
         this.title = title;
         refreshLayout();
@@ -221,6 +237,9 @@ public class RevealProgressWidgetView extends LinearLayout {
         return subTitle;
     }
 
+    /**
+     * Sets subtitle of indicator (top text)
+     */
     public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
         refreshLayout();
@@ -230,11 +249,17 @@ public class RevealProgressWidgetView extends LinearLayout {
         return progress;
     }
 
+    /**
+     * Sets progress of indicator bar
+     */
     public void setProgress(int progress) {
         this.progress = progress;
         refreshLayout();
     }
 
+    /**
+     * Sets hides title of indicator
+     */
     public void hideTitle(boolean isHidden) {
         this.isTitleHidden = isHidden;
         refreshLayout();
