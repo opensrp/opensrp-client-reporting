@@ -3,37 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="8dp"
-    tools:context="org.smartregister.sample.view.ResourcesFragment"
-    android:orientation="vertical">
+    tools:context="org.smartregister.sample.view.ResourcesFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reveal Progressbar Indicator"
-        />
-
+        android:text="Progressbar Indicator" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <org.smartregister.reporting.view.RevealProgressWidgetView
-            android:id="@+id/revealProgressWidget"
+        <org.smartregister.reporting.view.ProgressIndicatorView
+            android:id="@+id/progressIndicatorView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:subTitle="Sprayed" />
 
-        <org.smartregister.reporting.view.RevealProgressWidgetView
-            android:id="@+id/revealProgressWidget2"
+        <org.smartregister.reporting.view.ProgressIndicatorView
+            android:id="@+id/progressIndicatorView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:progress="85"
             app:progressBarBackgroundColor="@color/text_black"
-            app:progressBarForegroundColor="@color/colorRevealSecondaryGreen"
+            app:progressBarForegroundColor="@color/colorPastelGreen"
             app:subTitle="Coverage" />
 
     </LinearLayout>

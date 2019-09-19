@@ -26,7 +26,7 @@ import org.smartregister.reporting.R;
 /**
  * Created by ndegwamartin on 2019-09-16.
  */
-public class RevealProgressWidgetView extends LinearLayout {
+public class ProgressIndicatorView extends LinearLayout {
 
     private int progressBarBackgroundColor;
     private int progressBarForegroundColor;
@@ -45,26 +45,26 @@ public class RevealProgressWidgetView extends LinearLayout {
 
     private AttributeSet attrs;
 
-    public RevealProgressWidgetView(Context context) {
+    public ProgressIndicatorView(Context context) {
         super(context);
         initView();
 
     }
 
-    public RevealProgressWidgetView(Context context, @Nullable AttributeSet attrs) {
+    public ProgressIndicatorView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
         setupAttributes(attrs);
     }
 
-    public RevealProgressWidgetView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ProgressIndicatorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
         setupAttributes(attrs);
     }
 
     @TargetApi(android.os.Build.VERSION_CODES.LOLLIPOP)
-    public RevealProgressWidgetView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ProgressIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView();
         setupAttributes(attrs);
@@ -74,7 +74,7 @@ public class RevealProgressWidgetView extends LinearLayout {
      * Set init configs for parent layout view
      */
     private void initView() {
-        inflate(getContext(), R.layout.reveal_progress_widget, this);
+        inflate(getContext(), R.layout.progress_indicator_view, this);
         setGravity(Gravity.LEFT);
         setOrientation(VERTICAL);
     }
@@ -86,7 +86,7 @@ public class RevealProgressWidgetView extends LinearLayout {
     private void setupAttributes(AttributeSet attrs) {
         this.attrs = attrs;
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.RevealProgressWidgetView, 0, 0);
+        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressIndicatorView, 0, 0);
 
         try {
 
@@ -99,15 +99,11 @@ public class RevealProgressWidgetView extends LinearLayout {
     }
 
     private void resetLayoutParams(TypedArray typedArray) {
-        progress = progress > 0 ? progress : typedArray.getInteger(R.styleable.RevealProgressWidgetView_progress, 0);
 
-        progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarForegroundColor, 0);
-        progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.RevealProgressWidgetView_progressBarBackgroundColor, 0);
-
-        title = TextUtils.isEmpty(title) ? typedArray.getString(R.styleable.RevealProgressWidgetView_title) : title;
+        title = TextUtils.isEmpty(title) ? typedArray.getString(R.styleable.ProgressIndicatorView_title) : title;
         title = TextUtils.isEmpty(title) ? progress + "%" : title;
 
-        subTitle = TextUtils.isEmpty(subTitle) ? typedArray.getString(R.styleable.RevealProgressWidgetView_subTitle) : subTitle;
+        subTitle = TextUtils.isEmpty(subTitle) ? typedArray.getString(R.styleable.ProgressIndicatorView_subTitle) : subTitle;
 
         TextView titleTextView = findViewById(R.id.title_textview);
         titleTextView.setText(title);
@@ -117,8 +113,20 @@ public class RevealProgressWidgetView extends LinearLayout {
         subTitleTextView.setText(subTitle);
         subTitleTextView.setVisibility(isSubTitleHidden ? View.GONE : View.VISIBLE);
 
+        progress = progress > 0 ? progress : typedArray.getInteger(R.styleable.ProgressIndicatorView_progress, 0);
+
+        progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarForegroundColor, 0);
+        progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarBackgroundColor, 0);
+
+        processProgressBarLayoutReset(progress, progressBarForegroundColor, progressBarBackgroundColor);
+
+    }
+
+    private void processProgressBarLayoutReset(int progress, int progressBarForegroundColor, int progressBarBackgroundColor) {
+
         ProgressBar progressBarView = findViewById(R.id.progressbar_view);
         progressBarView.setProgress(progress);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -160,6 +168,8 @@ public class RevealProgressWidgetView extends LinearLayout {
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
+        Parcelable updatedState = null;
+
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             // Load back our custom view state
@@ -170,10 +180,10 @@ public class RevealProgressWidgetView extends LinearLayout {
             this.subTitle = bundle.getString(PROGRESSBAR_SUB_TITLE);
             this.progress = bundle.getInt(PROGRESSBAR_PROGRESS);
 
-            state = bundle.getParcelable(PROGRESSBAR_INSTANCE_STATE);// Load base view state back
+            updatedState = bundle.getParcelable(PROGRESSBAR_INSTANCE_STATE);// Load base view state back
         }
 
-        super.onRestoreInstanceState(state);// Pass base view state to super
+        super.onRestoreInstanceState(updatedState != null ? updatedState : state);// Pass base view state to super
     }
 
     @Override
@@ -184,7 +194,7 @@ public class RevealProgressWidgetView extends LinearLayout {
 
     private void refreshLayout() {
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.RevealProgressWidgetView, 0, 0);
+        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressIndicatorView, 0, 0);
 
         try {
             resetLayoutParams(typedArray);
