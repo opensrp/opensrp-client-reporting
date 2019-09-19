@@ -45,5 +45,21 @@ For pie charts display. You can use the following code snippet.
    PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
    mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note)).createView());
 ```
+### Reveal indicator widget
+This indicator widget basically has a progressbar, main title(Label) and a sub title. 
 
-Checkout the sample app for more.
+The following are the configurable properties
+
+| **Property**   | **Type** | **Usage** |
+| ------------- | ------------- |-------------
+| progressBarForegroundColor  | int  | This is a color Resource ID that sets the progress bar foreground color **(API 23 and above)**|
+| progressBarBackgroundColor  | int  |This is a color Resource ID that sets the progress bar background color **(API 23 and above)**|
+| title  | String  | This is a label for the indicator (*appears at top*)|
+| subTitle  | String  |This is a sub title (*label appears at bottom*)|
+| progress  | int  | This the progress of the indicator out of 100 (*Percentage %*)|
+| isTitleHidden  | int  | This hides or shows the title (*default false*)|
+| isSubTitleHidden  | int  | This hides or shows the sub title (*default false*)|
+
+**NB:** For more flexibility and configurations, it is also possible to style the widget by overriding the widgets drawable. You can do this by cloning the file [**here**](https://github.com/OpenSRP/opensrp-client-reporting/blob/master/opensrp-reporting/src/main/res/layout/numeric_indicator_view.xml) and making the necessary changes. Then place the files in your app's drawables folder. This is especially needed to configure the progress bar colors and styling for **API < 23**
+
+*Checkout the sample app for more examples..*
