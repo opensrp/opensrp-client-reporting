@@ -32,7 +32,7 @@
             app:progress="85"
             app:progressBarBackgroundColor="@color/text_black"
             app:progressBarForegroundColor="@color/colorPastelGreen"
-            app:subTitle="Coverage" />
+            app:subTitle="Coverage"/>
 
     </LinearLayout>
 </LinearLayout>
