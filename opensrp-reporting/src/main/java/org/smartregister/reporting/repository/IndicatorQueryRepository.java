@@ -45,7 +45,6 @@ public class IndicatorQueryRepository extends BaseRepository {
         if (Utils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
                 && !Utils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) {
             addMultiResultFlagField(database);
-            aggregateDailyTallies(database);
         }
 
         if (Utils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
@@ -166,10 +165,6 @@ public class IndicatorQueryRepository extends BaseRepository {
         database.setTransactionSuccessful();
         database.endTransaction();
         database.execSQL("PRAGMA foreign_keys=on;");
-    }
-
-    public static void aggregateDailyTallies(@NonNull SQLiteDatabase database) {
-        // Code to migrate the code over from incremental tallies should be written here
     }
 
     public static void addExpectedIndicatorColumn(@NonNull SQLiteDatabase database) {
