@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">opensrp-reporting</string>
+    <string name="title_activity_reports">Tableau de Bord</string>
+</resources>

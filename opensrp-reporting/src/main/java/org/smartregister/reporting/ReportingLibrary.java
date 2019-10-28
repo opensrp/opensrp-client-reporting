@@ -187,7 +187,11 @@ public class ReportingLibrary {
         if (!appOnDebugMode && (!isAppUpdated() || isIndicatorsInitialized())) {
             return true;
         }
+        truncateIndicatorDefinitionTables(sqLiteDatabase);
+        return false;
+    }
 
+    public void truncateIndicatorDefinitionTables(SQLiteDatabase sqLiteDatabase) {
         if (sqLiteDatabase != null) {
             indicatorRepository.truncateTable(sqLiteDatabase);
             indicatorQueryRepository.truncateTable(sqLiteDatabase);
@@ -195,10 +199,9 @@ public class ReportingLibrary {
             indicatorRepository.truncateTable();
             indicatorQueryRepository.truncateTable();
         }
-        return false;
     }
 
-    private void readConfigFile(String configFilePath, SQLiteDatabase sqLiteDatabase) {
+    public void readConfigFile(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
         try {
