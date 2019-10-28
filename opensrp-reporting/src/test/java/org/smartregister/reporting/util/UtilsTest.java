@@ -39,7 +39,7 @@ public class UtilsTest {
                 .when(database)
                 .rawQuery(Mockito.anyString(), Mockito.isNull(String[].class));
 
-        ArrayList<Object[]> actualResults = Utils.performQuery(database, "SELECT * FROM persons");
+        ArrayList<Object[]> actualResults = ReportingUtils.performQuery(database, "SELECT * FROM persons");
 
         Assert.assertEquals(3, actualResults.size());
         Assert.assertEquals(5, actualResults.get(1).length);

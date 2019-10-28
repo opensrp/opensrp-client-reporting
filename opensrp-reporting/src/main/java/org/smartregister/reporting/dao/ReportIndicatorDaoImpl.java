@@ -47,7 +47,6 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
 
-    private static String TAG = ReportIndicatorDaoImpl.class.getCanonicalName();
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;

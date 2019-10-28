@@ -11,9 +11,7 @@ import java.util.ArrayList;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-07-09
  */
 
-public class Utils {
-
-    public static final String TAG = Utils.class.getName();
+public class ReportingUtils {
 
     /**
      * Checks if a column exists on the table. An {@link Exception} is expected to be thrown by the sqlite

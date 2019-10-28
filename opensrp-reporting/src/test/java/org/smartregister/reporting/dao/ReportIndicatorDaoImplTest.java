@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-08-14
  */
@@ -84,6 +82,6 @@ public class ReportIndicatorDaoImplTest {
 
         LinkedHashMap<String, Date> reportEventDates = reportIndicatorDao.getReportEventDates(timeNow, null, database);
 
-        assertEquals(1, reportEventDates.size());
+        Assert.assertEquals(1, reportEventDates.size());
     }
 }

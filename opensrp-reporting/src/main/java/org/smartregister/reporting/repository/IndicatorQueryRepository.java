@@ -13,7 +13,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.util.Constants;
-import org.smartregister.reporting.util.Utils;
+import org.smartregister.reporting.util.ReportingUtils;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
@@ -42,13 +42,13 @@ public class IndicatorQueryRepository extends BaseRepository {
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (Utils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
-                && !Utils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) {
+        if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
+                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) {
             addMultiResultFlagField(database);
         }
 
-        if (Utils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
-                && !Utils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+        if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
+                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS)) {
             addExpectedIndicatorColumn(database);
         }

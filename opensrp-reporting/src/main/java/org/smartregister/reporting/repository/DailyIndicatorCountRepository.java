@@ -18,7 +18,7 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.exception.MultiResultProcessorException;
 import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
-import org.smartregister.reporting.util.Utils;
+import org.smartregister.reporting.util.ReportingUtils;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
@@ -60,15 +60,15 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (Utils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
-                && !Utils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+        if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                && !ReportingUtils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)) {
             addValueSetColumns(database);
         }
 
-        if (Utils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)) {
+        if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)) {
             // If there are multiple indicator tallies for a single day the we need to aggregate
-            ArrayList<Object[]> results = Utils.performQuery(database,
+            ArrayList<Object[]> results = ReportingUtils.performQuery(database,
                     "SELECT count(*) AS total_count FROM indicator_daily_tally GROUP BY indicator_code" +
                             ", strftime('%Y-%m-%d', day), indicator_is_value_set ORDER BY total_count DESC LIMIT 1");
 
