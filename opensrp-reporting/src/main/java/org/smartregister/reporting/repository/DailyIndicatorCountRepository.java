@@ -72,7 +72,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                     "SELECT count(*) AS total_count FROM indicator_daily_tally GROUP BY indicator_code" +
                             ", strftime('%Y-%m-%d', day), indicator_is_value_set ORDER BY total_count DESC LIMIT 1");
 
-            if (results.size() > 0 & ((int) results.get(0)[0]) > 1) {
+            if (results.size() > 0 & ((int) results.get(1)[0]) > 1) {
                 aggregateDailyTallies(database);
             }
         }
@@ -399,7 +399,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         // Delete the old values
         database.execSQL("DELETE FROM indicator_daily_tally");
-        database.execSQL(String.format("INSERT INTO %s(%s, %s, %s, %s) SELECT %s, sum(%s), %s, strftime('%Y-%m-%d', %s) FROM %s GROUP BY %s, strftime('%Y-%m-%d', %s), %s"
+        database.execSQL(String.format("INSERT INTO %s(%s, %s, %s, %s) SELECT %s, sum(%s), %s, strftime('%%Y-%%m-%%d', %s) FROM %s GROUP BY %s, strftime('%%Y-%%m-%%d', %s), %s"
                 , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE

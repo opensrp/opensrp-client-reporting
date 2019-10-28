@@ -41,9 +41,12 @@ public class Utils {
             String name = cursor.getString(nameColumnIndex);
 
             if (name.equals(columnToFind)) {
+                cursor.close();
                 return true;
             }
         }
+
+        cursor.close();
 
         return false;
     }
@@ -70,9 +73,12 @@ public class Utils {
             String name = cursor.getString(nameColumnIndex);
 
             if (name.equals(tableName)) {
+                cursor.close();
                 return true;
             }
         }
+
+        cursor.close();
 
         return false;
     }
@@ -105,6 +111,8 @@ public class Utils {
 
                 rows.add(col);
             }
+
+            cursor.close();
         }
 
         return rows;

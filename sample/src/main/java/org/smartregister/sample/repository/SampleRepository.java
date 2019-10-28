@@ -17,6 +17,7 @@ import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
+import org.smartregister.sample.BuildConfig;
 import org.smartregister.sample.utils.ChartUtil;
 
 import java.text.ParseException;
@@ -33,10 +34,9 @@ public class SampleRepository extends Repository {
     private String databasePassword = "db_pass";
     private static final String TAG = SampleRepository.class.getCanonicalName();
     private Context context;
-    private static final int DB_VERSION = 2;
 
     public SampleRepository(Context context, org.smartregister.Context openSRPContext) {
-        super(context, AllConstants.DATABASE_NAME, DB_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
+        super(context, AllConstants.DATABASE_NAME, BuildConfig.DATABASE_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
         this.context = context;
     }
 
