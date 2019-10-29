@@ -2,7 +2,6 @@ package org.smartregister.reporting.processor;
 
 import android.support.annotation.NonNull;
 
-
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.exception.MultiResultProcessorException;
