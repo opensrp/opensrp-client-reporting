@@ -19,3 +19,9 @@ indicators:
   - key: "S_IND_005"
     description: "A float count"
     indicatorQuery: "select (count(indicator_code) * 0.11) from indicator_queries"
+
+  - key: "S_IND"
+    description: "A simple multi-result query where some results are ignored and no-results are prefilled with 0"
+    indicatorQuery: "select indicator_code, count(*) as count from indicator_queries group by indicator_code UNION ALL select 'TOTAL', count(*) from indicator_queries"
+    isMultiResult: true
+    expectedIndicators: ["S_IND_MALE", "S_IND_FEMALE", "S_IND_S_IND_001"]

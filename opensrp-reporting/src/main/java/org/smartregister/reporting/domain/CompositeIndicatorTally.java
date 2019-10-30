@@ -1,8 +1,10 @@
 package org.smartregister.reporting.domain;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-07-10
@@ -12,6 +14,9 @@ public class CompositeIndicatorTally extends IndicatorTally {
 
     private String valueSet;
     private boolean isValueSet;
+
+    @Nullable
+    private List<String> expectedIndicators;
 
     public CompositeIndicatorTally() {
     }
@@ -41,5 +46,14 @@ public class CompositeIndicatorTally extends IndicatorTally {
 
     public void setValueSetFlag(boolean valueSet) {
         isValueSet = valueSet;
+    }
+
+    @Nullable
+    public List<String> getExpectedIndicators() {
+        return expectedIndicators;
+    }
+
+    public void setExpectedIndicators(@Nullable List<String> expectedIndicators) {
+        this.expectedIndicators = expectedIndicators;
     }
 }
