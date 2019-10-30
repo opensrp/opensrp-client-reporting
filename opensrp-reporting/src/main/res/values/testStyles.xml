@@ -1,0 +1,15 @@
+<resources>
+    <style name="progressIndicatorViewTestStyle">
+        <item name="title">Test Title</item>
+        <item name="subTitle">Sub Title</item>
+        <item name="progress">25</item>
+        <item name="progressDrawable">@drawable/progress_indicator_bg</item>
+        <item name="progressBarForegroundColor">@color/colorPastelGreen</item>
+        <item name="progressBarBackgroundColor">@color/colorSecondaryGreen</item>
+    </style>
+
+    <style name="tableViewTestStyle">
+        <item name="progressBarForegroundColor">@color/colorPastelGreen</item>
+        <item name="progressBarBackgroundColor">@color/colorSecondaryGreen</item>
+    </style>
+</resources>

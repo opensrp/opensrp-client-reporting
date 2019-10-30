@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import org.smartregister.reporting.R;
 
+import timber.log.Timber;
+
 /**
  * Created by ndegwamartin on 2019-09-16.
  */
@@ -30,6 +32,7 @@ public class ProgressIndicatorView extends LinearLayout {
 
     private int progressBarBackgroundColor;
     private int progressBarForegroundColor;
+    private int progressDrawable;
     private String title;
     private String subTitle;
     private int progress;
@@ -42,7 +45,7 @@ public class ProgressIndicatorView extends LinearLayout {
     private static final String PROGRESSBAR_SUB_TITLE = "progressbar_sub_title";
     private static final String PROGRESSBAR_PROGRESS = "progressbar_progress";
     private static final String PROGRESSBAR_INSTANCE_STATE = "progressbar_instance_state";
-
+    private static final String PROGRESSBAR_DRAWABLE = "progresbar_drawable";
     private AttributeSet attrs;
 
     public ProgressIndicatorView(Context context) {
@@ -82,12 +85,10 @@ public class ProgressIndicatorView extends LinearLayout {
     /**
      * @param attrs an attribute set styled attributes from theme
      */
-
-    private void setupAttributes(AttributeSet attrs) {
+    protected void setupAttributes(AttributeSet attrs) {
         this.attrs = attrs;
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressIndicatorView, 0, 0);
-
+        TypedArray typedArray = getStyledAttributes();
         try {
 
             resetLayoutParams(typedArray);
@@ -96,6 +97,10 @@ public class ProgressIndicatorView extends LinearLayout {
 
             typedArray.recycle();// We must recycle TypedArray objects as they are shared
         }
+    }
+
+    protected TypedArray getStyledAttributes() {
+        return getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressIndicatorView, 0, 0);
     }
 
     private void resetLayoutParams(TypedArray typedArray) {
@@ -115,21 +120,34 @@ public class ProgressIndicatorView extends LinearLayout {
 
         progress = progress > 0 ? progress : typedArray.getInteger(R.styleable.ProgressIndicatorView_progress, 0);
 
-        progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarForegroundColor, 0);
-        progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarBackgroundColor, 0);
 
-        processProgressBarLayoutReset(progress, progressBarForegroundColor, progressBarBackgroundColor);
+        setResourceValues(typedArray);
+
+        processProgressBarLayoutReset(progress, progressBarForegroundColor, progressBarBackgroundColor, progressDrawable);
 
     }
 
-    private void processProgressBarLayoutReset(int progress, int progressBarForegroundColor, int progressBarBackgroundColor) {
+    private void setResourceValues(TypedArray typedArray) {
+
+        progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarForegroundColor, 0);
+        progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarBackgroundColor, 0);
+        progressDrawable = progressDrawable != 0 ? progressDrawable : typedArray.getResourceId(R.styleable.ProgressIndicatorView_progressDrawable, 0);
+
+    }
+
+    private void processProgressBarLayoutReset(int progress, int progressBarForegroundColor, int progressBarBackgroundColor, int progressDrawable) {
 
         ProgressBar progressBarView = findViewById(R.id.progressbar_view);
+        progressBarView.setProgressDrawable(progressDrawable > 0 ? getContext().getResources().getDrawable(progressDrawable) : progressBarView.getProgressDrawable());
         progressBarView.setProgress(progress);
 
+        programmaticallyResetProgressBarBackgroundDrawable(progressBarView, progressBarForegroundColor, progressBarBackgroundColor);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    protected void programmaticallyResetProgressBarBackgroundDrawable(ProgressBar progressBarView, int progressBarForegroundColor, int progressBarBackgroundColor) {
+        try {
             LayerDrawable progressBarDrawable = (LayerDrawable) progressBarView.getProgressDrawable().mutate();
             Drawable backgroundDrawable = progressBarDrawable.getDrawable(0).mutate();
             ClipDrawable clipDrawable = (ClipDrawable) progressBarDrawable.getDrawable(1).mutate();
@@ -146,8 +164,9 @@ public class ProgressIndicatorView extends LinearLayout {
 
                 clipDrawable.setDrawable(gdDefault);
 
-
             }
+        } catch (Exception | NoSuchMethodError e) {
+            Timber.d(e);
         }
     }
 
@@ -161,6 +180,7 @@ public class ProgressIndicatorView extends LinearLayout {
         bundle.putString(PROGRESSBAR_TITLE, this.title);
         bundle.putString(PROGRESSBAR_SUB_TITLE, this.subTitle);
         bundle.putInt(PROGRESSBAR_PROGRESS, this.progress);
+        bundle.putInt(PROGRESSBAR_DRAWABLE, this.progressDrawable);
 
 
         return bundle;
@@ -179,6 +199,7 @@ public class ProgressIndicatorView extends LinearLayout {
             this.title = bundle.getString(PROGRESSBAR_TITLE);
             this.subTitle = bundle.getString(PROGRESSBAR_SUB_TITLE);
             this.progress = bundle.getInt(PROGRESSBAR_PROGRESS);
+            this.progressDrawable = bundle.getInt(PROGRESSBAR_DRAWABLE);
 
             updatedState = bundle.getParcelable(PROGRESSBAR_INSTANCE_STATE);// Load base view state back
         }
@@ -278,5 +299,14 @@ public class ProgressIndicatorView extends LinearLayout {
     public void hideSubTitle(boolean isHidden) {
         this.isSubTitleHidden = isHidden;
         refreshLayout();
+    }
+
+    public void setProgressDrawable(int progressDrawable) {
+        this.progressDrawable = progressDrawable;
+        refreshLayout();
+    }
+
+    public int getProgressDrawable() {
+        return progressDrawable;
     }
 }

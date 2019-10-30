@@ -96,4 +96,5 @@ public class ResourcesFragment extends Fragment {
 
         return random.nextInt((max - min) + 1) + min;
     }
+
 }
