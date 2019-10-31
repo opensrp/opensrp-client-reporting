@@ -122,7 +122,7 @@ public class TableView extends LinearLayout {
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), getColumnCount(), GridLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
-        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableHeaderData, getContext(), TableViewWidgetAdapter.TABLEVIEW_DATATYPE.HEADER, style);
+        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableHeaderData, getContext(), TableViewWidgetAdapter.TableviewDatatype.HEADER, style);
         recycler.setAdapter(adapter);
     }
 
@@ -136,7 +136,7 @@ public class TableView extends LinearLayout {
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), getColumnCount(), GridLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
-        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableData, getContext(), TableViewWidgetAdapter.TABLEVIEW_DATATYPE.BODY, style);
+        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableData, getContext(), TableViewWidgetAdapter.TableviewDatatype.BODY, style);
         recycler.setAdapter(adapter);
 
     }

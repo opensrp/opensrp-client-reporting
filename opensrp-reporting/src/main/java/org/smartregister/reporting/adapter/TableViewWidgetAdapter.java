@@ -1,7 +1,6 @@
 package org.smartregister.reporting.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -22,15 +21,15 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
 
     private List<String> list;
     private Context context;
-    private TABLEVIEW_DATATYPE dataType;
+    private TableviewDatatype dataType;
     private TableView.TextViewStyle style;
 
-    public enum TABLEVIEW_DATATYPE {
+    public enum TableviewDatatype {
         HEADER, BODY, FOOTER
 
     }
 
-    public TableViewWidgetAdapter(List<String> list, Context context, TABLEVIEW_DATATYPE dataType, TableView.TextViewStyle style) {
+    public TableViewWidgetAdapter(List<String> list, Context context, TableviewDatatype dataType, TableView.TextViewStyle style) {
         this.list = list;
         this.context = context;
         this.dataType = dataType;
@@ -52,7 +51,7 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
             holder.textView.setTextColor(style.rowTextColor);
         }
 
-        if (dataType.equals(TABLEVIEW_DATATYPE.HEADER)) {
+        if (dataType.equals(TableviewDatatype.HEADER)) {
 
             holder.textView.setAllCaps(true);
 
