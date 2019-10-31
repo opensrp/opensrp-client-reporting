@@ -38,7 +38,7 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.tableview_cell, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.table_view_cell, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
