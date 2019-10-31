@@ -18,11 +18,16 @@ import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
-import org.smartregister.reporting.util.AppProperties;
 import org.smartregister.repository.Repository;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 /**
- * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-08-15
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-08-14
  */
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,10 +64,6 @@ public class ReportIndicatorDaoImplTest {
         ReflectionHelpers.setStaticField(ReportingLibrary.class, "instance", reportingLibrarySpy);
         Mockito.doReturn(matrixCursor).when(database).rawQuery(Mockito.anyString(), Mockito.isNull(String[].class));
 
-        AppProperties appProperties = Mockito.mock(AppProperties.class);
-        Mockito.doReturn(appProperties).when(reportingLibrarySpy).getAppProperties();
-        Mockito.doReturn(false).when(appProperties).hasProperty(Mockito.anyString());
-
         Float actualResult = ReflectionHelpers.callInstanceMethod(reportIndicatorDao, "executeQueryAndReturnCount"
                 , ReflectionHelpers.ClassParameter.from(String.class, query)
                 , ReflectionHelpers.ClassParameter.from(String.class, date)
@@ -71,4 +72,16 @@ public class ReportIndicatorDaoImplTest {
         Assert.assertEquals(67F, actualResult, 0);
     }
 
+    public void getReportEventDatesShouldReturnCurrentDateWhenNoDatesRetrievedFromEventTable() {
+        Date timeNow = Calendar.getInstance().getTime();
+        SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
+
+        Mockito.doReturn(new ArrayList<HashMap<String, String>>())
+                .when(dailyIndicatorCountRepository)
+                .rawQuery(Mockito.any(SQLiteDatabase.class), Mockito.anyString());
+
+        LinkedHashMap<String, Date> reportEventDates = reportIndicatorDao.getReportEventDates(timeNow, null, database);
+
+        Assert.assertEquals(1, reportEventDates.size());
+    }
 }

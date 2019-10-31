@@ -1,5 +1,7 @@
 package org.smartregister.reporting.domain;
 
+import java.util.List;
+
 public class IndicatorYamlConfigItem {
 
     public static String INDICATOR_PROPERTY = "indicatorData";
@@ -8,6 +10,8 @@ public class IndicatorYamlConfigItem {
     private String description;
     private String indicatorQuery;
     private boolean isMultiResult;
+    private List<String> expectedIndicators;
+
 
     public String getKey() {
         return key;
@@ -39,5 +43,13 @@ public class IndicatorYamlConfigItem {
 
     public void setMultiResult(boolean multiResult) {
         isMultiResult = multiResult;
+    }
+
+    public List<String> getExpectedIndicators() {
+        return expectedIndicators;
+    }
+
+    public void setExpectedIndicators(List<String> expectedIndicators) {
+        this.expectedIndicators = expectedIndicators;
     }
 }

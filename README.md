@@ -58,7 +58,7 @@ The following are the configurable properties
 | subTitle  | String  |This is a sub title (*label appears at bottom*)|
 | progress  | int  | This the progress of the indicator out of 100 (*Percentage %*)|
 | isTitleHidden  | int  | This hides or shows the title (*default false*)|
-| isSubTitleHidden  | int  | This hides or shows the sub title (*default false*)| 
+| isSubTitleHidden  | int  | This hides or shows the sub title (*default false*)|
 |progressDrawable | int | This is the Resource ID of your custom progressbar drawable [_Template Here_](https://github.com/OpenSRP/opensrp-client-reporting/blob/master/opensrp-reporting/src/main/res/layout/numeric_indicator_view.xml) |
 
 **NB:** For more flexibility and configurations, it is also possible to style the widget by overriding the widgets drawable. You can do this by cloning the file [**here**](https://github.com/OpenSRP/opensrp-client-reporting/blob/master/opensrp-reporting/src/main/res/layout/numeric_indicator_view.xml) and making the necessary changes. Then place the files in your app's drawables folder. This is especially needed to configure the progress bar colors and styling for **API < 23**
@@ -87,8 +87,7 @@ using the property **progressDrawable** listed above, you can set the progressDr
             app:progressBarForegroundColor="@color/colorPastelGreen"
             app:subTitle="Coverage"
             app:progressDrawable="@drawable/custom_progress_indicator_bg"
-```
-
+``` 
 
 ### Table View
 This table widget basically has a header with column head values and rows to display data in a tabular format.
@@ -144,6 +143,6 @@ The rows data is populated by creating a list of all the data to be rendered in 
         TableView tableView = getActivity().findViewById(R.id.tableView);
         tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
         
-```
+``` 
 
 *Checkout the sample app for more examples..*

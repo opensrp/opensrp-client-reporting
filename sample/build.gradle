@@ -43,13 +43,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "int", "DATABASE_VERSION", '1'
+            buildConfigField "int", "DATABASE_VERSION", '3'
             buildConfigField "int", "INDICATOR_TALLY_GENERATOR_MINUTES", '2'
 
         }
 
         debug {
-            buildConfigField "int", "DATABASE_VERSION", '1'
+            buildConfigField "int", "DATABASE_VERSION", '3'
             buildConfigField "int", "INDICATOR_TALLY_GENERATOR_MINUTES", '2'
         }
     }
