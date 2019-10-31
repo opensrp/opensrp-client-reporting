@@ -45,7 +45,7 @@ public class ProgressIndicatorView extends LinearLayout {
     private static final String PROGRESSBAR_SUB_TITLE = "progressbar_sub_title";
     private static final String PROGRESSBAR_PROGRESS = "progressbar_progress";
     private static final String PROGRESSBAR_INSTANCE_STATE = "progressbar_instance_state";
-    private static final String PROGRESSBAR_DRAWABLE = "progresbar_drawable";
+    private static final String PROGRESSBAR_DRAWABLE = "progressbar_drawable";
     private AttributeSet attrs;
 
     public ProgressIndicatorView(Context context) {
@@ -215,7 +215,7 @@ public class ProgressIndicatorView extends LinearLayout {
 
     private void refreshLayout() {
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressIndicatorView, 0, 0);
+        TypedArray typedArray = getStyledAttributes();
 
         try {
             resetLayoutParams(typedArray);

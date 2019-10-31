@@ -4,11 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -30,9 +31,16 @@ public class TableView extends LinearLayout {
     private int headerBackgroundColor;
     private int rowTextColor;
     private int borderColor;
-    private String headerTextStyle;
+    private int headerTextStyle;
 
     private AttributeSet attrs;
+
+    private static final String TABLEVIEW_HEADERTEXT_COLOR = "tableview_headertext_color";
+    private static final String TABLEVIEW_BACKGROUND_COLOR = "tableview_background_color";
+    private static final String TABLEVIEW_HEADER_TEXTSTYLE = "tableview_header_textstyle";
+    private static final String TABLEVIEW_BORDER_COLOR = "tableview_border_color";
+    private static final String TABLEVIEW_INSTANCE_STATE = "tableview_instance_state";
+    private static final String TABLEVIEW_ROWTEXT_COLOR = "tableview_rowtext_color";
 
     public TableView(Context context) {
         super(context);
@@ -74,12 +82,13 @@ public class TableView extends LinearLayout {
      * @param attrs an attribute set styled attributes from theme
      */
 
-    private void setupAttributes(AttributeSet attrs) {
+    protected void setupAttributes(AttributeSet attrs) {
         setAttrs(attrs);
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.TableView, 0, 0);
+        TypedArray typedArray = getStyledAttributes();
 
         try {
+
             setResourceValues(typedArray);
 
             TextViewStyle style = new TextViewStyle();
@@ -96,6 +105,10 @@ public class TableView extends LinearLayout {
 
             typedArray.recycle();// We must recycle TypedArray objects as they are shared
         }
+    }
+
+    protected TypedArray getStyledAttributes() {
+        return getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.TableView, 0, 0);
     }
 
     private void resetHeaderLayoutParams(TextViewStyle style) {
@@ -136,6 +149,42 @@ public class TableView extends LinearLayout {
             tableBackgroundDrawable.setStroke(1, borderColor);
             setBackground(tableBackgroundDrawable);
         }
+    }
+
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TABLEVIEW_INSTANCE_STATE, super.onSaveInstanceState());// Store base view state
+
+        bundle.putInt(TABLEVIEW_HEADERTEXT_COLOR, this.headerTextColor);
+        bundle.putInt(TABLEVIEW_BACKGROUND_COLOR, this.headerBackgroundColor);
+        bundle.putInt(TABLEVIEW_HEADER_TEXTSTYLE, this.headerTextStyle);
+        bundle.putInt(TABLEVIEW_BORDER_COLOR, this.borderColor);
+        bundle.putInt(TABLEVIEW_ROWTEXT_COLOR, this.rowTextColor);
+
+
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        Parcelable updatedState = null;
+
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            // Load back our custom view state
+
+            this.headerTextColor = bundle.getInt(TABLEVIEW_HEADERTEXT_COLOR);
+            this.headerBackgroundColor = bundle.getInt(TABLEVIEW_BACKGROUND_COLOR);
+            this.borderColor = bundle.getInt(TABLEVIEW_BORDER_COLOR);
+            this.rowTextColor = bundle.getInt(TABLEVIEW_ROWTEXT_COLOR);
+            this.headerTextStyle = bundle.getInt(TABLEVIEW_HEADER_TEXTSTYLE);
+
+            updatedState = bundle.getParcelable(TABLEVIEW_INSTANCE_STATE);// Load base view state back
+        }
+
+        super.onRestoreInstanceState(updatedState != null ? updatedState : state);// Pass base view state to super
     }
 
     public AttributeSet getAttrs() {
@@ -180,7 +229,7 @@ public class TableView extends LinearLayout {
         headerBackgroundColor = headerBackgroundColor != 0 ? headerBackgroundColor : typedArray.getColor(R.styleable.TableView_headerBackgroundColor, 0);
         rowTextColor = rowTextColor != 0 ? rowTextColor : typedArray.getColor(R.styleable.TableView_rowTextColor, 0);
         borderColor = borderColor != 0 ? borderColor : typedArray.getColor(R.styleable.TableView_borderColor, 0);
-        headerTextStyle = !TextUtils.isEmpty(headerTextStyle) ? headerTextStyle : typedArray.getString(R.styleable.TableView_headerTextStyle);
+        headerTextStyle = headerTextStyle != 0 ? headerTextStyle : typedArray.getInteger(R.styleable.TableView_headerTextStyle, 0);
 
     }
 
@@ -220,11 +269,11 @@ public class TableView extends LinearLayout {
         refreshLayout();
     }
 
-    public String getHeaderTextStyle() {
+    public int getHeaderTextStyle() {
         return headerTextStyle;
     }
 
-    public void setHeaderTextStyle(String headerTextStyle) {
+    public void setHeaderTextStyle(int headerTextStyle) {
         this.headerTextStyle = headerTextStyle;
         refreshLayout();
     }
@@ -234,6 +283,6 @@ public class TableView extends LinearLayout {
         public int headerBackgroundColor;
         public int rowTextColor;
         public int borderColor;
-        public String headerTextStyle;
+        public int headerTextStyle;
     }
 }

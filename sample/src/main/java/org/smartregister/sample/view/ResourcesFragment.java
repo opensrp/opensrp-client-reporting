@@ -1,6 +1,7 @@
 package org.smartregister.sample.view;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -72,6 +73,7 @@ public class ResourcesFragment extends Fragment {
 
         TableView tableView = getActivity().findViewById(R.id.tableView);
         tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
+        tableView.setHeaderTextStyle(Typeface.ITALIC);
 
     }
 

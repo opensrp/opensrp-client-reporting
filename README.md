@@ -98,7 +98,7 @@ The following are the configurable properties
 | **Property**   | **Type** | **Usage** |
 | ------------- | ------------- |-------------
 | headerTextColor  | int  | This is a color Resource ID that sets the header text color|
-| headerTextStyleColor  | String  | This is a string enum which can have any of the values *normal*, *italic* or *bold* |
+| headerTextStyleColor  | Enum  | This is a string enum which can have any of the values *normal*, *italic* or *bold* for xml , Programmatically one should use the *Typeface* class enum |
 | headerBackgroundColor  | int  |This is a color Resource ID that sets the header background color|
 | rowTextColor  | String  | This is a color Resource ID that sets the data rows text color|
 | borderColor  | int  | This is a color Resource ID that sets the table border color. By default, it inherits from the header background color| 
@@ -106,12 +106,13 @@ The following are the configurable properties
 **Programmatically:** 
 
 ```
-   TableView tableView = getActivity().findViewById(R.id.tableView);
+   TableView tableView = getActi4vity().findViewById(R.id.tableView);
    tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
    tableView.setHeaderTextColor(ContextCompat.getColor(getContext(), R.color.colorPieChartRed));
    tableView.setHeaderBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_blue));
    tableView.setRowTextColor(ContextCompat.getColor(getContext(), R.color.alert_complete_green));
-   tableView.setBorderColor(ContextCompat.getColor(getContext(), R.color.pnc_circle_yellow));        
+   tableView.setBorderColor(ContextCompat.getColor(getContext(), R.color.pnc_circle_yellow));    
+   tableView.setHeaderTextStyle(Typeface.ITALIC);    
         
 ```
 
