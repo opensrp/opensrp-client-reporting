@@ -73,7 +73,8 @@ public class ResourcesFragment extends Fragment {
 
         TableView tableView = getActivity().findViewById(R.id.tableView);
         tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
-        tableView.setHeaderTextStyle(Typeface.ITALIC);
+        tableView.setHeaderTextStyle(Typeface.BOLD);
+        tableView.setRowBorderHidden(true);
 
     }
 

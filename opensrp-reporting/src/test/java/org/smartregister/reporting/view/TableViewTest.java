@@ -70,6 +70,7 @@ public class TableViewTest extends BaseUnitTest {
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen), view.getHeaderBackgroundColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.text_blue), view.getRowTextColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey), view.getBorderColor());
+        Assert.assertTrue(view.isRowBorderHidden());
 
     }
 
@@ -89,12 +90,14 @@ public class TableViewTest extends BaseUnitTest {
         view.setHeaderBackgroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorPrimaryDark));
         view.setBorderColor(RuntimeEnvironment.application.getResources().getColor(R.color.pnc_circle_yellow));
         view.setRowTextColor(RuntimeEnvironment.application.getResources().getColor(R.color.alert_complete_green));
+        view.setRowBorderHidden(false);
 
         Assert.assertEquals(Typeface.ITALIC, view.getHeaderTextStyle());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorAccent), view.getHeaderTextColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorPrimaryDark), view.getHeaderBackgroundColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.pnc_circle_yellow), view.getBorderColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.alert_complete_green), view.getRowTextColor());
+        Assert.assertFalse(view.isRowBorderHidden());
 
     }
 
@@ -113,6 +116,7 @@ public class TableViewTest extends BaseUnitTest {
         view.setHeaderBackgroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen));
         view.setBorderColor(RuntimeEnvironment.application.getResources().getColor(R.color.text_blue));
         view.setRowTextColor(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey));
+        view.setRowBorderHidden(true);
 
         Parcelable saveInstanceState = view.onSaveInstanceState();
 
@@ -122,6 +126,7 @@ public class TableViewTest extends BaseUnitTest {
         view.setHeaderBackgroundColor(1);
         view.setBorderColor(1);
         view.setRowTextColor(1);
+        view.setRowBorderHidden(false);
 
         //restore values
         view.onRestoreInstanceState(saveInstanceState);
@@ -131,6 +136,7 @@ public class TableViewTest extends BaseUnitTest {
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen), view.getHeaderBackgroundColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.text_blue), view.getBorderColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey), view.getRowTextColor());
+        Assert.assertTrue(view.isRowBorderHidden());
 
     }
 }

@@ -1,6 +1,8 @@
 package org.smartregister.reporting.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -52,6 +54,7 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
         }
 
         if (dataType.equals(TableviewDatatype.HEADER)) {
+            // For headers only
 
             holder.textView.setAllCaps(true);
 
@@ -60,6 +63,21 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
 
             holder.textView.setTextColor(style.headerTextColor != 0 ? style.headerTextColor : context.getResources().getColor(R.color.white));
             holder.textView.setGravity(Gravity.CENTER_VERTICAL);
+
+            if (style.headerBackgroundColor != 0) {
+                holder.textView.setBackgroundColor(style.headerBackgroundColor);
+            }
+        } else {
+
+            //For rows only
+            if (style.isRowBorderHidden) {
+                holder.textView.setBackground(null);
+            }
+
+        }
+
+        if (style.borderColor != 0) {
+            setTableViewBorderColor(holder.textView, style.borderColor);
         }
     }
 
@@ -75,5 +93,15 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
             super(itemView);
             textView = itemView.findViewById(R.id.cellTextView);
         }
+    }
+
+    private void setTableViewBorderColor(View view, int borderColor) {
+
+        if (borderColor != 0 && view.findViewById(R.id.cellTextView).getBackground() instanceof LayerDrawable) {
+            LayerDrawable parentDrawable = (LayerDrawable) view.findViewById(R.id.cellTextView).getBackground().mutate();
+            GradientDrawable tableBackgroundDrawable = (GradientDrawable) parentDrawable.getDrawable(0).mutate();
+            tableBackgroundDrawable.setColor(borderColor);
+        }
+
     }
 }

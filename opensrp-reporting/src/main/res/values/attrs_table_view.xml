@@ -10,5 +10,6 @@
         <attr name="headerBackgroundColor" format="color" />
         <attr name="rowTextColor" format="color" />
         <attr name="borderColor" format="color" />
+        <attr name="rowBorderHidden" format="boolean" />
     </declare-styleable>
 </resources>

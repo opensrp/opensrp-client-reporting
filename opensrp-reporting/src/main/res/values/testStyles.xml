@@ -15,5 +15,6 @@
         <item name="headerBackgroundColor">@color/colorPastelGreen</item>
         <item name="rowTextColor">@color/text_blue</item>
         <item name="borderColor">@color/dark_grey</item>
+        <item name="rowBorderHidden">true</item>
     </style>
 </resources>

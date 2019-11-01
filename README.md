@@ -101,6 +101,7 @@ The following are the configurable properties
 | headerBackgroundColor  | int  |This is a color Resource ID that sets the header background color|
 | rowTextColor  | String  | This is a color Resource ID that sets the data rows text color|
 | borderColor  | int  | This is a color Resource ID that sets the table border color. By default, it inherits from the header background color| 
+| isRowBorderHidden  | boolean  | This is a boolean value that sets the visibility of the individual table rows border| 
 
 **Programmatically:** 
 
@@ -111,7 +112,8 @@ The following are the configurable properties
    tableView.setHeaderBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_blue));
    tableView.setRowTextColor(ContextCompat.getColor(getContext(), R.color.alert_complete_green));
    tableView.setBorderColor(ContextCompat.getColor(getContext(), R.color.pnc_circle_yellow));    
-   tableView.setHeaderTextStyle(Typeface.ITALIC);    
+   tableView.setHeaderTextStyle(Typeface.ITALIC);  
+   tableView.setRowBorderHidden(true);
         
 ```
 
@@ -129,7 +131,8 @@ The setTableData
         app:headerBackgroundColor="@color/colorSecondaryGreen"
         app:headerTextColor="@color/white"
         app:headerTextStyle="italic"
-        app:rowTextColor="@color/text_black" />
+        app:rowTextColor="@color/text_black"
+        app:rowBorderHidden="true" />
 ```
 **How to use:** 
 

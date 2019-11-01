@@ -32,15 +32,17 @@ public class TableView extends LinearLayout {
     private int rowTextColor;
     private int borderColor;
     private int headerTextStyle;
+    private Boolean isRowBorderHidden;
 
     private AttributeSet attrs;
 
     private static final String TABLEVIEW_HEADERTEXT_COLOR = "tableview_headertext_color";
-    private static final String TABLEVIEW_BACKGROUND_COLOR = "tableview_background_color";
+    private static final String TABLEVIEW_HEADER_BACKGROUND_COLOR = "tableview_background_color";
     private static final String TABLEVIEW_HEADER_TEXTSTYLE = "tableview_header_textstyle";
     private static final String TABLEVIEW_BORDER_COLOR = "tableview_border_color";
     private static final String TABLEVIEW_INSTANCE_STATE = "tableview_instance_state";
     private static final String TABLEVIEW_ROWTEXT_COLOR = "tableview_rowtext_color";
+    private static final String TABLEVIEW_ROWTBORDER_HIDDEN = "tableview_rowborder_color";
 
     public TableView(Context context) {
         super(context);
@@ -74,8 +76,6 @@ public class TableView extends LinearLayout {
         inflate(getContext(), R.layout.table_view, this);
         setGravity(Gravity.LEFT);
         setOrientation(VERTICAL);
-        setBackground(ContextCompat.getDrawable(getContext(), R.drawable.table_view_border));
-        //setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     }
 
     /**
@@ -93,10 +93,11 @@ public class TableView extends LinearLayout {
 
             TextViewStyle style = new TextViewStyle();
             style.headerTextColor = headerTextColor;
-            style.borderColor = borderColor;
+            style.borderColor = borderColor != 0 ? borderColor : headerBackgroundColor;
             style.headerBackgroundColor = headerBackgroundColor;
             style.rowTextColor = rowTextColor;
             style.headerTextStyle = headerTextStyle;
+            style.isRowBorderHidden = isRowBorderHidden;
 
             resetHeaderLayoutParams(style);
             resetLayoutParams(style);
@@ -142,13 +143,15 @@ public class TableView extends LinearLayout {
     }
 
     private void setTableViewBorderColor(int borderColor) {
+
         if (borderColor != 0) {
 
-            GradientDrawable tableBackgroundDrawable = new GradientDrawable();
+            GradientDrawable tableBackgroundDrawable = (GradientDrawable) getChildAt(0).getBackground().mutate();
             tableBackgroundDrawable.setColor(ContextCompat.getColor(getContext(), R.color.white));
             tableBackgroundDrawable.setStroke(1, borderColor);
-            setBackground(tableBackgroundDrawable);
+            getChildAt(0).setBackground(tableBackgroundDrawable);
         }
+
     }
 
 
@@ -158,10 +161,11 @@ public class TableView extends LinearLayout {
         bundle.putParcelable(TABLEVIEW_INSTANCE_STATE, super.onSaveInstanceState());// Store base view state
 
         bundle.putInt(TABLEVIEW_HEADERTEXT_COLOR, this.headerTextColor);
-        bundle.putInt(TABLEVIEW_BACKGROUND_COLOR, this.headerBackgroundColor);
+        bundle.putInt(TABLEVIEW_HEADER_BACKGROUND_COLOR, this.headerBackgroundColor);
         bundle.putInt(TABLEVIEW_HEADER_TEXTSTYLE, this.headerTextStyle);
         bundle.putInt(TABLEVIEW_BORDER_COLOR, this.borderColor);
         bundle.putInt(TABLEVIEW_ROWTEXT_COLOR, this.rowTextColor);
+        bundle.putBoolean(TABLEVIEW_ROWTBORDER_HIDDEN, this.isRowBorderHidden);
 
 
         return bundle;
@@ -176,10 +180,11 @@ public class TableView extends LinearLayout {
             // Load back our custom view state
 
             this.headerTextColor = bundle.getInt(TABLEVIEW_HEADERTEXT_COLOR);
-            this.headerBackgroundColor = bundle.getInt(TABLEVIEW_BACKGROUND_COLOR);
+            this.headerBackgroundColor = bundle.getInt(TABLEVIEW_HEADER_BACKGROUND_COLOR);
             this.borderColor = bundle.getInt(TABLEVIEW_BORDER_COLOR);
             this.rowTextColor = bundle.getInt(TABLEVIEW_ROWTEXT_COLOR);
             this.headerTextStyle = bundle.getInt(TABLEVIEW_HEADER_TEXTSTYLE);
+            this.isRowBorderHidden = bundle.getBoolean(TABLEVIEW_ROWTBORDER_HIDDEN);
 
             updatedState = bundle.getParcelable(TABLEVIEW_INSTANCE_STATE);// Load base view state back
         }
@@ -230,6 +235,7 @@ public class TableView extends LinearLayout {
         rowTextColor = rowTextColor != 0 ? rowTextColor : typedArray.getColor(R.styleable.TableView_rowTextColor, 0);
         borderColor = borderColor != 0 ? borderColor : typedArray.getColor(R.styleable.TableView_borderColor, 0);
         headerTextStyle = headerTextStyle != 0 ? headerTextStyle : typedArray.getInteger(R.styleable.TableView_headerTextStyle, 0);
+        isRowBorderHidden = isRowBorderHidden != null ? isRowBorderHidden : typedArray.getBoolean(R.styleable.TableView_rowBorderHidden, false);
 
     }
 
@@ -278,11 +284,21 @@ public class TableView extends LinearLayout {
         refreshLayout();
     }
 
+    public boolean isRowBorderHidden() {
+        return isRowBorderHidden;
+    }
+
+    public void setRowBorderHidden(boolean rowBorderHidden) {
+        isRowBorderHidden = rowBorderHidden;
+        refreshLayout();
+    }
+
     public class TextViewStyle {
         public int headerTextColor;
         public int headerBackgroundColor;
         public int rowTextColor;
         public int borderColor;
         public int headerTextStyle;
+        public boolean isRowBorderHidden;
     }
 }
