@@ -16,6 +16,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 /**
  * Created by ndegwamartin on 2019-10-30.
  */
@@ -137,6 +139,33 @@ public class TableViewTest extends BaseUnitTest {
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.text_blue), view.getBorderColor());
         Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey), view.getRowTextColor());
         Assert.assertTrue(view.isRowBorderHidden());
+
+    }
+
+    @Test
+    public void testSetTableDataInvokesRefreshLayoutMethod() {
+
+        Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
+        theme.applyStyle(R.style.tableViewTestStyle, true);
+
+        TableView actualObject = new TableView(RuntimeEnvironment.application, attributeSet);
+        TableView view = Mockito.spy(actualObject);
+
+        view.setHeaderTextStyle(Typeface.BOLD_ITALIC);
+        view.setHeaderTextColor(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey_text));
+        view.setHeaderBackgroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen));
+        view.setRowTextColor(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey));
+        view.setRowBorderHidden(true);
+
+
+        view.setTableData(null, null);
+        Assert.assertEquals(1, view.getColumnCount());
+
+        view.setTableData(Arrays.asList(new String[]{"Test Col 1", "Test Col 2"}), Arrays.asList(new String[]{"Row 1", "Row 1", "Row 2", "Row 2"}));
+
+        Mockito.verify(view, Mockito.times(7)).refreshLayout();//invoked 7 times since the setters above each invoke individually
+        Assert.assertEquals(2, view.getColumnCount());
+        Assert.assertEquals(4, view.getTableData().size());
 
     }
 }

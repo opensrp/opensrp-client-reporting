@@ -212,12 +212,12 @@ public class TableView extends LinearLayout {
         refreshLayout();
     }
 
-    private void refreshLayout() {
+    protected void refreshLayout() {
 
         setupAttributes(getAttrs());
     }
 
-    private int getColumnCount() {
+    protected int getColumnCount() {
 
         int count = 1;
 
