@@ -101,7 +101,7 @@ The following are the configurable properties
 | headerBackgroundColor  | int  |This is a color Resource ID that sets the header background color|
 | rowTextColor  | String  | This is a color Resource ID that sets the data rows text color|
 | borderColor  | int  | This is a color Resource ID that sets the table border color. By default, it inherits from the header background color| 
-| isRowBorderHidden  | boolean  | This is a boolean value that sets the visibility of the individual table rows border| 
+| rowBorderHidden  | boolean  | This is a boolean value that sets the visibility of the individual table rows border| 
 
 **Programmatically:** 
 
