@@ -87,9 +87,65 @@ using the property **progressDrawable** listed above, you can set the progressDr
             app:progressBarForegroundColor="@color/colorPastelGreen"
             app:subTitle="Coverage"
             app:progressDrawable="@drawable/custom_progress_indicator_bg"
+``` 
+
+### Table View
+This table widget basically has a header with column head values and rows to display data in a tabular format.
+
+The following are the configurable properties
+
+| **Property**   | **Type** | **Usage** |
+| ------------- | ------------- |-------------
+| headerTextColor  | int  | This is a color Resource ID that sets the header text color|
+| headerTextStyleColor  | Enum  | This is a string enum which can have any of the values *normal*, *italic* or *bold* for xml , Programmatically one should use the *Typeface* class enum |
+| headerBackgroundColor  | int  |This is a color Resource ID that sets the header background color|
+| rowTextColor  | String  | This is a color Resource ID that sets the data rows text color|
+| borderColor  | int  | This is a color Resource ID that sets the table border color. By default, it inherits from the header background color| 
+| rowBorderHidden  | boolean  | This is a boolean value that sets the visibility of the individual table rows border| 
+
+**Programmatically:** 
+
+```
+   TableView tableView = getActi4vity().findViewById(R.id.tableView);
+   tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
+   tableView.setHeaderTextColor(ContextCompat.getColor(getContext(), R.color.colorPieChartRed));
+   tableView.setHeaderBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_blue));
+   tableView.setRowTextColor(ContextCompat.getColor(getContext(), R.color.alert_complete_green));
+   tableView.setBorderColor(ContextCompat.getColor(getContext(), R.color.pnc_circle_yellow));    
+   tableView.setHeaderTextStyle(Typeface.ITALIC);  
+   tableView.setRowBorderHidden(true);
+        
 ```
 
+The setTableData 
 
+**Via XML:**
 
+```    
+ <org.smartregister.reporting.view.TableView
+        android:id="@+id/tableView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:borderColor="@color/colorPieChartRed"
+        app:headerBackgroundColor="@color/colorSecondaryGreen"
+        app:headerTextColor="@color/white"
+        app:headerTextStyle="italic"
+        app:rowTextColor="@color/text_black"
+        app:rowBorderHidden="true" />
+```
+**How to use:** 
+
+The **setTableData** method is used to populate the header columns and row values. The first parameter is a list of header columns whereas the second column is a list of values (rows data).
+
+The number of columns for the table view widget is derived from the count of values in the header parameter list.
+
+The rows data is populated by creating a list of all the data to be rendered in order. Thus if the header column list has 3 values and the data row list has 6 values, the table view will render the first 3 data items on the list in the first row (thereby matching them with the corresponding column header values) and the last 3 items as the 2nd row on the table
+
+```
+        TableView tableView = getActivity().findViewById(R.id.tableView);
+        tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
+        
+``` 
 
 *Checkout the sample app for more examples..*

@@ -46,7 +46,7 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Assert.assertNotNull(view);
 
 
-        view = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress, R.style.Widget_AppCompat_ProgressBar);
+        view = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress, R.style.progressIndicatorViewTestStyle);
         Assert.assertNotNull(view);
     }
 
@@ -82,13 +82,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        int[] viewAttr = R.styleable.ProgressIndicatorView;
-        TypedArray styledAttributes = theme.obtainStyledAttributes(viewAttr);
-
         ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
         ProgressIndicatorView view = Mockito.spy(actualObject);
-
-        Mockito.when(view.getStyledAttributes()).thenReturn(styledAttributes);
         view.setupAttributes(attributeSet);
 
         view.setTitle("New Test Title");
@@ -114,14 +109,15 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        int[] viewAttr = R.styleable.ProgressIndicatorView;
-        TypedArray styledAttributes = theme.obtainStyledAttributes(viewAttr);
-
-        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
+        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet);
         ProgressIndicatorView view = Mockito.spy(actualObject);
 
-        Mockito.when(view.getStyledAttributes()).thenReturn(styledAttributes);
-        view.setupAttributes(attributeSet);
+        view.setTitle("Test Title");
+        view.setSubTitle("Sub Title");
+        view.setProgress(25);
+        view.setProgressDrawable(R.drawable.progress_indicator_bg);
+        view.setProgressBarForegroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorSecondaryGreen));
+        view.setProgressBarBackgroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorPrimaryDark));
 
         Parcelable saveInstanceState = view.onSaveInstanceState();
 
@@ -139,8 +135,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Assert.assertEquals("Sub Title", view.getSubTitle());
         Assert.assertEquals(25, view.getProgress());
         Assert.assertEquals(R.drawable.progress_indicator_bg, view.getProgressDrawable());
-        Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorSecondaryGreen), view.getProgressBarBackgroundColor());
-        Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen), view.getProgressBarForegroundColor());
+        Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorPrimaryDark), view.getProgressBarBackgroundColor());
+        Assert.assertEquals(RuntimeEnvironment.application.getResources().getColor(R.color.colorSecondaryGreen), view.getProgressBarForegroundColor());
 
     }
 
@@ -150,15 +146,10 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        int[] viewAttr = R.styleable.ProgressIndicatorView;
-        TypedArray styledAttributes = theme.obtainStyledAttributes(viewAttr);
-
         ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
         ProgressIndicatorView view = Mockito.spy(actualObject);
         view.onDraw(Mockito.mock(Canvas.class));
         Assert.assertNotNull(view);
-
-        Mockito.when(view.getStyledAttributes()).thenReturn(styledAttributes);
 
         TextView titleTextView = view.findViewById(R.id.title_textview);
         TextView subTitleTextView = view.findViewById(R.id.sub_title_textview);

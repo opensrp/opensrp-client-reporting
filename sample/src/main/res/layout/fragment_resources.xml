@@ -32,7 +32,22 @@
             app:progress="85"
             app:progressBarBackgroundColor="@color/text_black"
             app:progressBarForegroundColor="@color/colorPastelGreen"
-            app:subTitle="Coverage"/>
+            app:subTitle="Coverage" />
 
     </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="2dp"
+        android:text="Table View Widget"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <org.smartregister.reporting.view.TableView
+        android:id="@+id/tableView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 </LinearLayout>
