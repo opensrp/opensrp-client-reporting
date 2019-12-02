@@ -402,7 +402,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         try {
             cursor = database.rawQuery(String.format(
-                    "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? %s.%s AND < ?"
+                    "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s < ?"
                     , queryArgs),
                     new String[]{String.valueOf(dayStartMillis), String.valueOf(dayEndMillis)});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
@@ -420,6 +420,96 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             }
         }
         return tallyMap;
+    }
+
+    public Map<String, List<IndicatorTally>> findTalliesInMonth(@NonNull Date month) {
+        Map<String, List<IndicatorTally>> talliesFromMonth = new HashMap<>();
+        Cursor cursor = null;
+        try {
+            Calendar startDate = Calendar.getInstance();
+            startDate.setTime(month);
+            startDate.set(Calendar.DAY_OF_MONTH, 1);
+            startDate.set(Calendar.HOUR_OF_DAY, 0);
+            startDate.set(Calendar.MINUTE, 0);
+            startDate.set(Calendar.SECOND, 0);
+            startDate.set(Calendar.MILLISECOND, 0);
+
+            Calendar endDate = Calendar.getInstance();
+            endDate.setTime(month);
+            endDate.add(Calendar.MONTH, 1);
+            endDate.set(Calendar.DAY_OF_MONTH, 1);
+            endDate.set(Calendar.HOUR_OF_DAY, 23);
+            endDate.set(Calendar.MINUTE, 59);
+            endDate.set(Calendar.SECOND, 59);
+            endDate.set(Calendar.MILLISECOND, 999);
+            endDate.add(Calendar.DATE, -1);
+
+            SQLiteDatabase database = getReadableDatabase();
+
+            Object[] queryArgs = {
+                    Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                    , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+            };
+
+            cursor = database.rawQuery(String.format(
+                    "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s <= ?"
+                    , queryArgs),
+                    new String[]{dateFormat.format(startDate.getTime()), dateFormat.format(endDate.getTime())});
+
+            MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
+            ArrayList<MultiResultProcessor> multiResultProcessors = ReportingLibrary.getInstance().getMultiResultProcessors();
+
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
+
+
+                    if (compositeIndicatorTally.isValueSet()) {
+                        List<IndicatorTally> indicatorTallies = extractIndicatorTalliesFromMultiResult(defaultMultiResultProcessor, multiResultProcessors, compositeIndicatorTally);
+
+                        for (IndicatorTally indicatorTally : indicatorTallies) {
+                            String indicatorCode = indicatorTally.getIndicatorCode();
+                            List<IndicatorTally> indicatorTallyList = talliesFromMonth.get(indicatorCode);
+                            if (indicatorTallyList != null) {
+                                indicatorTallyList.add(indicatorTally);
+                            } else {
+                                indicatorTallyList = new ArrayList<>();
+                                indicatorTallyList.add(indicatorTally);
+                            }
+
+                            talliesFromMonth.put(indicatorCode, indicatorTallyList);
+                        }
+                    } else {
+                        List<IndicatorTally> indicatorTallyList = new ArrayList<>();
+                        indicatorTallyList.add(compositeIndicatorTally);
+
+                        talliesFromMonth.put(compositeIndicatorTally.getIndicatorCode(), indicatorTallyList);
+                    }
+
+
+                    cursor.moveToNext();
+                }
+            }
+        } catch (SQLException e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return talliesFromMonth;
     }
 
     private CompositeIndicatorTally processCursorRow(@NonNull Cursor cursor) {
