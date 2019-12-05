@@ -26,10 +26,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -79,13 +81,11 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
-        float count;
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
         Date timeNow = Calendar.getInstance().getTime();
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(timeNow, lastProcessedDate, database);
 
-        Map<String, Float> resultMap = new HashMap<>();
         Map<String, IndicatorQuery> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
 
         if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
@@ -95,55 +95,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (dates.getValue().getTime() != timeNow.getTime()) {
                     lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 }
-
-                for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
-                    IndicatorQuery indicatorQuery = entry.getValue();
-                    CompositeIndicatorTally tally = null;
-
-                    if (indicatorQuery.isMultiResult()) {
-                        ArrayList<Object> result = executeQueryAndReturnMultiResult(indicatorQuery.getQuery(), dates.getKey(), database);
-
-                        // If the size contains actual result other than the column names which are at index 0
-                        if (result.size() > 1 || (indicatorQuery.getExpectedIndicators() != null && indicatorQuery.getExpectedIndicators().size() > 0)) {
-                            tally = new CompositeIndicatorTally();
-                            tally.setValueSetFlag(true);
-                            tally.setValueSet(new Gson().toJson(result));
-                            tally.setExpectedIndicators(indicatorQuery.getExpectedIndicators());
-                        }
-                    } else {
-
-                        String query = "";
-                        String queryString = indicatorQuery.getQuery();
-                        String date = dates.getKey();
-                        if (date != null)
-                            query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
-
-
-                        Float precomputed = resultMap.get(query);
-                        if (precomputed == null) {
-                            Timber.i("QUERY : %s", query);
-                            count = executeQueryAndReturnCount(query, database);
-
-                            if (count > 0) {
-                                tally = new CompositeIndicatorTally();
-                                tally.setCount(count);
-                            }
-                            resultMap.put(query, count);
-                        }
-                    }
-
-                    if (tally != null) {
-                        tally.setIndicatorCode(entry.getKey());
-
-                        try {
-                            tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
-                        } catch (ParseException e) {
-                            tally.setCreatedAt(new Date());
-                        }
-
-                        dailyIndicatorCountRepository.add(tally);
-                    }
-                }
+                saveTallies(indicatorQueries, dates, database);
             }
 
             if (!TextUtils.isEmpty(lastUpdatedDate)) {
@@ -151,6 +103,55 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
 
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
+        }
+    }
+
+    public void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database) {
+        Set<String> resultSet = new HashSet<>();
+        for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
+            IndicatorQuery indicatorQuery = entry.getValue();
+            CompositeIndicatorTally tally = null;
+
+            if (indicatorQuery.isMultiResult()) {
+                ArrayList<Object> result = executeQueryAndReturnMultiResult(indicatorQuery.getQuery(), dates.getKey(), database);
+
+                // If the size contains actual result other than the column names which are at index 0
+                if (result.size() > 1 || (indicatorQuery.getExpectedIndicators() != null && indicatorQuery.getExpectedIndicators().size() > 0)) {
+                    tally = new CompositeIndicatorTally();
+                    tally.setValueSetFlag(true);
+                    tally.setValueSet(new Gson().toJson(result));
+                    tally.setExpectedIndicators(indicatorQuery.getExpectedIndicators());
+                }
+            } else {
+
+                String queryString = indicatorQuery.getQuery();
+                String date = dates.getKey();
+                if (date != null)
+                    queryString = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+
+                if (!resultSet.contains(queryString)) {
+                    Timber.i("QUERY : %s", queryString);
+                    float count = executeQueryAndReturnCount(queryString, database);
+
+                    if (count > 0) {
+                        tally = new CompositeIndicatorTally();
+                        tally.setCount(count);
+                    }
+                    resultSet.add(queryString);
+                }
+            }
+
+            if (tally != null) {
+                tally.setIndicatorCode(entry.getKey());
+
+                try {
+                    tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
+                } catch (ParseException e) {
+                    tally.setCreatedAt(new Date());
+                }
+
+                dailyIndicatorCountRepository.add(tally);
+            }
         }
     }
 
