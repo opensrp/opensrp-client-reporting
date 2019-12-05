@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-08-14
@@ -88,7 +90,7 @@ public class ReportIndicatorDaoImplTest {
     }
 
     @Test
-    public void saveTalliesExecutesUniqueQueries() {
+    public void saveTalliesGeneratesTallyObject() {
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
         Map.Entry<String, Date> dates = new Map.Entry<String, Date>() {
@@ -120,7 +122,8 @@ public class ReportIndicatorDaoImplTest {
         query.setQuery("select count(*) from ec_child");
         indicatorQueries.put("12345", query);
 
-        reportIndicatorDao.saveTallies(indicatorQueries, dates, database);
+        Set<String> executedQueries = new HashSet<>();
+        reportIndicatorDao.saveTallies(indicatorQueries, dates, database, executedQueries);
 
         Mockito.verify(dailyIndicatorCountRepository).add(Mockito.any(CompositeIndicatorTally.class));
 

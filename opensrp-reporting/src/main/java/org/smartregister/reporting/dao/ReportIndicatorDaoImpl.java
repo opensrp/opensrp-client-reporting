@@ -83,6 +83,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
         SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
 
+        Set<String> executedQueries = new HashSet<>();
         Date timeNow = Calendar.getInstance().getTime();
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(timeNow, lastProcessedDate, database);
 
@@ -95,7 +96,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (dates.getValue().getTime() != timeNow.getTime()) {
                     lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 }
-                saveTallies(indicatorQueries, dates, database);
+                saveTallies(indicatorQueries, dates, database, executedQueries);
             }
 
             if (!TextUtils.isEmpty(lastUpdatedDate)) {
@@ -106,8 +107,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         }
     }
 
-    public void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database) {
-        Set<String> resultSet = new HashSet<>();
+    public void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database, Set<String> executedQueries) {
         for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
             IndicatorQuery indicatorQuery = entry.getValue();
             CompositeIndicatorTally tally = null;
@@ -129,7 +129,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (date != null)
                     queryString = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
 
-                if (!resultSet.contains(queryString)) {
+                if (!executedQueries.contains(queryString)) {
                     Timber.i("QUERY : %s", queryString);
                     float count = executeQueryAndReturnCount(queryString, database);
 
@@ -137,7 +137,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         tally = new CompositeIndicatorTally();
                         tally.setCount(count);
                     }
-                    resultSet.add(queryString);
+                    executedQueries.add(queryString);
                 }
             }
 
