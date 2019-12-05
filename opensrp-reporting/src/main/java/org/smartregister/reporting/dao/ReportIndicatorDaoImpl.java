@@ -85,6 +85,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         Date timeNow = Calendar.getInstance().getTime();
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(timeNow, lastProcessedDate, database);
 
+        Map<String, Float> resultMap = new HashMap<>();
         Map<String, IndicatorQuery> indicatorQueries = indicatorQueryRepository.getAllIndicatorQueries();
 
         if (!reportEventDates.isEmpty() && !indicatorQueries.isEmpty()) {
@@ -110,10 +111,24 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                             tally.setExpectedIndicators(indicatorQuery.getExpectedIndicators());
                         }
                     } else {
-                        count = executeQueryAndReturnCount(indicatorQuery.getQuery(), dates.getKey(), database);
-                        if (count > 0) {
-                            tally = new CompositeIndicatorTally();
-                            tally.setCount(count);
+
+                        String query = "";
+                        String queryString = indicatorQuery.getQuery();
+                        String date = dates.getKey();
+                        if (date != null)
+                            query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+
+
+                        Float precomputed = resultMap.get(query);
+                        if (precomputed == null) {
+                            Timber.i("QUERY : %s", query);
+                            count = executeQueryAndReturnCount(query, database);
+
+                            if (count > 0) {
+                                tally = new CompositeIndicatorTally();
+                                tally.setCount(count);
+                            }
+                            resultMap.put(query, count);
                         }
                     }
 
@@ -178,14 +193,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return reportEventDates;
     }
 
-    private float executeQueryAndReturnCount(String queryString, String date, SQLiteDatabase database) {
+    private float executeQueryAndReturnCount(String query, SQLiteDatabase database) {
         // Use date in querying if specified
-        String query = "";
-        if (date != null) {
-            query = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
-            Timber.i("QUERY : %s", query);
-        }
-
         Cursor cursor = null;
         float count = 0;
         try {
