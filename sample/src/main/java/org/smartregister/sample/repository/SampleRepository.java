@@ -10,12 +10,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
+import org.smartregister.sample.BuildConfig;
 import org.smartregister.sample.utils.ChartUtil;
 
 import java.text.ParseException;
@@ -32,10 +34,9 @@ public class SampleRepository extends Repository {
     private String databasePassword = "db_pass";
     private static final String TAG = SampleRepository.class.getCanonicalName();
     private Context context;
-    private static final int DB_VERSION = 2;
 
     public SampleRepository(Context context, org.smartregister.Context openSRPContext) {
-        super(context, AllConstants.DATABASE_NAME, DB_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
+        super(context, AllConstants.DATABASE_NAME, BuildConfig.DATABASE_VERSION, openSRPContext.session(), null, openSRPContext.sharedRepositoriesArray());
         this.context = context;
     }
 
@@ -49,9 +50,7 @@ public class SampleRepository extends Repository {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion == 2) {
-            ReportingLibrary.getInstance().performMigrations(db);
-        }
+        ReportingLibrary.getInstance().performMigrations(db);
     }
 
     @Override
@@ -118,9 +117,9 @@ public class SampleRepository extends Repository {
         } catch (ParseException pe) {
             Timber.e(pe.toString());
         }
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
-        dailyIndicatorCountRepository.add(new IndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
+        dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
+        dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
+        dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
 
 
     }

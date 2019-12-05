@@ -20,7 +20,6 @@ public class SampleActivity extends AppCompatActivity {
         setContentView(R.layout.sample_activity);
         setUpViews();
     }
-
     private void setUpViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

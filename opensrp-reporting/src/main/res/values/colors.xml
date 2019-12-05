@@ -5,5 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorReportingIndicatorLabel">#212121</color>
     <color name="colorReportingIndicatorNote">#757575</color>
-    <color name="indicatorSplitLine">#ECECEC</color>
+    <color name="indicatorSplitLine">#DEDEDE</color>
+    <color name="colorSecondaryGreen">#00b253</color>
+    <color name="colorPastelGreen">#b2f395</color>
 </resources>

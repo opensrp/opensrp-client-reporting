@@ -1,18 +1,24 @@
 package org.smartregister.reporting.domain;
 
+import android.support.annotation.Nullable;
+
+import java.util.List;
+
 public class IndicatorQuery {
     private Long id;
     private String indicatorCode;
     private String query;
     private int dbVersion;
     private boolean isMultiResult;
+    private List<String> expectedIndicators;
 
-    public IndicatorQuery(Long id, String indicatorCode, String query, int dbVersion, boolean isMultiResult) {
+    public IndicatorQuery(Long id, String indicatorCode, String query, int dbVersion, boolean isMultiResult, @Nullable List<String> expectedIndicators) {
         this.id = id;
         this.indicatorCode = indicatorCode;
         this.query = query;
         this.dbVersion = dbVersion;
         this.isMultiResult = isMultiResult;
+        this.expectedIndicators = expectedIndicators;
     }
 
     public IndicatorQuery() {
@@ -56,5 +62,13 @@ public class IndicatorQuery {
 
     public void setMultiResult(boolean multiResult) {
         isMultiResult = multiResult;
+    }
+
+    public List<String> getExpectedIndicators() {
+        return expectedIndicators;
+    }
+
+    public void setExpectedIndicators(List<String> expectedIndicators) {
+        this.expectedIndicators = expectedIndicators;
     }
 }

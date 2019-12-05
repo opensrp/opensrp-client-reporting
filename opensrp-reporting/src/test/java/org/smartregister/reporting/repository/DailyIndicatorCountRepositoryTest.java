@@ -21,12 +21,19 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
+import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -54,7 +61,7 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void addIndicatorTallyInvokesWritableDBInsert() throws Exception {
         String dateFormat = "yyyyMMdd";
-        IndicatorTally indicatorTally = Mockito.mock(IndicatorTally.class);
+        CompositeIndicatorTally indicatorTally = Mockito.mock(CompositeIndicatorTally.class);
         PowerMockito.mockStatic(ReportingLibrary.class);
         PowerMockito.when(ReportingLibrary.getInstance()).thenReturn(reportingLibraryInstance);
         PowerMockito.when(reportingLibraryInstance.getDateFormat()).thenReturn(dateFormat);
@@ -69,8 +76,7 @@ public class DailyIndicatorCountRepositoryTest {
     public void getAllDailyTalliesInvokesReadableDBQuery() {
         Mockito.when(dailyIndicatorCountRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
-        Mockito.verify(sqLiteDatabase, Mockito.times(1)).query(ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
-                ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String[].class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class), ArgumentMatchers.isNull(String.class));
+        Mockito.verify(sqLiteDatabase, Mockito.times(1)).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
     }
 
     @Test
@@ -102,14 +108,8 @@ public class DailyIndicatorCountRepositoryTest {
         Map<String, IndicatorTally> tallyMap = dailyIndicatorCountRepositorySpy.getDailyTallies(new Date(System.currentTimeMillis()));
 
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
-                .query(ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
-                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(6))
-                        , ArgumentMatchers.eq(Constants.DailyIndicatorCountRepository.DAY + " >= ? AND " + Constants.DailyIndicatorCountRepository.DAY + " < ?")
-                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2))
-                        , ArgumentMatchers.isNull(String.class)
-                        , ArgumentMatchers.isNull(String.class)
-                        , ArgumentMatchers.isNull(String.class)
-                        , ArgumentMatchers.isNull(String.class));
+                .rawQuery(ArgumentMatchers.anyString()
+                        , MockitoHamcrest.argThat(IsArrayWithSize.<String>arrayWithSize(2)));
 
         Assert.assertEquals(0, tallyMap.size());
     }
@@ -156,7 +156,7 @@ public class DailyIndicatorCountRepositoryTest {
 
         matrixCursor.moveToNext();
 
-        IndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
+        CompositeIndicatorTally indicatorTally = ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "processCursorRow"
                 , ReflectionHelpers.ClassParameter.from(Cursor.class, matrixCursor));
 
 
@@ -164,5 +164,90 @@ public class DailyIndicatorCountRepositoryTest {
         Assert.assertEquals(valueSet, indicatorTally.getValueSet());
         Assert.assertEquals(indicatorCode, indicatorTally.getIndicatorCode());
         Assert.assertEquals(id, indicatorTally.getId().longValue());
+    }
+
+    @Test
+    public void extractOnlyRequiredIndicatorTalliesAndProvideDefaultShouldReturnZeroValuesForUnlocatedIndicatorsWhenGivenExpectedIndicatorsAndUnwantedIndicators() {
+        java.util.Date timeNow = Calendar.getInstance().getTime();
+
+        List<IndicatorTally> indicatorTally = new ArrayList<>();
+        indicatorTally.add(new IndicatorTally(0L, 54, "ISN_OPV", timeNow));
+        indicatorTally.add(new IndicatorTally(0L, 6, "ISN_HEPB", timeNow));
+        indicatorTally.add(new IndicatorTally(0L, 9, "ISN_PCV", timeNow));
+        indicatorTally.add(new IndicatorTally(0L, 5, "ISN_ROTA", timeNow));
+
+        ArrayList<String> expectedIndicators = new ArrayList<>();
+        expectedIndicators.add("ISN_BCG");
+        expectedIndicators.add("ISN_OPV");
+        expectedIndicators.add("ISN_PENTA");
+
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setValueSetFlag(true);
+        compositeIndicatorTally.setExpectedIndicators(expectedIndicators);
+        compositeIndicatorTally.setIndicatorCode("ISN");
+        compositeIndicatorTally.setCreatedAt(timeNow);
+
+        List<IndicatorTally> finalTallies =  dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, indicatorTally);
+
+        Assert.assertEquals(3, finalTallies.size());
+        Assert.assertEquals("ISN_BCG", finalTallies.get(0).getIndicatorCode());
+        Assert.assertEquals("ISN_OPV", finalTallies.get(1).getIndicatorCode());
+        Assert.assertEquals("ISN_PENTA", finalTallies.get(2).getIndicatorCode());
+
+        Assert.assertEquals(0, finalTallies.get(0).getCount());
+        Assert.assertEquals(54, finalTallies.get(1).getCount());
+        Assert.assertEquals(0, finalTallies.get(2).getCount());
+    }
+
+    @Test
+    public void extractOnlyRequiredIndicatorTalliesAndProvideDefaultShouldReturnZeroValuesForAllUnlocatedIndicatorsWhenGivenNull() {
+        java.util.Date timeNow = Calendar.getInstance().getTime();
+
+        ArrayList<String> expectedIndicators = new ArrayList<>();
+        expectedIndicators.add("ISN_BCG");
+        expectedIndicators.add("ISN_OPV");
+        expectedIndicators.add("ISN_PENTA");
+
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setValueSetFlag(true);
+        compositeIndicatorTally.setExpectedIndicators(expectedIndicators);
+        compositeIndicatorTally.setIndicatorCode("ISN");
+        compositeIndicatorTally.setCreatedAt(timeNow);
+
+        List<IndicatorTally> finalTallies =  dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, null);
+
+        Assert.assertEquals(3, finalTallies.size());
+        Assert.assertEquals("ISN_BCG", finalTallies.get(0).getIndicatorCode());
+        Assert.assertEquals("ISN_OPV", finalTallies.get(1).getIndicatorCode());
+        Assert.assertEquals("ISN_PENTA", finalTallies.get(2).getIndicatorCode());
+
+        Assert.assertEquals(0, finalTallies.get(0).getCount());
+        Assert.assertEquals(0, finalTallies.get(1).getCount());
+        Assert.assertEquals(0, finalTallies.get(2).getCount());
+    }
+
+    @Test
+    public void extractIndicatorTalliesFromMultiResultShouldAddSingleIndicatorTalliesToMapWhenGivenCompositeIndicatorTally() {
+
+        DefaultMultiResultProcessor defaultMultiResultProcessor = new DefaultMultiResultProcessor();
+        ArrayList<MultiResultProcessor> multiResultProcessors = new ArrayList<>();
+        CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
+        compositeIndicatorTally.setIndicatorCode("ISN");
+        compositeIndicatorTally.setCreatedAt(Calendar.getInstance().getTime());
+        compositeIndicatorTally.setValueSetFlag(true);
+        compositeIndicatorTally.setValueSet("[['gender', 'count'], ['Male', 98.56], ['Female', 89]]");
+
+
+        HashMap<String, IndicatorTally> tallyMap = new HashMap<>();
+
+        ReflectionHelpers.callInstanceMethod(dailyIndicatorCountRepositorySpy, "extractIndicatorTalliesFromMultiResult"
+                , ReflectionHelpers.ClassParameter.from(Map.class, tallyMap)
+                , ReflectionHelpers.ClassParameter.from(MultiResultProcessor.class, defaultMultiResultProcessor)
+                , ReflectionHelpers.ClassParameter.from(ArrayList.class, multiResultProcessors)
+                , ReflectionHelpers.ClassParameter.from(CompositeIndicatorTally.class, compositeIndicatorTally));
+
+        Assert.assertEquals(2, tallyMap.size());
+        Assert.assertTrue(tallyMap.containsKey("ISN_Female"));
+        Assert.assertTrue(tallyMap.containsKey("ISN_Male"));
     }
 }
