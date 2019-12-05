@@ -65,7 +65,6 @@ public class ReportIndicatorDaoImplTest {
         Mockito.doReturn(matrixCursor).when(database).rawQuery(Mockito.anyString(), Mockito.isNull(String[].class));
 
         Float actualResult = ReflectionHelpers.callInstanceMethod(reportIndicatorDao, "executeQueryAndReturnCount"
-                , ReflectionHelpers.ClassParameter.from(String.class, query)
                 , ReflectionHelpers.ClassParameter.from(String.class, date)
                 , ReflectionHelpers.ClassParameter.from(SQLiteDatabase.class, database));
 
