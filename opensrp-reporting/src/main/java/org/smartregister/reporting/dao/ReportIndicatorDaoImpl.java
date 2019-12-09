@@ -53,6 +53,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
+    private ReportingLibrary reportingLibrary;
 
     public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository,
                                   IndicatorRepository indicatorRepository) {
@@ -81,8 +82,9 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
-        SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
+        SQLiteDatabase database = getReportingLibrary().getRepository().getWritableDatabase();
 
+        Set<String> executedQueries = new HashSet<>();
         Date timeNow = Calendar.getInstance().getTime();
         LinkedHashMap<String, Date> reportEventDates = getReportEventDates(timeNow, lastProcessedDate, database);
 
@@ -95,19 +97,26 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (dates.getValue().getTime() != timeNow.getTime()) {
                     lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
                 }
-                saveTallies(indicatorQueries, dates, database);
+                saveTallies(indicatorQueries, dates, database, executedQueries);
             }
 
             if (!TextUtils.isEmpty(lastUpdatedDate)) {
-                ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
+                getReportingLibrary().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
             }
 
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
-    public void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database) {
-        Set<String> resultSet = new HashSet<>();
+    private ReportingLibrary getReportingLibrary() {
+        if (reportingLibrary == null) {
+            reportingLibrary = ReportingLibrary.getInstance();
+        }
+        return reportingLibrary;
+    }
+
+    @VisibleForTesting
+    protected void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database, Set<String> executedQueries) {
         for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
             IndicatorQuery indicatorQuery = entry.getValue();
             CompositeIndicatorTally tally = null;
@@ -129,7 +138,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (date != null)
                     queryString = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
 
-                if (!resultSet.contains(queryString)) {
+                if (!executedQueries.contains(queryString)) {
                     Timber.i("QUERY : %s", queryString);
                     float count = executeQueryAndReturnCount(queryString, database);
 
@@ -137,7 +146,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         tally = new CompositeIndicatorTally();
                         tally.setCount(count);
                     }
-                    resultSet.add(queryString);
+                    executedQueries.add(queryString);
                 }
             }
 
