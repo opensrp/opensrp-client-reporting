@@ -97,7 +97,6 @@ public class ReportIndicatorDaoImplTest {
 
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Repository repository = Mockito.mock(Repository.class);
-        Mockito.doReturn(database).when(repository).getReadableDatabase();
         Mockito.doReturn(database).when(repository).getWritableDatabase();
 
         ReportingLibrary reportingLibrarySpy = Mockito.mock(ReportingLibrary.class);
