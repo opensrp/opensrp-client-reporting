@@ -53,6 +53,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
+    private ReportingLibrary reportingLibrary;
 
     public ReportIndicatorDaoImpl(IndicatorQueryRepository indicatorQueryRepository, DailyIndicatorCountRepository dailyIndicatorCountRepository,
                                   IndicatorRepository indicatorRepository) {
@@ -81,7 +82,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
-        SQLiteDatabase database = ReportingLibrary.getInstance().getRepository().getWritableDatabase();
+        SQLiteDatabase database = getReportingLibrary().getRepository().getWritableDatabase();
 
         Set<String> executedQueries = new HashSet<>();
         Date timeNow = Calendar.getInstance().getTime();
@@ -100,14 +101,22 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
 
             if (!TextUtils.isEmpty(lastUpdatedDate)) {
-                ReportingLibrary.getInstance().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
+                getReportingLibrary().getContext().allSharedPreferences().savePreference(REPORT_LAST_PROCESSED_DATE, lastUpdatedDate);
             }
 
             Timber.i("generateDailyIndicatorTallies: Generate daily tallies complete");
         }
     }
 
-    public void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database, Set<String> executedQueries) {
+    private ReportingLibrary getReportingLibrary() {
+        if (reportingLibrary == null) {
+            reportingLibrary = ReportingLibrary.getInstance();
+        }
+        return reportingLibrary;
+    }
+
+    @VisibleForTesting
+    protected void saveTallies(Map<String, IndicatorQuery> indicatorQueries, Map.Entry<String, Date> dates, SQLiteDatabase database, Set<String> executedQueries) {
         for (Map.Entry<String, IndicatorQuery> entry : indicatorQueries.entrySet()) {
             IndicatorQuery indicatorQuery = entry.getValue();
             CompositeIndicatorTally tally = null;
