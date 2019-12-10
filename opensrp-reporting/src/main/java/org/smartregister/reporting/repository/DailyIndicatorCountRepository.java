@@ -491,10 +491,16 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                             talliesFromMonth.put(indicatorCode, indicatorTallyList);
                         }
                     } else {
-                        List<IndicatorTally> indicatorTallyList = new ArrayList<>();
+                        String indicatorCode = compositeIndicatorTally.getIndicatorCode();
+                        List<IndicatorTally> indicatorTallyList = talliesFromMonth.get(indicatorCode);
+
+                        if (indicatorTallyList == null) {
+                            indicatorTallyList = new ArrayList<>();
+                        }
+
                         indicatorTallyList.add(compositeIndicatorTally);
 
-                        talliesFromMonth.put(compositeIndicatorTally.getIndicatorCode(), indicatorTallyList);
+                        talliesFromMonth.put(indicatorCode, indicatorTallyList);
                     }
 
 
