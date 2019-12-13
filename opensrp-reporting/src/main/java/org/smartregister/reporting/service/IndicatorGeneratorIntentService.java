@@ -26,7 +26,7 @@ public class IndicatorGeneratorIntentService extends IntentService {
 
     public static String TAG = "IndicatorGeneratorIntentService";
     private ReportIndicatorDaoImpl reportIndicatorDao;
-    private org.smartregister.repository.AllSharedPreferences allSharedPreferences;
+    private AllSharedPreferences allSharedPreferences;
 
     public IndicatorGeneratorIntentService() {
         super("IndicatorGeneratorIntentService");
