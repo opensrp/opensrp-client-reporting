@@ -2,6 +2,7 @@ package org.smartregister.reporting.contract;
 
 import android.view.ViewGroup;
 
+import org.jetbrains.annotations.Nullable;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.ReportIndicator;
@@ -57,7 +58,7 @@ public interface ReportContract {
 
     interface IndicatorView {
 
-        android.view.View createView();
+        @Nullable android.view.View createView();
 
         enum CountType {
             TOTAL_COUNT,
