@@ -37,7 +37,7 @@ public class IndicatorGeneratorIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             Timber.i("IndicatorGeneratorIntentService running");
-            String lastProcessedDate = allSharedPreferences.getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
+            String lastProcessedDate = getAllSharedPreferences().getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
             Timber.d("LastProcessedDate %s", lastProcessedDate);
             IndicatorTallyEvent tallyEvent = new IndicatorTallyEvent();
             tallyEvent.setStatus(TallyStatus.STARTED);
