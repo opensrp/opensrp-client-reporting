@@ -154,9 +154,17 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 tally.setIndicatorCode(entry.getKey());
 
                 try {
+
                     tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
                 } catch (ParseException e) {
-                    tally.setCreatedAt(new Date());
+
+                    try{
+
+                        tally.setCreatedAt(new SimpleDateFormat(eventDateFormat.substring(0,10), Locale.getDefault()).parse(dates.getKey()));
+                    } catch (ParseException ex) {
+                        tally.setCreatedAt(new Date());
+                    }
+
                 }
 
                 dailyIndicatorCountRepository.add(tally);
