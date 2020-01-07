@@ -24,7 +24,6 @@ import timber.log.Timber;
  */
 public class IndicatorGeneratorIntentService extends IntentService {
 
-    public static String TAG = "IndicatorGeneratorIntentService";
     private ReportIndicatorDaoImpl reportIndicatorDao;
     private AllSharedPreferences allSharedPreferences;
 
@@ -39,20 +38,26 @@ public class IndicatorGeneratorIntentService extends IntentService {
             Timber.i("IndicatorGeneratorIntentService running");
             String lastProcessedDate = getAllSharedPreferences().getPreference(ReportIndicatorDaoImpl.REPORT_LAST_PROCESSED_DATE);
             Timber.d("LastProcessedDate %s", lastProcessedDate);
-            IndicatorTallyEvent tallyEvent = new IndicatorTallyEvent();
-            tallyEvent.setStatus(TallyStatus.STARTED);
-            EventBusHelper.postEvent(tallyEvent);
+
+            EventBusHelper.postEvent(new IndicatorTallyEvent(TallyStatus.STARTED));
+
+            IndicatorTallyEvent inProgressTallyEvent = new IndicatorTallyEvent(TallyStatus.INPROGRESS);
+            EventBusHelper.postStickyEvent(inProgressTallyEvent);
+
             reportIndicatorDao.generateDailyIndicatorTallies(lastProcessedDate);
-            tallyEvent.setStatus(TallyStatus.COMPLETE);
-            EventBusHelper.postEvent(tallyEvent);
+
+            EventBusHelper.removeStickyEvent(inProgressTallyEvent);
+            EventBusHelper.postEvent(new IndicatorTallyEvent(TallyStatus.COMPLETE));
         } catch (Exception e) {
             Timber.e(e);
         }
     }
 
     public AllSharedPreferences getAllSharedPreferences() {
-        if(allSharedPreferences == null)
+        if (allSharedPreferences == null) {
             allSharedPreferences = ReportingLibrary.getInstance().getContext().allSharedPreferences();
+        }
+
         return allSharedPreferences;
     }
 

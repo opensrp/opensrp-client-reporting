@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:clickable="false"
+    android:focusable="false"
+    android:background="@drawable/snackbar_view_reporting_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15sp"
+        android:clickable="false"
+        android:focusable="false"
+        android:text="@string/currently_generating_in_app_reporting_indicators" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15sp"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="@string/some_reports_might_not_be_inaccurate" />
+
+</android.widget.LinearLayout>

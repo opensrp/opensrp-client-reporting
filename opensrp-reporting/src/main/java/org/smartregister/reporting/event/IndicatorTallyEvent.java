@@ -1,10 +1,16 @@
 package org.smartregister.reporting.event;
 
+import android.support.annotation.NonNull;
+
 import org.smartregister.reporting.domain.TallyStatus;
 
 public class IndicatorTallyEvent extends BaseEvent {
 
     private TallyStatus status;
+
+    public IndicatorTallyEvent(@NonNull TallyStatus tallyStatus) {
+        this.status = tallyStatus;
+    }
 
     public TallyStatus getStatus() {
         return status;
