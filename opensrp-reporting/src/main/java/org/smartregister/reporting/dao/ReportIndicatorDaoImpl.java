@@ -50,6 +50,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             + EventClientRepository.Table.event.name();
 
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
+    private static String eventDateFormatWithoutTimePart = "yyyy-MM-dd";
     private IndicatorQueryRepository indicatorQueryRepository;
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
     private IndicatorRepository indicatorRepository;
@@ -154,9 +155,17 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 tally.setIndicatorCode(entry.getKey());
 
                 try {
+
                     tally.setCreatedAt(new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(dates.getKey()));
                 } catch (ParseException e) {
-                    tally.setCreatedAt(new Date());
+
+                    try{
+
+                        tally.setCreatedAt(new SimpleDateFormat(eventDateFormatWithoutTimePart, Locale.getDefault()).parse(dates.getKey()));
+                    } catch (ParseException ex) {
+                        tally.setCreatedAt(new Date());
+                    }
+
                 }
 
                 dailyIndicatorCountRepository.add(tally);
