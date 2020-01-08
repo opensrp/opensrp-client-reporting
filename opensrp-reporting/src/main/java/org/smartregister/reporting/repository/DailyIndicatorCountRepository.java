@@ -423,6 +423,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     public Map<String, List<IndicatorTally>> findTalliesInMonth(@NonNull Date month) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
         Map<String, List<IndicatorTally>> talliesFromMonth = new HashMap<>();
         Cursor cursor = null;
         try {

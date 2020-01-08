@@ -217,7 +217,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                     int type = cursor.getType(0);
 
                     if (type == Cursor.FIELD_TYPE_FLOAT) {
-                        count = (Float) cursor.getFloat(0);
+                        count = cursor.getFloat(0);
                     } else if (type == Cursor.FIELD_TYPE_INTEGER) {
                         count = ((Integer) cursor.getInt(0)).floatValue();
                     }
@@ -258,11 +258,11 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                         Object cellValue = null;
 
                         if (type == Cursor.FIELD_TYPE_FLOAT) {
-                            cellValue = (Float) cursor.getFloat(i);
+                            cellValue = cursor.getFloat(i);
                         } else if (type == Cursor.FIELD_TYPE_INTEGER) {
-                            cellValue = (Integer) cursor.getInt(i);
+                            cellValue = cursor.getInt(i);
                         } else if (type == Cursor.FIELD_TYPE_STRING) {
-                            cellValue = (String) cursor.getString(i);
+                            cellValue = cursor.getString(i);
                         }
 
                         // Types BLOB and NULL are ignored

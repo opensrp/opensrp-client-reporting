@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -20,6 +21,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.robolectric.util.ReflectionHelpers;
+import org.smartregister.Context;
+import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
@@ -29,6 +32,7 @@ import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -249,5 +253,54 @@ public class DailyIndicatorCountRepositoryTest {
         Assert.assertEquals(2, tallyMap.size());
         Assert.assertTrue(tallyMap.containsKey("ISN_Female"));
         Assert.assertTrue(tallyMap.containsKey("ISN_Male"));
+    }
+
+    @Test
+    public void findTalliesInMonthShouldReturn10Tallies() throws ParseException {
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
+                , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, "2017-03-02", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Exposed\",\"Male\",3]]", 1, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+
+        ArgumentCaptor<String[]> argumentCaptor = ArgumentCaptor.forClass(String[].class);
+
+        ReportingLibrary.init(Mockito.mock(Context.class), Mockito.mock(Repository.class), Mockito.mock(CommonFtsObject.class), 1, 1);
+        ReportingLibrary reportingLibrarySpy = Mockito.spy(ReportingLibrary.getInstance());
+        ReflectionHelpers.setStaticField(ReportingLibrary.class, "instance", reportingLibrarySpy);
+        ReportingLibrary.getInstance().setDefaultMultiResultProcessor(new DefaultMultiResultProcessor());
+
+        Mockito.doReturn(sqLiteDatabase)
+                .when(dailyIndicatorCountRepositorySpy)
+                .getReadableDatabase();
+
+        Mockito.doReturn(matrixCursor)
+                .when(sqLiteDatabase)
+                .rawQuery(
+                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day >= ? AND indicator_daily_tally.day <= ?")
+                        , argumentCaptor.capture());
+
+        Mockito.doReturn(new MatrixCursor(new String[]{"name"}))
+                .when(sqLiteDatabase)
+                .rawQuery(ArgumentMatchers.eq("PRAGMA table_info(indicator_daily_tally)")
+                        , Mockito.nullable(String[].class));
+
+        Map<String, List<IndicatorTally>> talliesFromMonth = dailyIndicatorCountRepositorySpy.findTalliesInMonth(new SimpleDateFormat("yyyy-MM", Locale.ENGLISH).parse("2017-03"));
+
+        String[] queryArgs = argumentCaptor.getValue();
+
+        Assert.assertEquals("2017-03-01", queryArgs[0]);
+        Assert.assertEquals("2017-03-31", queryArgs[1]);
+
+        Assert.assertEquals(8, talliesFromMonth.size());
+
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male"));
+        Assert.assertTrue(talliesFromMonth.containsKey("ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female"));
     }
 }

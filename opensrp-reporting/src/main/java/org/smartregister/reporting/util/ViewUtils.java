@@ -23,13 +23,15 @@ public class ViewUtils {
             View parentView = ((ViewGroup) appCompatActivity.findViewById(android.R.id.content))
                     .getChildAt(0);
 
-            reportingProcessingSnackbar = ReportingProcessingSnackbar.make(parentView);
+            ReportingProcessingSnackbar processingSnackbar = ReportingProcessingSnackbar.make(parentView);
 
             if (margin != 0) {
-                reportingProcessingSnackbar.addBottomBarMargin(margin);
+                processingSnackbar.addBottomBarMargin(margin);
             }
-            reportingProcessingSnackbar.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
-            reportingProcessingSnackbar.show();
+            processingSnackbar.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
+            processingSnackbar.show();
+
+            return processingSnackbar;
         } else if (!reportingProcessingSnackbar.isShown()) {
             reportingProcessingSnackbar.show();
         }
