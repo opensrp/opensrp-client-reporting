@@ -98,7 +98,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void getAllDailyTallies_ShouldProcessAndReturnIndicatorTallies() {
+    public void getAllDailyTalliesShouldProcessAndReturnIndicatorTallies() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
                 , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
         matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
@@ -139,7 +139,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void getDailyTallies_WhenGivenCurrentDate_ShouldInvokeQueryAndReturnEmptyHashMap() {
+    public void getDailyTalliesWhenGivenCurrentDateShouldInvokeQueryAndReturnEmptyHashMap() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{Constants.DailyIndicatorCountRepository.ID
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
@@ -174,7 +174,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void performMigrations_ShouldInvokeWriteMethods() {
+    public void performMigrationsShouldInvokeWriteMethods() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"name"}, 1);
         matrixCursor.addRow(new Object[]{"indicator_daily_tally"});
 
@@ -198,7 +198,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void processCursorRow_ShouldReturnValueSet_WhenCursorIsIndicatorRowWithValueSet() {
+    public void processCursorRowShouldReturnValueSetWhenCursorIsIndicatorRowWithValueSet() {
         String[] columns = {Constants.DailyIndicatorCountRepository.ID
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
@@ -226,7 +226,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void extractOnlyRequiredIndicatorTalliesAndProvideDefault_ShouldReturnZeroValuesForUnlocatedIndicators_WhenGivenExpectedIndicatorsAndUnwantedIndicators() {
+    public void extractOnlyRequiredIndicatorTalliesAndProvideDefaultShouldReturnZeroValuesForUnlocatedIndicatorsWhenGivenExpectedIndicatorsAndUnwantedIndicators() {
         java.util.Date timeNow = Calendar.getInstance().getTime();
 
         List<IndicatorTally> indicatorTally = new ArrayList<>();
@@ -259,7 +259,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void extractOnlyRequiredIndicatorTalliesAndProvideDefault_ShouldReturnZeroValuesForAllUnlocatedIndicators_WhenGivenNull() {
+    public void extractOnlyRequiredIndicatorTalliesAndProvideDefaultShouldReturnZeroValuesForAllUnlocatedIndicatorsWhenGivenNull() {
         java.util.Date timeNow = Calendar.getInstance().getTime();
 
         ArrayList<String> expectedIndicators = new ArrayList<>();
@@ -286,7 +286,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void extractIndicatorTalliesFromMultiResult_WhenGivenComposeIndicatorTallyAndMultiProcessors_ShouldAddSingleIndicatorTalliesToMapWhenGivenCompositeIndicatorTally() {
+    public void extractIndicatorTalliesFromMultiResultWhenGivenComposeIndicatorTallyAndMultiProcessorsShouldAddSingleIndicatorTalliesToMapWhenGivenCompositeIndicatorTally() {
         DefaultMultiResultProcessor defaultMultiResultProcessor = new DefaultMultiResultProcessor();
         ArrayList<MultiResultProcessor> multiResultProcessors = new ArrayList<>();
         CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
@@ -309,7 +309,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void findTalliesInMonth_WhenGivenValidMonthDateInYYYYMM_ShouldReturn10Tallies() throws ParseException {
+    public void findTalliesInMonthWhenGivenValidMonthDateInYYYYMMShouldReturn10Tallies() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
                 , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
         matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
@@ -350,7 +350,7 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void findDaysWithIndicatorCounts_WhenGivenValidDateRangeAndDateFormat_ShouldReturn10DatesFromDb() throws ParseException {
+    public void findDaysWithIndicatorCountsWhenGivenValidDateRangeAndDateFormatShouldReturn10DatesFromDb() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"day"}, 0);
         matrixCursor.addRow(new Object[]{"2017-03-01"});
         matrixCursor.addRow(new Object[]{"2017-03-03"});
@@ -375,7 +375,7 @@ public class DailyIndicatorCountRepositoryTest {
         Date startDate = yyyMMdd.parse("2017-03-01");
         Date endDate = yyyMMdd.parse("2017-03-31");
 
-        ArrayList<java.util.Date> dates =  dailyIndicatorCountRepositorySpy.findDaysWithIndicatorCounts(new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT), startDate, endDate);
+        ArrayList<Date> dates =  dailyIndicatorCountRepositorySpy.findDaysWithIndicatorCounts(new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT), startDate, endDate);
 
         Assert.assertEquals(10, dates.size());
         Assert.assertEquals(yyyMMdd.parse("2017-03-01").getTime(), dates.get(0).getTime());
