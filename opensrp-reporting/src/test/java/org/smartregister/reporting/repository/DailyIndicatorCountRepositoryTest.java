@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @RunWith(RobolectricTestRunner.class)
 public class DailyIndicatorCountRepositoryTest {
@@ -325,11 +326,6 @@ public class DailyIndicatorCountRepositoryTest {
                         ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day >= ? AND indicator_daily_tally.day <= ?")
                         , argumentCaptor.capture());
 
-        Mockito.doReturn(new MatrixCursor(new String[]{"name"}))
-                .when(sqLiteDatabase)
-                .rawQuery(ArgumentMatchers.eq("PRAGMA table_info(indicator_daily_tally)")
-                        , Mockito.nullable(String[].class));
-
         Map<String, List<IndicatorTally>> talliesFromMonth = dailyIndicatorCountRepositorySpy.findTalliesInMonth(new SimpleDateFormat("yyyy-MM", Locale.ENGLISH).parse("2017-03"));
 
         String[] queryArgs = argumentCaptor.getValue();
@@ -381,5 +377,41 @@ public class DailyIndicatorCountRepositoryTest {
         Assert.assertEquals(yyyMMdd.parse("2017-03-01").getTime(), dates.get(0).getTime());
         Assert.assertEquals(yyyMMdd.parse("2017-03-07").getTime(), dates.get(4).getTime());
         Assert.assertEquals(yyyMMdd.parse("2017-03-12").getTime(), dates.get(9).getTime());
+    }
+
+    @Test
+    public void getIndicatorTalliesForDayShouldReturn8TalliesWhenGivenValidDateWithTallies() throws ParseException {
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
+                , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, "2017-03-10", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_Total", 4, null, 0, "2017-03-10", null});
+
+        ReportingLibrary.getInstance().setDefaultMultiResultProcessor(new DefaultMultiResultProcessor());
+
+        Mockito.doReturn(matrixCursor)
+                .when(sqLiteDatabase)
+                .rawQuery(
+                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day = '2017-03-10'")
+                        , ArgumentMatchers.nullable(String[].class));
+
+        ArrayList<IndicatorTally> talliesForDay = dailyIndicatorCountRepositorySpy.getIndicatorTalliesForDay(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse("2017-03-10"));
+        
+        HashMap<String, IndicatorTally> indicatorTallyHashMap = new HashMap<>();
+        for (IndicatorTally indicatorTally: talliesForDay) {
+            indicatorTallyHashMap.put(indicatorTally.getIndicatorCode(),indicatorTally);
+        }
+
+        Set<String> indicatorCodes = indicatorTallyHashMap.keySet();
+
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male"));
+        Assert.assertTrue(indicatorCodes.contains("ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female"));
+
+        Assert.assertEquals(4, indicatorTallyHashMap.get("ME_Child_Total").getCount());
     }
 }
