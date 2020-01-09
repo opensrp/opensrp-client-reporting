@@ -21,12 +21,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.TestApplication;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
 import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
+import org.smartregister.view.activity.DrishtiApplication;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -40,12 +42,14 @@ import java.util.Map;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ReportingLibrary.class)
 public class DailyIndicatorCountRepositoryTest {
+    @Mock
+    private Repository repository;
+
+    @Mock
+    private DrishtiApplication application;
 
     @Mock
     private SQLiteDatabase sqLiteDatabase;
-
-    @Mock
-    private Repository repository;
 
     @Mock
     private ReportingLibrary reportingLibraryInstance;
@@ -55,7 +59,11 @@ public class DailyIndicatorCountRepositoryTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        dailyIndicatorCountRepositorySpy = Mockito.spy(new DailyIndicatorCountRepository(repository));
+
+        Mockito.when(application.getRepository()).thenReturn(repository);
+        TestApplication.setInstance(application);
+
+        dailyIndicatorCountRepositorySpy = Mockito.spy(new DailyIndicatorCountRepository());
     }
 
     @Test

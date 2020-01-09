@@ -36,10 +36,6 @@ public class IndicatorQueryRepository extends BaseRepository {
             + Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS + " TEXT, "
             + Constants.IndicatorQueryRepository.DB_VERSION + " INTEGER)";
 
-    public IndicatorQueryRepository(Repository repository) {
-        super(repository);
-    }
-
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
         if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
