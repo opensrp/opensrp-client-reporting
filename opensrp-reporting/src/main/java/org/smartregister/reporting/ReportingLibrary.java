@@ -92,10 +92,10 @@ public class ReportingLibrary {
     }
 
     private void initRepositories() {
-        this.dailyIndicatorCountRepository = new DailyIndicatorCountRepository(getRepository());
-        this.indicatorQueryRepository = new IndicatorQueryRepository(getRepository());
-        this.indicatorRepository = new IndicatorRepository(getRepository());
-        this.eventClientRepository = new EventClientRepository(getRepository());
+        this.dailyIndicatorCountRepository = new DailyIndicatorCountRepository();
+        this.indicatorQueryRepository = new IndicatorQueryRepository();
+        this.indicatorRepository = new IndicatorRepository();
+        this.eventClientRepository = new EventClientRepository();
     }
 
     /**
@@ -115,7 +115,7 @@ public class ReportingLibrary {
 
     public DailyIndicatorCountRepository dailyIndicatorCountRepository() {
         if (dailyIndicatorCountRepository == null) {
-            dailyIndicatorCountRepository = new DailyIndicatorCountRepository(getRepository());
+            dailyIndicatorCountRepository = new DailyIndicatorCountRepository();
         }
 
         return dailyIndicatorCountRepository;
@@ -123,7 +123,7 @@ public class ReportingLibrary {
 
     public IndicatorQueryRepository indicatorQueryRepository() {
         if (indicatorQueryRepository == null) {
-            indicatorQueryRepository = new IndicatorQueryRepository(getRepository());
+            indicatorQueryRepository = new IndicatorQueryRepository();
         }
 
         return indicatorQueryRepository;
@@ -131,7 +131,7 @@ public class ReportingLibrary {
 
     public IndicatorRepository indicatorRepository() {
         if (indicatorRepository == null) {
-            indicatorRepository = new IndicatorRepository(getRepository());
+            indicatorRepository = new IndicatorRepository();
         }
 
         return indicatorRepository;
@@ -139,7 +139,7 @@ public class ReportingLibrary {
 
     public EventClientRepository eventClientRepository() {
         if (eventClientRepository == null) {
-            eventClientRepository = new EventClientRepository(getRepository());
+            eventClientRepository = new EventClientRepository();
         }
 
         return eventClientRepository;
@@ -222,7 +222,7 @@ public class ReportingLibrary {
                     indicator = new ReportIndicator(null, indicatorYamlConfigItem.getKey(), indicatorYamlConfigItem.getDescription(), null);
 
                     String query = indicatorYamlConfigItem.getIndicatorQuery();
-                    if(!query.trim().isEmpty()) {
+                    if (!query.trim().isEmpty()) {
                         indicatorQuery = new IndicatorQuery(null, indicatorYamlConfigItem.getKey()
                                 , indicatorYamlConfigItem.getIndicatorQuery()
                                 , 0
@@ -249,14 +249,15 @@ public class ReportingLibrary {
 
     /**
      * Method to initialize multiple files
-     * @param configFiles configuration files for the indicators
+     *
+     * @param configFiles    configuration files for the indicators
      * @param sqLiteDatabase database to store the indicator queries
      */
     public void initMultipleIndicatorsData(List<String> configFiles, SQLiteDatabase sqLiteDatabase) {
         if (hasInitializedIndicators(sqLiteDatabase)) {
             return;
         }
-        for (String configFile: configFiles){
+        for (String configFile : configFiles) {
             readConfigFile(configFile, sqLiteDatabase);
         }
     }
