@@ -2,6 +2,8 @@ package org.smartregister.reporting;
 
 import org.smartregister.view.activity.DrishtiApplication;
 
+import timber.log.Timber;
+
 public class TestApplication extends DrishtiApplication {
 
     public static void setInstance(DrishtiApplication application) {
@@ -10,6 +12,6 @@ public class TestApplication extends DrishtiApplication {
 
     @Override
     public void logoutCurrentUser() {
-
+        Timber.v("logoutCurrentUser");
     }
 }
