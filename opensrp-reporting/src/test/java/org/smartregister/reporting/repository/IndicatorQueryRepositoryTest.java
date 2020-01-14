@@ -23,6 +23,7 @@ import org.smartregister.view.activity.DrishtiApplication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorQueryRepositoryTest {
+
     @Mock
     private Repository repository;
 
