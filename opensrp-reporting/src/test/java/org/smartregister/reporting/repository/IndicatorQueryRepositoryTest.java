@@ -15,15 +15,20 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.hamcrest.MockitoHamcrest;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.smartregister.reporting.TestApplication;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
+import org.smartregister.view.activity.DrishtiApplication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IndicatorQueryRepositoryTest {
 
     @Mock
     private Repository repository;
+
+    @Mock
+    private DrishtiApplication application;
 
     @Mock
     private SQLiteDatabase sqLiteDatabase;
@@ -33,7 +38,11 @@ public class IndicatorQueryRepositoryTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        indicatorQueryRepositorySpy = Mockito.spy(new IndicatorQueryRepository(repository));
+
+        Mockito.when(application.getRepository()).thenReturn(repository);
+        TestApplication.setInstance(application);
+
+        indicatorQueryRepositorySpy = Mockito.spy(new IndicatorQueryRepository());
     }
 
     @Test

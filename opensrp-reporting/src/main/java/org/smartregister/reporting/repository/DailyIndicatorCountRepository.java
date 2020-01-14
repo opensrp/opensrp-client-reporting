@@ -56,10 +56,6 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " , "
             + Constants.DailyIndicatorCountRepository.DAY + " ) ";
 
-    public DailyIndicatorCountRepository(Repository repository) {
-        super(repository);
-    }
-
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
         if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)

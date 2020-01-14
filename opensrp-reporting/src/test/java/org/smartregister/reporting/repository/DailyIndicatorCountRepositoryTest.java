@@ -25,6 +25,7 @@ import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.ReportingLibrary;
+import org.smartregister.reporting.TestApplication;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorTally;
@@ -32,6 +33,7 @@ import org.smartregister.reporting.processor.DefaultMultiResultProcessor;
 import org.smartregister.reporting.processor.MultiResultProcessor;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.Repository;
+import org.smartregister.view.activity.DrishtiApplication;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,11 +53,15 @@ public class DailyIndicatorCountRepositoryTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
+    private Repository repository;
+
+    @Mock
+    private DrishtiApplication application;
+
+    @Mock
     private SQLiteDatabase sqLiteDatabase;
 
     @Mock
-    private Repository repository;
-
     private ReportingLibrary reportingLibraryInstance;
 
     private DailyIndicatorCountRepository dailyIndicatorCountRepositorySpy;
@@ -67,9 +73,12 @@ public class DailyIndicatorCountRepositoryTest {
         reportingLibraryInstance = Mockito.spy(ReportingLibrary.getInstance());
         ReflectionHelpers.setStaticField(ReportingLibrary.class, "instance", reportingLibraryInstance);
 
-        dailyIndicatorCountRepositorySpy = Mockito.spy(new DailyIndicatorCountRepository(repository));
-        Mockito.when(dailyIndicatorCountRepositorySpy.getWritableDatabase()).thenReturn(sqLiteDatabase);
-        Mockito.when(dailyIndicatorCountRepositorySpy.getReadableDatabase()).thenReturn(sqLiteDatabase);
+        dailyIndicatorCountRepositorySpy = Mockito.spy(new DailyIndicatorCountRepository());
+        Mockito.when(application.getRepository()).thenReturn(repository);
+        Mockito.doReturn(sqLiteDatabase).when(repository).getReadableDatabase();
+        Mockito.doReturn(sqLiteDatabase).when(repository).getWritableDatabase();
+
+        TestApplication.setInstance(application);
     }
 
     @After
@@ -395,7 +404,7 @@ public class DailyIndicatorCountRepositoryTest {
                         , ArgumentMatchers.nullable(String[].class));
 
         ArrayList<IndicatorTally> talliesForDay = dailyIndicatorCountRepositorySpy.getIndicatorTalliesForDay(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse("2017-03-10"));
-        
+
         HashMap<String, IndicatorTally> indicatorTallyHashMap = new HashMap<>();
         for (IndicatorTally indicatorTally: talliesForDay) {
             indicatorTallyHashMap.put(indicatorTally.getIndicatorCode(),indicatorTally);
