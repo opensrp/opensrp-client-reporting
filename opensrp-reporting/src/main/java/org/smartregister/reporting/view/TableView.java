@@ -33,6 +33,8 @@ public class TableView extends LinearLayout {
     private int borderColor;
     private int headerTextStyle;
     private Boolean isRowBorderHidden;
+    private OnClickListener onRowClickListener;
+    private List<String> tableDataRowIds = new ArrayList<>();
 
     private AttributeSet attrs;
 
@@ -123,7 +125,7 @@ public class TableView extends LinearLayout {
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), getColumnCount(), GridLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
-        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableHeaderData, getContext(), TableViewWidgetAdapter.TableviewDatatype.HEADER, style);
+        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableHeaderData, null, getContext(), TableViewWidgetAdapter.TableviewDatatype.HEADER, style, null);
         recycler.setAdapter(adapter);
     }
 
@@ -137,7 +139,7 @@ public class TableView extends LinearLayout {
         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), getColumnCount(), GridLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(manager);
 
-        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableData, getContext(), TableViewWidgetAdapter.TableviewDatatype.BODY, style);
+        RecyclerView.Adapter adapter = new TableViewWidgetAdapter(tableData, tableDataRowIds, getContext(), TableViewWidgetAdapter.TableviewDatatype.BODY, style, onRowClickListener);
         recycler.setAdapter(adapter);
 
     }
@@ -153,7 +155,6 @@ public class TableView extends LinearLayout {
         }
 
     }
-
 
     @Override
     public Parcelable onSaveInstanceState() {
@@ -206,8 +207,15 @@ public class TableView extends LinearLayout {
 
     public void setTableData(List<String> tableHeaderData, List<String> tableData) {
 
+        setTableData(tableHeaderData, tableData, null, null);
+    }
+
+    public void setTableData(List<String> tableHeaderData, List<String> tableData, List<String> tableDataRowIds, OnClickListener onRowClickListener) {
+
         this.tableHeaderData = tableHeaderData;
         this.tableData = tableData;
+        this.tableDataRowIds = tableDataRowIds;
+        this.onRowClickListener = onRowClickListener;
 
         refreshLayout();
     }

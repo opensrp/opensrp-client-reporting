@@ -21,21 +21,26 @@ import java.util.List;
  */
 public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidgetAdapter.ViewHolder> {
 
-    private List<String> list;
+    private List<String> tableDataList;
+    private List<String> tableDataIdList;
     private Context context;
     private TableviewDatatype dataType;
     private TableView.TextViewStyle style;
+    private View.OnClickListener rowClickListener;
+    private static Integer headerCount;
 
     public enum TableviewDatatype {
         HEADER, BODY, FOOTER
 
     }
 
-    public TableViewWidgetAdapter(List<String> list, Context context, TableviewDatatype dataType, TableView.TextViewStyle style) {
-        this.list = list;
+    public TableViewWidgetAdapter(List<String> tableDataList, List<String> tableDataIdList, Context context, TableviewDatatype dataType, TableView.TextViewStyle style, View.OnClickListener rowClickListener) {
+        this.tableDataList = tableDataList;
+        this.tableDataIdList = tableDataIdList;
         this.context = context;
         this.dataType = dataType;
         this.style = style;
+        this.rowClickListener = rowClickListener;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.textView.setText(list.get(position));
+        holder.textView.setText(tableDataList.get(position));
 
         if (style.rowTextColor != 0) {
             holder.textView.setTextColor(style.rowTextColor);
@@ -67,11 +72,21 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
             if (style.headerBackgroundColor != 0) {
                 holder.textView.setBackgroundColor(style.headerBackgroundColor);
             }
+
+            if (headerCount == null && tableDataList.size() > 0) {
+                headerCount = tableDataList.size();
+            }
+
         } else {
 
             //For rows only
             if (style.isRowBorderHidden) {
                 holder.textView.setBackground(null);
+            }
+            //Bind row click listener
+            if (rowClickListener != null && tableDataIdList != null) {
+                holder.textView.setOnClickListener(rowClickListener);
+                holder.textView.setTag(R.id.table_row_id, getRowId(position));
             }
 
         }
@@ -81,9 +96,14 @@ public class TableViewWidgetAdapter extends RecyclerView.Adapter<TableViewWidget
         }
     }
 
+    private String getRowId(int position) {
+        Double idPosition = Math.floor(position / headerCount);
+        return tableDataIdList.get(idPosition.intValue());
+    }
+
     @Override
     public int getItemCount() {
-        return list.size();
+        return tableDataList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
