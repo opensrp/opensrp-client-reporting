@@ -4,11 +4,9 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 import org.smartregister.Context;
 import org.smartregister.commonregistry.CommonFtsObject;
@@ -18,8 +16,7 @@ import org.smartregister.repository.Repository;
 
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ReportingLibraryTest {
+public class ReportingLibraryTest extends BaseUnitTest {
 
     @Mock
     private Context context;
@@ -32,7 +29,6 @@ public class ReportingLibraryTest {
 
     @Mock
     private IndicatorQueryRepository indicatorQueryRepository;
-
 
     @Mock
     private CommonFtsObject commonFtsObject;
@@ -58,6 +54,7 @@ public class ReportingLibraryTest {
     public void testThatAllRepositoriesAreInitialized() {
         ReportingLibrary.init(context, repository, commonFtsObject, appVersion, dbVersion);
         ReportingLibrary reportingLibrary = ReportingLibrary.getInstance();
+        assertNotNull(ReportingLibrary.getInstance());
         assertNotNull(reportingLibrary.dailyIndicatorCountRepository());
         assertNotNull(reportingLibrary.indicatorQueryRepository());
         assertNotNull(reportingLibrary.eventClientRepository());
@@ -68,6 +65,7 @@ public class ReportingLibraryTest {
     @Test
     public void truncateIndicatorTablesWithDBInvokesRepositoryTruncate() {
         ReportingLibrary.init(context, repository, commonFtsObject, appVersion, dbVersion);
+        assertNotNull(ReportingLibrary.getInstance());
         ReportingLibrary reportingLibrary = ReportingLibrary.getInstance();
         ReportingLibrary reportingLibrarySpy = Mockito.spy(reportingLibrary);
         // Magic

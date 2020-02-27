@@ -33,7 +33,10 @@ script:
   - chmod 755 gradlew
   - ls -la
   #Run jacocoTestReport -> Runs all unit tests & instrumentation tests
-  - travis_wait ./gradlew :opensrp-reporting:jacocoTestReport coveralls --stacktrace
+  - travis_wait ./gradlew :opensrp-reporting:jacocoTestReport --stacktrace
+
+after_success:
+  - ./gradlew coveralls --stacktrace
 
 notifications:
   slack:

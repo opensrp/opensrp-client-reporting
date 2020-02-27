@@ -147,5 +147,25 @@ The rows data is populated by creating a list of all the data to be rendered in 
         tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
         
 ``` 
+The **setTableData** method is also overloaded to take the extra parameters of Row IDs and a click listener in order to add row click listeners on individually clicked items.
+
+ ```
+  TableView tableView = getActivity().findViewById(R.id.tableView);
+  tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData(), getDummyDataIds(), viewClickListener);
+
+ ```
+
+ One can use the view tag R.id.table_row_id to get the corresponding row id in the onclick handler, e.g.
+
+ ```
+      @Override
+      public void onClick(View view) {
+
+        //Do something with row id
+         view.getTag(R.id.table_row_id)
+
+      }
+
+ ```
 
 *Checkout the sample app for more examples..*

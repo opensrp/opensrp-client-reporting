@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.smartregister.reporting.view.ProgressIndicatorView;
 import org.smartregister.reporting.view.TableView;
@@ -17,11 +18,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ResourcesFragment extends Fragment {
+public class ResourcesFragment extends Fragment implements View.OnClickListener {
 
     Random random = new Random();
 
@@ -72,7 +74,10 @@ public class ResourcesFragment extends Fragment {
 
 
         TableView tableView = getActivity().findViewById(R.id.tableView);
-        tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
+
+        //tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData());
+        //Overloads the above
+        tableView.setTableData(Arrays.asList(new String[]{"Vaccine Name", "Gender", "Value"}), getDummyData(), getDummyDataIds(), this);
         tableView.setHeaderTextStyle(Typeface.BOLD);
         tableView.setRowBorderHidden(false);
 
@@ -95,9 +100,30 @@ public class ResourcesFragment extends Fragment {
 
     }
 
+    private List<String> getDummyDataIds() {
+
+        List<String> list = new ArrayList<>();
+
+        /// Table
+
+
+        for (Integer i = 0; i < 10; i++) {
+            list.add(UUID.randomUUID().toString());
+        }
+
+        return list;
+
+    }
+
     private int getRange(int min, int max) {
 
         return random.nextInt((max - min) + 1) + min;
     }
 
+    @Override
+    public void onClick(View view) {
+        //Do something here with the ID eg launch a profile activity
+        Toast.makeText(this.getActivity(), String.format("clicked on %s", String.valueOf(view.getTag(R.id.table_row_id))), Toast.LENGTH_LONG).show();
+
+    }
 }
