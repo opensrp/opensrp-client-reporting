@@ -204,11 +204,13 @@ public class ReportingLibrary {
     public void readConfigFile(String configFilePath, SQLiteDatabase sqLiteDatabase) {
         initYamlIndicatorConfig();
         Iterable<Object> indicatorsFromFile = null;
+
         try {
             indicatorsFromFile = loadIndicatorsFromFile(configFilePath);
         } catch (IOException ioe) {
-            Log.e("SampleApplication", ioe.getMessage());
+            Timber.e(ioe);
         }
+
         if (indicatorsFromFile != null) {
             IndicatorsYamlConfig indicatorsConfig;
             List<ReportIndicator> reportIndicators = new ArrayList<>();
@@ -227,13 +229,15 @@ public class ReportingLibrary {
                                 , indicatorYamlConfigItem.getIndicatorQuery()
                                 , 0
                                 , indicatorYamlConfigItem.isMultiResult()
-                                , indicatorYamlConfigItem.getExpectedIndicators());
+                                , indicatorYamlConfigItem.getExpectedIndicators()
+                                , indicatorYamlConfigItem.getGrouping());
                         indicatorQueries.add(indicatorQuery);
                     }
 
                     reportIndicators.add(indicator);
                 }
             }
+
             if (sqLiteDatabase != null) {
                 saveIndicators(reportIndicators, sqLiteDatabase);
                 saveIndicatorQueries(indicatorQueries, sqLiteDatabase);
