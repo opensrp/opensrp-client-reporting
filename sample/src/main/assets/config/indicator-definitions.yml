@@ -25,3 +25,8 @@ indicators:
     indicatorQuery: "select indicator_code, count(*) as count from indicator_queries group by indicator_code UNION ALL select 'TOTAL', count(*) from indicator_queries"
     isMultiResult: true
     expectedIndicators: ["S_IND_MALE", "S_IND_FEMALE", "S_IND_S_IND_001"]
+
+  - key: "S_IND_006"
+    description: "A float count"
+    indicatorQuery: "select (count(indicator_code) * 0.5) from indicator_queries"
+    grouping: "child"
