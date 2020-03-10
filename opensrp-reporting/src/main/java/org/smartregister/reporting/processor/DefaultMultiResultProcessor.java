@@ -45,6 +45,7 @@ public class DefaultMultiResultProcessor implements MultiResultProcessor {
         for (Object[] compositeTally: compositeTallies) {
             IndicatorTally indicatorTally = new IndicatorTally();
             indicatorTally.setCreatedAt(compositeIndicatorTally.getCreatedAt());
+            indicatorTally.setGrouping(compositeIndicatorTally.getGrouping());
 
             String indicatorGrouping = String.valueOf(compositeTally[0]);
             indicatorTally.setIndicatorCode(compositeIndicatorTally.getIndicatorCode() + GROUPING_SEPARATOR + indicatorGrouping);

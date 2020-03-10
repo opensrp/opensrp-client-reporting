@@ -53,8 +53,8 @@ public class IndicatorQueryRepository extends BaseRepository {
         }
 
         if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
-                && ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_GROUPING)) {
-
+                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_GROUPING)) {
+            addGroupingColumn(database);
         }
     }
 

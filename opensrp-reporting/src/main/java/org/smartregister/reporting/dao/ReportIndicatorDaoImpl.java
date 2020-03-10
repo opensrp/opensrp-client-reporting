@@ -153,6 +153,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
             if (tally != null) {
                 tally.setIndicatorCode(entry.getKey());
+                tally.setGrouping(indicatorQuery.getGrouping());
 
                 try {
                     tally.setCreatedAt(new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).parse(dates.getKey()));
