@@ -13,10 +13,8 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.util.Constants;
-import org.smartregister.reporting.util.ReportingUtil;
 import org.smartregister.reporting.util.ReportingUtils;
 import org.smartregister.repository.BaseRepository;
-import org.smartregister.repository.Repository;
 
 import java.util.HashMap;
 import java.util.List;
