@@ -51,7 +51,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         }
 
         if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
-                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_GROUPING)) {
+                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_GROUPING, Constants.IndicatorQueryRepository.INDICATOR_GROUPING)) {
             addGroupingColumn(database);
         }
     }
@@ -86,6 +86,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.INDICATOR_GROUPING
                 , Constants.IndicatorQueryRepository.DB_VERSION, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS};
         Cursor cursor = database.query(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, columns
                 , null, null, null, null, null, null);
@@ -105,6 +106,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         IndicatorQuery indicatorQuery = null;
         String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.INDICATOR_GROUPING
                 , Constants.IndicatorQueryRepository.DB_VERSION, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS};
         String selection = Constants.IndicatorQueryRepository.QUERY + " = ?";
         String[] selectionArgs = {indicatorCode};
