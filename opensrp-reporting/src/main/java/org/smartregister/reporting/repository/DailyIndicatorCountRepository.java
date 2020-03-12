@@ -161,8 +161,14 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         return indicatorTallies;
     }
 
+
     @NonNull
     public ArrayList<Date> findDaysWithIndicatorCounts(@NonNull SimpleDateFormat dateFormat, @NonNull Date minDate, @NonNull Date maxDate) {
+        return findDaysWithIndicatorCounts(dateFormat, minDate, maxDate, null);
+    }
+
+    @NonNull
+    public ArrayList<Date> findDaysWithIndicatorCounts(@NonNull SimpleDateFormat dateFormat, @NonNull Date minDate, @NonNull Date maxDate, @Nullable String reportGrouping) {
         ArrayList<Date> daysWithCounts = new ArrayList<>();
         SimpleDateFormat dayFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
 
@@ -175,9 +181,11 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                     , dateFormat.format(minDate)
                     , Constants.DailyIndicatorCountRepository.DAY
                     , dateFormat.format(maxDate)
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                    , reportGrouping == null ? "IS NULL" : "= '" + reportGrouping + "'"
             };
 
-            cursor = getReadableDatabase().rawQuery(String.format("SELECT DISTINCT %s FROM %s WHERE %s >= '%s' AND %s <= '%s'", queryArgs)
+            cursor = getReadableDatabase().rawQuery(String.format("SELECT DISTINCT %s FROM %s WHERE %s >= '%s' AND %s <= '%s' AND %s %s", queryArgs)
                     , null);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
