@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">opensrp-reporting</string>
+    <string name="app_name">opensrp-inatoa taarifa</string>
     <string name="title_activity_reports">Dashboard</string>
+    <string name="some_reports_might_not_be_inaccurate">Baadhi ya ripoti zinaweza kuwa sio sahihi</string>
+    <string name="currently_generating_in_app_reporting_indicators">Inatengeneza viashiria vya ripoti ya ndani ya programu</string>
 </resources>
