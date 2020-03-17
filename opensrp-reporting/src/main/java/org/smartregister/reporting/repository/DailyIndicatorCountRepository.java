@@ -71,7 +71,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                     "SELECT count(*) AS total_count FROM indicator_daily_tally GROUP BY indicator_code" +
                             ", strftime('%Y-%m-%d', day), indicator_is_value_set ORDER BY total_count DESC LIMIT 1");
 
-            if (results.size() > 0 & ((int) results.get(1)[0]) > 1) {
+            // The results also returns the column names
+            if (results.size() > 1 && ((int) results.get(1)[0]) > 1) {
                 aggregateDailyTallies(database);
             }
         }
