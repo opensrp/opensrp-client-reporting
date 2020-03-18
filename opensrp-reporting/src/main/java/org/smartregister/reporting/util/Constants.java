@@ -10,6 +10,7 @@ public interface Constants {
 
         String APP_VERSION_CODE = "APP_VERSION_CODE";
         String INDICATOR_DATA_INITIALISED = "INDICATOR_DATA_INITIALISED";
+
     }
 
     interface DailyIndicatorCountRepository {
@@ -21,6 +22,7 @@ public interface Constants {
         String INDICATOR_VALUE_SET = "indicator_value_set";
         String INDICATOR_VALUE_SET_FLAG = "indicator_is_value_set";
         String INDICATOR_DAILY_TALLY_TABLE = "indicator_daily_tally";
+        String INDICATOR_GROUPING = "indicator_grouping";
     }
 
     interface IndicatorQueryRepository {
@@ -32,5 +34,9 @@ public interface Constants {
         String INDICATOR_QUERY_TABLE = "indicator_queries";
         String INDICATOR_QUERY_IS_MULTI_RESULT = "indicator_is_multi_result";
         String INDICATOR_QUERY_EXPECTED_INDICATORS = "expected_indicators";
+    }
+
+    interface ReportingConfig {
+        String SHOULD_ALLOW_ZERO_TALLIES = "SHOULD_ALLOW_ZERO_TALLIES";
     }
 }
