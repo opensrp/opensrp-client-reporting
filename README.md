@@ -169,3 +169,8 @@ The **setTableData** method is also overloaded to take the extra parameters of R
  ```
 
 *Checkout the sample app for more examples..*
+
+## Optional Configurable Properties
+| **Property**   | **Type** | **Usage** |
+| ------------- | ------------- |-------------
+| `SHOULD_ALLOW_ZERO_TALLIES`  | boolean  | This allows zero tallies to be displayed, otherwise they will be skipped
