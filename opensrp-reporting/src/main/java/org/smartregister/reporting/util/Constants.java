@@ -34,6 +34,7 @@ public interface Constants {
         String INDICATOR_QUERY_TABLE = "indicator_queries";
         String INDICATOR_QUERY_IS_MULTI_RESULT = "indicator_is_multi_result";
         String INDICATOR_QUERY_EXPECTED_INDICATORS = "expected_indicators";
+        String INDICATOR_GROUPING = "grouping";
     }
 
     interface ReportingConfig {

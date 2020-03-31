@@ -15,7 +15,6 @@ import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.util.Constants;
 import org.smartregister.reporting.util.ReportingUtils;
 import org.smartregister.repository.BaseRepository;
-import org.smartregister.repository.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +30,11 @@ public class IndicatorQueryRepository extends BaseRepository {
 
     public static String CREATE_TABLE_INDICATOR_QUERY = "CREATE TABLE " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
             + "(" + Constants.IndicatorQueryRepository.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + Constants.IndicatorQueryRepository.QUERY + " TEXT NOT NULL, " + Constants.IndicatorQueryRepository.INDICATOR_CODE
-            + " TEXT NOT NULL, " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT + " BOOLEAN NOT NULL DEFAULT 0, "
+            + Constants.IndicatorQueryRepository.QUERY + " TEXT NOT NULL, "
+            + Constants.IndicatorQueryRepository.INDICATOR_CODE + " TEXT NOT NULL, "
+            + Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT + " BOOLEAN NOT NULL DEFAULT 0, "
             + Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS + " TEXT, "
+            + Constants.IndicatorQueryRepository.INDICATOR_GROUPING + " TEXT, "
             + Constants.IndicatorQueryRepository.DB_VERSION + " INTEGER)";
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
@@ -47,6 +48,11 @@ public class IndicatorQueryRepository extends BaseRepository {
                 && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS)) {
             addExpectedIndicatorColumn(database);
+        }
+
+        if (ReportingUtils.isTableExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE)
+                && !ReportingUtils.isColumnExists(database, Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_GROUPING)) {
+            addGroupingColumn(database);
         }
     }
 
@@ -80,6 +86,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         SQLiteDatabase database = getReadableDatabase();
         String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.INDICATOR_GROUPING
                 , Constants.IndicatorQueryRepository.DB_VERSION, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS};
         Cursor cursor = database.query(Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, columns
                 , null, null, null, null, null, null);
@@ -99,6 +106,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         IndicatorQuery indicatorQuery = null;
         String[] columns = {Constants.IndicatorQueryRepository.ID, Constants.IndicatorQueryRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.QUERY, Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT
+                , Constants.IndicatorQueryRepository.INDICATOR_GROUPING
                 , Constants.IndicatorQueryRepository.DB_VERSION, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS};
         String selection = Constants.IndicatorQueryRepository.QUERY + " = ?";
         String[] selectionArgs = {indicatorCode};
@@ -123,6 +131,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         values.put(Constants.IndicatorQueryRepository.INDICATOR_CODE, indicatorQuery.getIndicatorCode());
         values.put(Constants.IndicatorQueryRepository.DB_VERSION, indicatorQuery.getDbVersion());
         values.put(Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT, indicatorQuery.isMultiResult());
+        values.put(Constants.IndicatorQueryRepository.INDICATOR_GROUPING, indicatorQuery.getGrouping());
         values.put(Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS,
                 indicatorQuery.getExpectedIndicators() != null ?
                         new Gson().toJson(indicatorQuery.getExpectedIndicators()) : null);
@@ -135,6 +144,7 @@ public class IndicatorQueryRepository extends BaseRepository {
         indicatorQuery.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_CODE)));
         indicatorQuery.setQuery(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.QUERY)));
         indicatorQuery.setMultiResult(cursor.getInt(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_IS_MULTI_RESULT)) == 1);
+        indicatorQuery.setGrouping(cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_GROUPING)));
         indicatorQuery.setDbVersion(cursor.getInt(cursor.getColumnIndex(Constants.IndicatorQueryRepository.DB_VERSION)));
 
         String expectedResults = cursor.getString(cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS));
@@ -169,6 +179,17 @@ public class IndicatorQueryRepository extends BaseRepository {
 
         database.execSQL("ALTER TABLE " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
                 + " ADD COLUMN " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS + " TEXT");
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        database.execSQL("PRAGMA foreign_keys=on;");
+    }
+
+    public static void addGroupingColumn(@NonNull SQLiteDatabase database) {
+        database.execSQL("PRAGMA foreign_keys=off");
+        database.beginTransaction();
+
+        database.execSQL("ALTER TABLE " + Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+                + " ADD COLUMN " + Constants.IndicatorQueryRepository.INDICATOR_GROUPING + " TEXT");
         database.setTransactionSuccessful();
         database.endTransaction();
         database.execSQL("PRAGMA foreign_keys=on;");

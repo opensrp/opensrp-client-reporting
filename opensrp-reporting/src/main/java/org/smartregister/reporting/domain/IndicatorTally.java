@@ -6,6 +6,7 @@ public class IndicatorTally {
     private Long id;
     private float count = 0;
     private String indicatorCode;
+    private String grouping;
     private Date createdAt;
 
     public IndicatorTally(Long id, int count, String indicatorCode, Date createdAt) {
@@ -56,5 +57,13 @@ public class IndicatorTally {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getGrouping() {
+        return grouping;
+    }
+
+    public void setGrouping(String grouping) {
+        this.grouping = grouping;
     }
 }

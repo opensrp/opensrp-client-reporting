@@ -110,11 +110,11 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void getAllDailyTalliesShouldProcessAndReturnIndicatorTallies() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
-                , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, "2017-03-02", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Exposed\",\"Male\",3]]", 1, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_Total", null, 23, 0, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+                , "indicator_value_set", "indicator_is_value_set", "indicator_grouping", "day", "expected_indicators"}, 1);
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, null, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, null, "2017-03-02", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Exposed\",\"Male\",3]]", 1, null, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_Total", null, 23, 0, null, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
 
         ReportingLibrary.init(Mockito.mock(Context.class), Mockito.mock(Repository.class), Mockito.mock(CommonFtsObject.class), 1, 1);
         ReportingLibrary reportingLibrarySpy = Mockito.spy(ReportingLibrary.getInstance());
@@ -124,7 +124,7 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.doReturn(matrixCursor)
                 .when(sqLiteDatabase)
                 .rawQuery(
-                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code")
+                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_grouping, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code")
                         , Mockito.nullable(String[].class));
 
         List<Map<String, IndicatorTally>> dailyTallies =  dailyIndicatorCountRepositorySpy.getAllDailyTallies();
@@ -213,6 +213,7 @@ public class DailyIndicatorCountRepositoryTest {
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
                 , Constants.DailyIndicatorCountRepository.DAY};
 
@@ -221,7 +222,7 @@ public class DailyIndicatorCountRepositoryTest {
         String valueSet = "[['male', 90], ['female', 100]";
 
         MatrixCursor matrixCursor = new MatrixCursor(columns, 1);
-        matrixCursor.addRow(new Object[]{id, indicatorCode, 0L, valueSet, 1, System.currentTimeMillis()});
+        matrixCursor.addRow(new Object[]{id, indicatorCode, 0L, valueSet, null, 1, System.currentTimeMillis()});
 
         matrixCursor.moveToNext();
 
@@ -321,10 +322,10 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void findTalliesInMonthWhenGivenValidMonthDateInYYYYMMShouldReturn10Tallies() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
-                , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, "2017-03-02", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Exposed\",\"Male\",3]]", 1, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+                , "indicator_value_set", "indicator_grouping", "indicator_is_value_set", "day", "expected_indicators"}, 1);
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"]]", null, 1, "2017-03-01", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", null, 1, "2017-03-02", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Exposed\",\"Male\",3]]", null, 1, "2017-03-03", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
 
         ArgumentCaptor<String[]> argumentCaptor = ArgumentCaptor.forClass(String[].class);
         ReportingLibrary.getInstance().setDefaultMultiResultProcessor(new DefaultMultiResultProcessor());
@@ -332,7 +333,7 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.doReturn(matrixCursor)
                 .when(sqLiteDatabase)
                 .rawQuery(
-                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day >= ? AND indicator_daily_tally.day <= ?")
+                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_grouping, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day >= ? AND indicator_daily_tally.day <= ? AND indicator_daily_tally.indicator_grouping IS NULL")
                         , argumentCaptor.capture());
 
         Map<String, List<IndicatorTally>> talliesFromMonth = dailyIndicatorCountRepositorySpy.findTalliesInMonth(new SimpleDateFormat("yyyy-MM", Locale.ENGLISH).parse("2017-03"));
@@ -373,7 +374,7 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.doReturn(matrixCursor)
                 .when(sqLiteDatabase)
                 .rawQuery(
-                        ArgumentMatchers.eq("SELECT DISTINCT day FROM indicator_daily_tally WHERE day >= '2017-03-01' AND day <= '2017-03-31'")
+                        ArgumentMatchers.eq("SELECT DISTINCT day FROM indicator_daily_tally WHERE day >= '2017-03-01' AND day <= '2017-03-31' AND indicator_grouping IS NULL")
                         , Mockito.nullable(String[].class));
 
         SimpleDateFormat yyyMMdd = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -391,16 +392,16 @@ public class DailyIndicatorCountRepositoryTest {
     @Test
     public void getIndicatorTalliesForDayShouldReturn8TalliesWhenGivenValidDateWithTallies() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
-                , "indicator_value_set", "indicator_is_value_set", "day", "expected_indicators"}, 1);
-        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", 1, "2017-03-10", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
-        matrixCursor.addRow(new Object[]{1, "ME_Child_Total", 4, null, 0, "2017-03-10", null});
+                , "indicator_value_set", "indicator_grouping", "indicator_is_value_set", "day", "expected_indicators"}, 1);
+        matrixCursor.addRow(new Object[]{1, "ME_Child_HIV_Status_Under2_Gender", null, "[[\"hiv_status\",\"gender\",\"counter\"],[\"HIV Unknown\",\"Male\",1]]", null, 1, "2017-03-10", "[\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Exposed_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Negative_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Positive_Male\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Female\",\"ME_Child_HIV_Status_Under2_Gender_HIV Unknown_Male\"]"});
+        matrixCursor.addRow(new Object[]{1, "ME_Child_Total", 4, null, null, 0, "2017-03-10", null});
 
         ReportingLibrary.getInstance().setDefaultMultiResultProcessor(new DefaultMultiResultProcessor());
 
         Mockito.doReturn(matrixCursor)
                 .when(sqLiteDatabase)
                 .rawQuery(
-                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day = '2017-03-10'")
+                        ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_grouping, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code WHERE indicator_daily_tally.day = '2017-03-10' AND indicator_daily_tally.indicator_grouping IS NULL")
                         , ArgumentMatchers.nullable(String[].class));
 
         ArrayList<IndicatorTally> talliesForDay = dailyIndicatorCountRepositorySpy.getIndicatorTalliesForDay(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse("2017-03-10"));

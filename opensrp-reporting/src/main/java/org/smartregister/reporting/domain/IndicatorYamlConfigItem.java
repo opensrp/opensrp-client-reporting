@@ -11,7 +11,7 @@ public class IndicatorYamlConfigItem {
     private String indicatorQuery;
     private boolean isMultiResult;
     private List<String> expectedIndicators;
-
+    private String grouping;
 
     public String getKey() {
         return key;
@@ -51,5 +51,13 @@ public class IndicatorYamlConfigItem {
 
     public void setExpectedIndicators(List<String> expectedIndicators) {
         this.expectedIndicators = expectedIndicators;
+    }
+
+    public String getGrouping() {
+        return grouping;
+    }
+
+    public void setGrouping(String grouping) {
+        this.grouping = grouping;
     }
 }
