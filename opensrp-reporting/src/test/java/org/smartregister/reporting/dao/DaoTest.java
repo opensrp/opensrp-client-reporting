@@ -15,14 +15,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.Context;
+import org.smartregister.CoreLibrary;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.Repository;
+import org.smartregister.util.AppProperties;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ReportingLibrary.class, ReportIndicatorDaoImpl.class})
+@PrepareForTest({ReportingLibrary.class, ReportIndicatorDaoImpl.class, CoreLibrary.class})
 public class DaoTest {
 
     @Mock
@@ -60,6 +63,12 @@ public class DaoTest {
     private AllSharedPreferences sharedPreferences;
 
     private ReportIndicatorDaoImpl daoSpy;
+
+    @Mock
+    private CoreLibrary coreLibrary;
+
+    @Mock
+    private AppProperties appProperties;
 
     @Before
     public void setUp() {
@@ -102,6 +111,13 @@ public class DaoTest {
         indicatorQueries.put("INDI-100", new IndicatorQuery(1L, "INDI-100", "select count(*) from table", 4, false, null));
 
         PowerMockito.mockStatic(ReportingLibrary.class);
+
+        PowerMockito.mockStatic(CoreLibrary.class);
+        PowerMockito.when(CoreLibrary.getInstance()).thenReturn(coreLibrary);
+        PowerMockito.when(coreLibrary.context()).thenReturn(context);
+        PowerMockito.when(context.getAppProperties()).thenReturn(appProperties);
+        PowerMockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+        PowerMockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
 
         PowerMockito.when(ReportingLibrary.getInstance()).thenReturn(reportingLibrary);
         Mockito.when(reportingLibrary.getRepository()).thenReturn(repository);

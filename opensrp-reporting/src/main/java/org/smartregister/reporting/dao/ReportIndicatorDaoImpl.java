@@ -18,7 +18,9 @@ import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.EventClientRepository;
+import org.smartregister.util.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -142,8 +144,8 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (!executedQueries.contains(queryString)) {
                     Timber.i("QUERY : %s", queryString);
                     float count = executeQueryAndReturnCount(queryString, database);
-
-                    if (count > 0) {
+                    boolean shouldAllowZeroTallies = Utils.getBooleanProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES);
+                    if (shouldAllowZeroTallies ? count > -1 : count > 0) {
                         tally = new CompositeIndicatorTally();
                         tally.setCount(count);
                     }

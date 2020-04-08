@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.Context;
+import org.smartregister.CoreLibrary;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
@@ -21,8 +22,10 @@ import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
+import org.smartregister.reporting.util.Constants;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.Repository;
+import org.smartregister.util.AppProperties;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +53,15 @@ public class ReportIndicatorDaoImplTest {
 
     @Mock
     private IndicatorQueryRepository indicatorQueryRepository;
+
+    @Mock
+    private CoreLibrary coreLibrary;
+
+    @Mock
+    private AppProperties appProperties;
+
+    @Mock
+    private Context context;
 
     @Before
     public void setUp() {
@@ -99,6 +111,13 @@ public class ReportIndicatorDaoImplTest {
         Repository repository = Mockito.mock(Repository.class);
         Mockito.doReturn(database).when(repository).getWritableDatabase();
 
+        ReflectionHelpers.setStaticField(CoreLibrary.class, "instance", coreLibrary);
+
+        Mockito.when(coreLibrary.context()).thenReturn(context);
+        Mockito.when(context.getAppProperties()).thenReturn(appProperties);
+        Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+        Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+
         ReportingLibrary reportingLibrarySpy = Mockito.mock(ReportingLibrary.class);
         ReflectionHelpers.setStaticField(ReportingLibrary.class, "instance", reportingLibrarySpy);
 
@@ -109,11 +128,11 @@ public class ReportIndicatorDaoImplTest {
         Context context = Mockito.mock(Context.class);
         Mockito.doReturn(context).when(reportingLibrary).getContext();
 
+
         AllSharedPreferences allSharedPreferences = Mockito.mock(AllSharedPreferences.class);
         Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
 
         Whitebox.setInternalState(reportIndicatorDao, "reportingLibrary", reportingLibrary);
-
 
         LinkedHashMap<String, Date> dates = new LinkedHashMap<>();
         dates.put("2018-01-01", new Date());
@@ -137,6 +156,13 @@ public class ReportIndicatorDaoImplTest {
 
     @Test
     public void saveTalliesGeneratesTallyObject() {
+        ReflectionHelpers.setStaticField(CoreLibrary.class, "instance", coreLibrary);
+
+        Mockito.when(coreLibrary.context()).thenReturn(context);
+        Mockito.when(context.getAppProperties()).thenReturn(appProperties);
+        Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+        Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
         Map.Entry<String, Date> dates = new Map.Entry<String, Date>() {
