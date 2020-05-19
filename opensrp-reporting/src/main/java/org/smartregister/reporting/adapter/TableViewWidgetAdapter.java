@@ -3,13 +3,14 @@ package org.smartregister.reporting.adapter;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.core.widget.TextViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.view.TableView;
