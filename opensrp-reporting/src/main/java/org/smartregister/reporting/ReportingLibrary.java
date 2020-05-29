@@ -1,7 +1,6 @@
 package org.smartregister.reporting;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import net.sqlcipher.database.SQLiteDatabase;
 

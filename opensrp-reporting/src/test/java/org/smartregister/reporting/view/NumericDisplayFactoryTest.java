@@ -1,10 +1,11 @@
 package org.smartregister.reporting.view;
 
 import android.content.Context;
-import androidx.constraintlayout.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -2,9 +2,10 @@ package org.smartregister.reporting.repository;
 
 import android.content.ContentValues;
 import android.database.SQLException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
