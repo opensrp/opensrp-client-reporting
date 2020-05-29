@@ -14,6 +14,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_install:
+  - yes | sdkmanager "platforms;android-28"
+
 android:
   components:
     # tools required
