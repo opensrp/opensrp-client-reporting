@@ -1,5 +1,7 @@
 package org.smartregister.reporting.dao;
 
+import android.support.annotation.Nullable;
+
 import net.sqlcipher.MatrixCursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -19,6 +21,7 @@ import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -33,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,23 +47,19 @@ import java.util.Set;
 @RunWith(MockitoJUnitRunner.class)
 public class ReportIndicatorDaoImplTest {
 
+    @Mock
+    ReportIndicator reportIndicator;
     private ReportIndicatorDaoImpl reportIndicatorDao;
-
     @Mock
     private IndicatorRepository indicatorRepository;
-
     @Mock
     private DailyIndicatorCountRepository dailyIndicatorCountRepository;
-
     @Mock
     private IndicatorQueryRepository indicatorQueryRepository;
-
     @Mock
     private CoreLibrary coreLibrary;
-
     @Mock
     private AppProperties appProperties;
-
     @Mock
     private Context context;
 
@@ -200,4 +200,26 @@ public class ReportIndicatorDaoImplTest {
         Mockito.verify(dailyIndicatorCountRepository).add(Mockito.any(CompositeIndicatorTally.class));
 
     }
+
+    @Test
+    public void testAddReportIndicator() {
+        reportIndicatorDao.addReportIndicator(reportIndicator);
+        Assert.assertNotNull(indicatorRepository);
+    }
+
+    @Test
+    public void TestAddIndicatorQuery() {
+        @Nullable List<String> expectedIndicators = new ArrayList<>();
+        expectedIndicators.add(0, "indicator1");
+
+        IndicatorQuery indicatorQuery = new IndicatorQuery();
+        indicatorQuery.setDbVersion(2);
+        indicatorQuery.setExpectedIndicators(expectedIndicators);
+        indicatorQuery.setId(Mockito.anyLong());
+        indicatorQuery.setIndicatorCode("indicatorCode");
+
+        reportIndicatorDao.addIndicatorQuery(indicatorQuery);
+        Assert.assertNotNull(indicatorQueryRepository);
+    }
+
 }
