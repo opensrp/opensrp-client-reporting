@@ -1,4 +1,4 @@
-package org.smartregister.reporting.utils;
+package org.smartregister.reporting.util;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockitoAnnotations;
-import org.smartregister.reporting.util.AppProperties;
 
 import java.util.Properties;
 
@@ -46,9 +45,9 @@ public class AppPropertiesTest {
     }
 
     @Test
-    public  void testHasPropertyKey(){
+    public void testHasPropertyKey() {
         appProperties.hasProperty(key);
         boolean value = properties.getProperty(key) != null;
-         Assert.assertTrue(value);
+        Assert.assertTrue(value);
     }
 }
