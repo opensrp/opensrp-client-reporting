@@ -46,10 +46,11 @@ import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportIndicatorDaoImplTest {
-
     @Mock
-    ReportIndicator reportIndicator;
+    private ReportIndicator reportIndicator;
+
     private ReportIndicatorDaoImpl reportIndicatorDao;
+
     @Mock
     private IndicatorRepository indicatorRepository;
     @Mock
@@ -208,7 +209,7 @@ public class ReportIndicatorDaoImplTest {
     }
 
     @Test
-    public void TestAddIndicatorQuery() {
+    public void testAddIndicatorQuery() {
         @Nullable List<String> expectedIndicators = new ArrayList<>();
         expectedIndicators.add(0, "indicator1");
 
