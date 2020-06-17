@@ -99,14 +99,7 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
             if (value instanceof PieSliceValue) {
-                //PieSliceValue pieSliceValue = (PieSliceValue) value;
                 PieChartSlice sliceValue = slices.get(arcIndex);
-                /*
-                sliceValue.setColor(pieSliceValue.getColor());
-                sliceValue.setValue(pieSliceValue.getValue());
-                sliceValue.setKey(pieSliceValue);
-                sliceValue.setLabel(pieSliceValue.getCallOutLabel());
-                 */
                 listener.handleOnSelectEvent(sliceValue);
             }
 
