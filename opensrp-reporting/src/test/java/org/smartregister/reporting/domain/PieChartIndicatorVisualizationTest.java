@@ -49,6 +49,7 @@ public class PieChartIndicatorVisualizationTest {
         PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
                 .indicatorLabel(indicatorLabel)
                 .chartHasLabels(true)
+                .indicatorNote("Note")
                 .chartHasLabelsOutside(true)
                 .chartHasCenterCircle(false)
                 .chartSlices(chartSlices)
