@@ -82,26 +82,24 @@ public class PieChartFactory implements IndicatorVisualisationFactory {
         pieChartView.setChartRotationEnabled(false);
         pieChartView.setCircleFillRatio(0.8f);
         pieChartView.setPieChartData(chartData);
-        pieChartView.setOnValueTouchListener(new ChartValueSelectListener(chartConfiguration.getListener()));
+        pieChartView.setOnValueTouchListener(new ChartValueSelectListener(chartConfiguration.getListener(),chartConfiguration.getSlices()));
 
         return rootLayout;
     }
 
-    private class ChartValueSelectListener implements PieChartOnValueSelectListener {
+    private static class ChartValueSelectListener implements PieChartOnValueSelectListener {
         private PieChartSelectListener listener;
+        private List<PieChartSlice> slices;
 
-        private ChartValueSelectListener(PieChartSelectListener listener) {
+        private ChartValueSelectListener(PieChartSelectListener listener, List<PieChartSlice> slices) {
             this.listener = listener;
+            this.slices = slices;
         }
 
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
             if (value instanceof PieSliceValue) {
-                PieSliceValue pieSliceValue = (PieSliceValue) value;
-                PieChartSlice sliceValue = new PieChartSlice();
-                sliceValue.setColor(pieSliceValue.getColor());
-                sliceValue.setValue(pieSliceValue.getValue());
-                sliceValue.setLabel(pieSliceValue.getCallOutLabel());
+                PieChartSlice sliceValue = slices.get(arcIndex);
                 listener.handleOnSelectEvent(sliceValue);
             }
 
