@@ -40,8 +40,8 @@ public class PieChartIndicatorVisualizationTest {
         pieChartNoValue.put(indicatorKey, new IndicatorTally(null, indicatorValue2, indicatorKey, new Date()));
 
 
-        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(indicatorKey).getCount(),"Yes", Color.parseColor("#99CC00"));
-        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(indicatorKey).getCount(),"No", Color.parseColor("#FF4444"));
+        PieChartSlice yesSlice = new PieChartSlice(pieChartYesValue.get(indicatorKey).getCount(),"Yes", Color.parseColor("#99CC00"), indicatorKey);
+        PieChartSlice noSlice = new PieChartSlice(pieChartNoValue.get(indicatorKey).getCount(),"No", Color.parseColor("#FF4444"), indicatorKey);
         chartSlices.add(yesSlice);
         chartSlices.add(noSlice);
 
@@ -49,6 +49,7 @@ public class PieChartIndicatorVisualizationTest {
         PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
                 .indicatorLabel(indicatorLabel)
                 .chartHasLabels(true)
+                .indicatorNote("Note")
                 .chartHasLabelsOutside(true)
                 .chartHasCenterCircle(false)
                 .chartSlices(chartSlices)

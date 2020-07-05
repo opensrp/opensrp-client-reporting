@@ -9,6 +9,7 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
 import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
+import org.smartregister.reporting.listener.PieChartSelectListener;
 import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.model.PieChartDisplayModel;
 
@@ -55,13 +56,18 @@ public class ReportingUtil {
     }
 
     public static PieChartDisplayModel getPieChartDisplayModel(List<PieChartSlice> pieChartSlices,
-                                                               Integer indicatorLabel, Integer indicatorNote) {
-        return new PieChartDisplayModel(pieChartSlices, indicatorLabel, indicatorNote);
+                                                               Integer indicatorLabel, Integer indicatorNote, PieChartSelectListener pieChartSelectListener) {
+        return new PieChartDisplayModel(pieChartSlices, indicatorLabel, indicatorNote, pieChartSelectListener);
+    }
+
+    public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
+                                                 List<Map<String, IndicatorTally>> indicatorTallies, String key) {
+        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, key);
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
                                                  List<Map<String, IndicatorTally>> indicatorTallies) {
-        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color);
+        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, indicatorCode);
     }
 
     public static List<PieChartSlice> addPieChartSlices(PieChartSlice... chartSlices) {

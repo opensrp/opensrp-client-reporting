@@ -108,7 +108,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
 
         PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, getResources().getString(R.string.yes_slice_label), getResources().getColor(R.color.colorPieChartGreen), indicatorTallies);
         PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
-        mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note)).createView());
+        mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note, null)).createView());
 
         NumericDisplayModel floatIndicatorCount = getIndicatorDisplayModel(TOTAL_COUNT, "S_IND_005", R.string.float_count, indicatorTallies);
         mainLayout.addView(new NumericIndicatorView(getContext(), floatIndicatorCount).createView());

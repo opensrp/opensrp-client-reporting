@@ -66,7 +66,7 @@ public class PieChartIndicatorView implements ReportContract.IndicatorView {
                 .chartHasLabelsOutside(true)
                 .chartHasCenterCircle(false)
                 .chartSlices(pieChartDisplayModel.getPieChartSlices())
-                .chartListener(new ChartListener()).build();
+                .chartListener(pieChartDisplayModel.getPieChartSelectListener() == null ? new ChartListener() : pieChartDisplayModel.getPieChartSelectListener()).build();
     }
 
     public class ChartListener implements PieChartSelectListener {
