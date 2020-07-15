@@ -1,13 +1,15 @@
 package org.smartregister.sample.view;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import androidx.core.app.Fragment;
-import androidx.core.app.FragmentManager;
-import androidx.core.app.FragmentPagerAdapter;
-import androidx.core.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import org.smartregister.sample.R;
 
@@ -19,6 +21,7 @@ public class SampleActivity extends AppCompatActivity {
         setContentView(R.layout.sample_activity);
         setUpViews();
     }
+
     private void setUpViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -36,6 +39,11 @@ public class SampleActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -60,10 +68,5 @@ public class SampleActivity extends AppCompatActivity {
         public int getCount() {
             return 2;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }
