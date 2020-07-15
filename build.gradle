@@ -10,18 +10,14 @@ buildscript {
     }
 }
 
-configure(allprojects) { project ->
-
-    version = VERSION_NAME
-    group = GROUP
-    buildscript {
-        repositories {
-            google()
-            jcenter()
-            mavenCentral()
-            maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-            mavenLocal()
-        }
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+        mavenLocal()
     }
 }
 
@@ -31,8 +27,9 @@ subprojects {
 
     group = 'org.smartregister'
 
-    ext.androidToolsBuildGradle     = '3.2.0'
-    ext.androidBuildToolsVersion    = '28.0.2'
+    ext.androidToolsBuildGradleVersion  = '3.6.3'
+    ext.androidBuildToolsVersion        = '28.0.3'
+    ext.coverallsGradlePluginVersion    = '2.8.3'
     ext.androidMinSdkVersion        = 18
     ext.androidCompileSdkVersion    = 28
     ext.androidTargetSdkVersion     = 28

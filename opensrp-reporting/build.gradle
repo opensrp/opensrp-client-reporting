@@ -6,8 +6,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:3.2.0"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2'
+        classpath "com.android.tools.build:gradle:${androidToolsBuildGradleVersion}"
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:${coverallsGradlePluginVersion}"
     }
 }
 
@@ -20,6 +20,12 @@ jacoco {
 }
 
 android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
 
@@ -71,14 +77,6 @@ android {
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
-}
-
-allprojects {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
-        mavenLocal()
-    }
 }
 
 dependencies {
