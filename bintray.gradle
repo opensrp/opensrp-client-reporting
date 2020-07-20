@@ -1,5 +1,3 @@
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 ext.bintrayVersion = VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim() // Is this okay?
 
