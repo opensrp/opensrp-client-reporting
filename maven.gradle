@@ -23,6 +23,10 @@ def getRepositoryUsername() {
     return hasProperty('sonatypeUsername') ? sonatypeUsername : ""
 }
 
+def uploadToBintray() {
+    bintrayUpload.execute()
+}
+
 afterEvaluate { project ->
     uploadArchives {
         repositories {
@@ -64,6 +68,9 @@ afterEvaluate { project ->
                     }
                 }
             } else {
+                doLast {
+                    uploadToBintray()
+                }
                 mavenDeployer {
                     beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
