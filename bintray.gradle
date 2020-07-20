@@ -1,0 +1,48 @@
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+ext.bintrayVersion = VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim() // Is this okay?
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    pkg {
+        repo = 'android-libraries'
+        name = project.name
+        userOrg = 'opensrp'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/OpenSRP/opensrp-client-reporting.git'
+        version {
+            name =  bintrayVersion
+            desc = "OpenSRP Client Reporting ${bintrayVersion}"
+            released  = new Date()
+            vcsTag = bintrayVersion
+        }
+        publish = true
+    }
+    publications = ['ReportingLibPublication']
+}
+
+publishing {
+    publications {
+        ReportingLibPublication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/opensrp-reporting-release.aar")
+            artifact(sourceJar)
+            groupId this.group
+            artifactId 'opensrp-reporting'
+            version bintrayVersion
+
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+}
