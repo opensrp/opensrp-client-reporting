@@ -4,8 +4,8 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 ext.bintrayVersion = VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim() // Is this okay?
 
 bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
     pkg {
         repo = 'android-libraries'
         name = project.name
