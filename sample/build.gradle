@@ -5,7 +5,6 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${androidToolsBuildGradleVersion}"
-        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:${coverallsGradlePluginVersion}"
     }
 }
 
