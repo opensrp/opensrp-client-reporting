@@ -11,9 +11,11 @@ buildscript {
     }
 }
 
+apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
-apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 jacoco {
     toolVersion = "0.8.0"
@@ -115,6 +117,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.23'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 }
 
@@ -144,3 +148,6 @@ coveralls {
 }
 
 apply from: '../maven.gradle'
+repositories {
+    mavenCentral()
+}
