@@ -1,6 +1,6 @@
 package org.smartregister.reporting.event;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.smartregister.reporting.domain.TallyStatus;
 
