@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[opensrp-client-reporting.strings-xml--master]
+file_filter = opensrp-reporting/src/main/res/values-<lang>/strings.xml
+source_file = opensrp-reporting/src/main/res/values/strings.xml
+source_lang = en
+type = ANDROID
