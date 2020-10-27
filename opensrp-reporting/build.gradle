@@ -6,8 +6,16 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:3.1.2"
+        classpath "com.android.tools.build:gradle:$androidToolsBuildGradle"
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+        mavenLocal()
     }
 }
 
@@ -18,12 +26,21 @@ apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
 jacoco {
-    toolVersion = "0.8.0"
+    toolVersion = "0.8.5"
 }
 
 android {
+
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
+
+    defaultPublishConfig !isReleaseBuild() ? "debug" : "release"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 
     defaultConfig {
         minSdkVersion androidMinSdkVersion
@@ -71,16 +88,19 @@ android {
 
 }
 
+android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
-allprojects {
-    repositories {
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
-        mavenLocal()
-    }
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+artifacts {
+    archives sourceJar
 }
 
 dependencies {
@@ -147,10 +167,5 @@ coveralls {
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
 }
 
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
-
-apply from: '../bintray.gradle'
 apply from: '../maven.gradle'
+// apply from: '../bintray.gradle'
