@@ -39,5 +39,6 @@ public interface Constants {
 
     interface ReportingConfig {
         String SHOULD_ALLOW_ZERO_TALLIES = "SHOULD_ALLOW_ZERO_TALLIES";
+        String MIN_REPORT_DATE = "MIN_REPORT_DATE";
     }
 }

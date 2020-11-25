@@ -5,13 +5,15 @@ import android.support.annotation.NonNull;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.smartregister.util.Utils;
+
 import java.util.ArrayList;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-07-09
  */
 
-public class ReportingUtils {
+public class ReportingUtils extends Utils {
 
     /**
      * Checks if a column exists on the table. An {@link Exception} is expected to be thrown by the sqlite
@@ -83,7 +85,7 @@ public class ReportingUtils {
 
     public static ArrayList<Object[]> performQuery(@NonNull SQLiteDatabase sqliteDatabase, @NonNull String query) {
         ArrayList<Object[]> rows = new ArrayList<>();
-        Cursor cursor = sqliteDatabase.rawQuery(query,null);
+        Cursor cursor = sqliteDatabase.rawQuery(query, null);
         if (null != cursor) {
             int cols = cursor.getColumnCount();
             rows.add(cursor.getColumnNames());
