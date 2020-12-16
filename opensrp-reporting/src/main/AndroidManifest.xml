@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <service
-            android:name=".service.IndicatorGeneratorIntentService"
+            android:name="org.smartregister.reporting.service.IndicatorGeneratorIntentService"
             android:exported="false"></service>
     </application>
 

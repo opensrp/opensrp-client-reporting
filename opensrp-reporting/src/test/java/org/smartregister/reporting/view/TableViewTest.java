@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
@@ -23,12 +24,15 @@ import edu.emory.mathcs.backport.java.util.Arrays;
  */
 public class TableViewTest extends BaseUnitTest {
 
-    @Mock
     private AttributeSet attributeSet;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this);
+        attributeSet = Robolectric.buildAttributeSet()
+                .addAttribute(R.attr.subtitle, "subtitle")
+                .build();
     }
 
     @Test
@@ -37,14 +41,11 @@ public class TableViewTest extends BaseUnitTest {
         TableView view = new TableView(RuntimeEnvironment.application);
         Assert.assertNotNull(view);
 
-
         view = new TableView(RuntimeEnvironment.application, attributeSet);
         Assert.assertNotNull(view);
 
-
         view = new TableView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress);
         Assert.assertNotNull(view);
-
 
         view = new TableView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress, R.style.tableViewTestStyle);
         Assert.assertNotNull(view);
@@ -156,7 +157,6 @@ public class TableViewTest extends BaseUnitTest {
         view.setHeaderBackgroundColor(RuntimeEnvironment.application.getResources().getColor(R.color.colorPastelGreen));
         view.setRowTextColor(RuntimeEnvironment.application.getResources().getColor(R.color.dark_grey));
         view.setRowBorderHidden(true);
-
 
         view.setTableData(null, null);
         Assert.assertEquals(1, view.getColumnCount());
