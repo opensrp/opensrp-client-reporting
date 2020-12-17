@@ -3,7 +3,10 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven{  url "https://plugins.gradle.org/m2/" }
+        mavenLocal()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
     }
 
     dependencies {
@@ -13,8 +16,8 @@ buildscript {
     }
 }
 
-apply plugin : 'java'
-apply plugin : 'build-dashboard'
+apply plugin: 'java'
+apply plugin: 'build-dashboard'
 apply plugin: 'io.codearte.nexus-staging'
 
 configure(allprojects) { project ->
@@ -28,6 +31,7 @@ configure(allprojects) { project ->
             jcenter()
             mavenCentral()
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+            maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
             mavenLocal()
         }
     }
@@ -39,11 +43,11 @@ subprojects {
 
     group = 'org.smartregister'
 
-    ext.androidToolsBuildGradle     = '4.0.0'
-    ext.androidBuildToolsVersion    = '29.0.3'
-    ext.androidMinSdkVersion        = 18
-    ext.androidCompileSdkVersion    = 28
-    ext.androidTargetSdkVersion     = 28
+    ext.androidToolsBuildGradle = '4.0.0'
+    ext.androidBuildToolsVersion = '29.0.3'
+    ext.androidMinSdkVersion = 18
+    ext.androidCompileSdkVersion = 28
+    ext.androidTargetSdkVersion = 28
 
     ext.androidAnnotationsVersion = '3.0.1';
     ext.androidAnnotationsAPIVersion = '3.0.1';
@@ -56,13 +60,15 @@ subprojects {
         maven { url "http://acra.googlecode.com/svn/repository/releases" }
         maven { url "https://repo.maven.apache.org/maven2" }
         maven { url "http://cloudant.github.io/cloudant-sync-eap/repository" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
         mavenLocal()
     }
 
     // Improve build server performance by allowing disabling of pre-dexing
     // (see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.)
     project.plugins.whenPluginAdded { plugin ->
-        if("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
             project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
         } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
             project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
