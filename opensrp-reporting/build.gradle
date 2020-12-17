@@ -50,6 +50,7 @@ android {
             buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '15'
         }
     }
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
@@ -67,6 +68,8 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/NOTICE.md'
     }
 
     testOptions {
@@ -77,8 +80,6 @@ android {
     }
 
 }
-
-android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
@@ -94,7 +95,7 @@ artifacts {
 }
 
 dependencies {
-    implementation('org.smartregister:opensrp-client-core:1.10.5-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-core:1.15.4-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'
