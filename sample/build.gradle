@@ -86,6 +86,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.github.johnkil.print', module: 'print'
         exclude group: 'org.apache.httpcomponents', module: 'httpmime'
+        exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
 
     implementation project(":opensrp-reporting")
