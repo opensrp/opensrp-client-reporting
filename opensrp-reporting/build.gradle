@@ -106,6 +106,8 @@ dependencies {
         exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
 
+    compileOnly 'com.ibm.fhir:fhir-model:4.2.3'
+
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'

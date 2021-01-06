@@ -88,6 +88,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpmime'
         exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
+    compileOnly 'com.ibm.fhir:fhir-model:4.2.3'
 
     implementation project(":opensrp-reporting")
 
