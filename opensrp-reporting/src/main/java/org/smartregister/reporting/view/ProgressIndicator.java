@@ -28,7 +28,7 @@ import timber.log.Timber;
 /**
  * Created by ndegwamartin on 2019-09-16.
  */
-public class ProgressIndicatorView extends LinearLayout {
+public class ProgressIndicator extends LinearLayout {
 
     private int progressBarBackgroundColor;
     private int progressBarForegroundColor;
@@ -48,26 +48,26 @@ public class ProgressIndicatorView extends LinearLayout {
     private static final String PROGRESSBAR_DRAWABLE = "progressbar_drawable";
     private AttributeSet attrs;
 
-    public ProgressIndicatorView(Context context) {
+    public ProgressIndicator(Context context) {
         super(context);
         initView();
 
     }
 
-    public ProgressIndicatorView(Context context, @Nullable AttributeSet attrs) {
+    public ProgressIndicator(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
         setupAttributes(attrs);
     }
 
-    public ProgressIndicatorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ProgressIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
         setupAttributes(attrs);
     }
 
     @TargetApi(android.os.Build.VERSION_CODES.LOLLIPOP)
-    public ProgressIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ProgressIndicator(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView();
         setupAttributes(attrs);

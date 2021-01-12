@@ -21,7 +21,7 @@ import org.smartregister.reporting.R;
 /**
  * Created by ndegwamartin on 2019-10-11.
  */
-public class ProgressIndicatorViewTest extends BaseUnitTest {
+public class ProgressIndicatorTest extends BaseUnitTest {
 
     @Mock
     private AttributeSet attributeSet;
@@ -34,19 +34,19 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
     @Test
     public void testConstructorsInstantiateSuccesfully() {
 
-        ProgressIndicatorView view = new ProgressIndicatorView(RuntimeEnvironment.application);
+        ProgressIndicator view = new ProgressIndicator(RuntimeEnvironment.application);
         Assert.assertNotNull(view);
 
 
-        view = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet);
+        view = new ProgressIndicator(RuntimeEnvironment.application, attributeSet);
         Assert.assertNotNull(view);
 
 
-        view = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress);
+        view = new ProgressIndicator(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress);
         Assert.assertNotNull(view);
 
 
-        view = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress, R.style.progressIndicatorViewTestStyle);
+        view = new ProgressIndicator(RuntimeEnvironment.application, attributeSet, R.styleable.ProgressIndicatorView_progress, R.style.progressIndicatorViewTestStyle);
         Assert.assertNotNull(view);
     }
 
@@ -59,8 +59,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         int[] viewAttr = R.styleable.ProgressIndicatorView;
         TypedArray styledAttributes = theme.obtainStyledAttributes(viewAttr);
 
-        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
-        ProgressIndicatorView view = Mockito.spy(actualObject);
+        ProgressIndicator actualObject = new ProgressIndicator(RuntimeEnvironment.application);
+        ProgressIndicator view = Mockito.spy(actualObject);
         Assert.assertNotNull(view);
 
         Mockito.when(view.getStyledAttributes()).thenReturn(styledAttributes);
@@ -82,8 +82,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
-        ProgressIndicatorView view = Mockito.spy(actualObject);
+        ProgressIndicator actualObject = new ProgressIndicator(RuntimeEnvironment.application);
+        ProgressIndicator view = Mockito.spy(actualObject);
         view.setupAttributes(attributeSet);
 
         view.setTitle("New Test Title");
@@ -109,8 +109,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application, attributeSet);
-        ProgressIndicatorView view = Mockito.spy(actualObject);
+        ProgressIndicator actualObject = new ProgressIndicator(RuntimeEnvironment.application, attributeSet);
+        ProgressIndicator view = Mockito.spy(actualObject);
 
         view.setTitle("Test Title");
         view.setSubTitle("Sub Title");
@@ -146,8 +146,8 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
         Resources.Theme theme = RuntimeEnvironment.application.getResources().newTheme();
         theme.applyStyle(R.style.progressIndicatorViewTestStyle, true);
 
-        ProgressIndicatorView actualObject = new ProgressIndicatorView(RuntimeEnvironment.application);
-        ProgressIndicatorView view = Mockito.spy(actualObject);
+        ProgressIndicator actualObject = new ProgressIndicator(RuntimeEnvironment.application);
+        ProgressIndicator view = Mockito.spy(actualObject);
         view.onDraw(Mockito.mock(Canvas.class));
         Assert.assertNotNull(view);
 

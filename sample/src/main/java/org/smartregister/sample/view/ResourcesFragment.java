@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.smartregister.reporting.view.ProgressIndicatorView;
+import org.smartregister.reporting.view.ProgressIndicator;
 import org.smartregister.reporting.view.TableView;
 import org.smartregister.sample.R;
 
@@ -58,7 +58,7 @@ public class ResourcesFragment extends Fragment implements View.OnClickListener 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ProgressIndicatorView progressWidget = getActivity().findViewById(R.id.progressIndicatorView);
+        ProgressIndicator progressWidget = getActivity().findViewById(R.id.progressIndicatorView);
         Integer valA = getRange(14, 99);
         progressWidget.setProgress(valA);
         progressWidget.setTitle(valA + "%");

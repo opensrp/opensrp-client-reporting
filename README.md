@@ -78,7 +78,7 @@ using the property **progressDrawable** listed above, you can set the progressDr
 **Via XML:**
 
 ```
- <org.smartregister.reporting.view.ProgressIndicatorView
+ <org.smartregister.reporting.view.ProgressIndicator
             android:id="@+id/progressIndicatorView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
