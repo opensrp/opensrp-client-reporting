@@ -21,6 +21,8 @@ configure(allprojects) { project ->
             mavenCentral()
             maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
             mavenLocal()
+            maven { url "https://plugins.gradle.org/m2/" }
+
         }
     }
 }
@@ -39,6 +41,7 @@ subprojects {
 
     ext.androidAnnotationsVersion = '3.0.1';
     ext.androidAnnotationsAPIVersion = '3.0.1';
+    ext.coverallsVersion = "2.10.2"
 
     repositories {
         google()
