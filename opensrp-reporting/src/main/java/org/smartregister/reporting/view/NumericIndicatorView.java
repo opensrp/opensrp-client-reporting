@@ -4,9 +4,8 @@ import android.content.Context;
 import android.view.View;
 
 import org.smartregister.reporting.contract.ReportContract;
-import org.smartregister.reporting.domain.NumericIndicatorVisualization;
+import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.NumericDisplayFactory;
-import org.smartregister.reporting.model.NumericDisplayModel;
 
 import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
 
@@ -14,22 +13,17 @@ import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
 public class NumericIndicatorView implements ReportContract.IndicatorView {
 
     private Context context;
-    private NumericDisplayModel numericDisplayModel;
+    private NumericIndicatorDisplayOptions displayOptions;
     private NumericDisplayFactory numericDisplayFactory;
 
-    public NumericIndicatorView(Context context, NumericDisplayModel numericDisplayModel) {
+    public NumericIndicatorView(Context context, NumericIndicatorDisplayOptions displayOptions) {
         this.context = context;
-        this.numericDisplayModel = numericDisplayModel;
+        this.displayOptions = displayOptions;
         numericDisplayFactory = new NumericDisplayFactory();
     }
 
     @Override
     public View createView() {
-        return getIndicatorView(getNumericVisualization(), numericDisplayFactory, context);
-    }
-
-    private NumericIndicatorVisualization getNumericVisualization() {
-        return new NumericIndicatorVisualization(context.getResources().getString(
-                numericDisplayModel.getLabelStringResource()),  numericDisplayModel.getCount());
+        return getIndicatorView(displayOptions, numericDisplayFactory, context);
     }
 }

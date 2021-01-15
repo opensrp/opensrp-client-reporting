@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.view.NumericIndicatorView;
 import org.smartregister.reporting.view.PieChartIndicatorView;
 import org.smartregister.sample.R;
@@ -28,8 +28,8 @@ import java.util.Map;
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.TOTAL_COUNT;
 import static org.smartregister.reporting.util.ReportingUtil.addPieChartSlices;
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorDisplayModel;
-import static org.smartregister.reporting.util.ReportingUtil.getPieChartDisplayModel;
+import static org.smartregister.reporting.util.ReportingUtil.getNumericIndicatorDisplayOptions;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartDisplayOptions;
 import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
 
 public class DashboardFragment extends Fragment implements ReportContract.View, LoaderManager.LoaderCallbacks<List<Map<String, IndicatorTally>>> {
@@ -103,15 +103,15 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     }
 
     private void createSampleReportViews(ViewGroup mainLayout) {
-        NumericDisplayModel indicator1 = getIndicatorDisplayModel(TOTAL_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
-        mainLayout.addView(new NumericIndicatorView(getContext(), indicator1).createView());
+        NumericIndicatorDisplayOptions intDisplay = getNumericIndicatorDisplayOptions(TOTAL_COUNT, ChartUtil.numericIndicatorKey, getString(R.string.total_under_5_count), indicatorTallies);
+        mainLayout.addView(new NumericIndicatorView(getContext(), intDisplay).createView());
 
         PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, getResources().getString(R.string.yes_slice_label), getResources().getColor(R.color.colorPieChartGreen), indicatorTallies);
         PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
-        mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note, null)).createView());
+        mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayOptions(addPieChartSlices(indicator2_1, indicator2_2), getString(R.string.num_of_lieterate_children_0_60_label), getString(R.string.sample_note), null)).createView());
 
-        NumericDisplayModel floatIndicatorCount = getIndicatorDisplayModel(TOTAL_COUNT, "S_IND_005", R.string.float_count, indicatorTallies);
-        mainLayout.addView(new NumericIndicatorView(getContext(), floatIndicatorCount).createView());
+        NumericIndicatorDisplayOptions floatDisplay = getNumericIndicatorDisplayOptions(TOTAL_COUNT, "S_IND_005", getContext().getString(R.string.float_count), indicatorTallies);
+        mainLayout.addView(new NumericIndicatorView(getContext(), floatDisplay).createView());
     }
 
     @NonNull

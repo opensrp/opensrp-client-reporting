@@ -7,7 +7,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.util.ReportingUtil;
 
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorDisplayModel;
+import static org.smartregister.reporting.util.ReportingUtil.getNumericIndicatorDisplay;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportingUtilTest {
@@ -70,14 +69,14 @@ public class ReportingUtilTest {
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3, tally4)));
 
         //Test get model with total count
-        NumericDisplayModel NumericDisplayModel = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
+        NumericDisplayModel NumericDisplayModel = getNumericIndicatorDisplay(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
         assertNotNull(NumericDisplayModel);
         assertEquals(12, NumericDisplayModel.getCount(), 0);
         assertEquals("indicator1", NumericDisplayModel.getIndicatorCode());
         assertEquals(182998, NumericDisplayModel.getLabelStringResource());
 
         //Test get model with total count
-        NumericDisplayModel NumericDisplayModel2 = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
+        NumericDisplayModel NumericDisplayModel2 = getNumericIndicatorDisplay(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
         assertNotNull(NumericDisplayModel2);
         assertEquals(13, NumericDisplayModel2.getCount(), 0);
         assertEquals("indicator2", NumericDisplayModel2.getIndicatorCode());
