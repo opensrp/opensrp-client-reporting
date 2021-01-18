@@ -6,8 +6,7 @@ import android.view.View;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.NumericDisplayFactory;
-
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
+import org.smartregister.reporting.util.ReportingUtil;
 
 
 public class NumericIndicatorView implements ReportContract.IndicatorView {
@@ -24,6 +23,6 @@ public class NumericIndicatorView implements ReportContract.IndicatorView {
 
     @Override
     public View createView() {
-        return getIndicatorView(displayOptions, numericDisplayFactory, context);
+        return ReportingUtil.getIndicatorView(displayOptions, numericDisplayFactory, context);
     }
 }

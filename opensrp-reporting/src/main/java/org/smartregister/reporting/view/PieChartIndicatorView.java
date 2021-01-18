@@ -10,10 +10,10 @@ import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.factory.PieChartFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;
+import org.smartregister.reporting.util.ReportingUtil;
 
 import timber.log.Timber;
 
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
 
 public class PieChartIndicatorView implements ReportContract.IndicatorView {
 
@@ -40,7 +40,7 @@ public class PieChartIndicatorView implements ReportContract.IndicatorView {
             if (displayOptions.getPieChartConfig().getListener() == null) {
                 displayOptions.getPieChartConfig().setListener(new ChartListener());
             }
-            return getIndicatorView(displayOptions, pieChartFactory, context);
+            return ReportingUtil.getIndicatorView(displayOptions, pieChartFactory, context);
         } catch (OutOfMemoryError e) {
             Timber.e(e);
         }
