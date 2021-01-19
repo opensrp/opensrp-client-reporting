@@ -9,6 +9,7 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.domain.ProgressIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.ReportingIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;
@@ -65,6 +66,12 @@ public class ReportingUtil {
                 .chartHasCenterCircle(false)
                 .chartSlices(pieChartSlices)
                 .chartListener(pieChartSelectListener).build();
+    }
+
+    public static float getProgressPercentage(CountType countType, float target, String indicatorCode,
+                                              List<Map<String, IndicatorTally>> indicatorTallies) {
+        float count = getCount(countType, indicatorCode, indicatorTallies);
+        return (count / target) * 100;
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
