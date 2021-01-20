@@ -47,6 +47,7 @@ android {
             buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '15'
         }
         debug {
+            testCoverageEnabled = true
             buildConfigField "int", "REPORT_INDICATOR_GENERATION_MINUTES", '15'
         }
     }
