@@ -1,5 +1,14 @@
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+artifacts {
+    archives sourceJar
+}
+
 bintray {
-    version = project.VERSION_NAME.replaceAll("[-a-zA-Z]+","").trim()
+    version = project.VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim()
     group = 'org.smartregister'
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv("BINTRAY_USER")
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv("BINTRAY_KEY")

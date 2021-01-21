@@ -86,15 +86,6 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
-
-artifacts {
-    archives sourceJar
-}
-
 dependencies {
     implementation('org.smartregister:opensrp-client-core:1.15.4-SNAPSHOT@aar') {
         transitive = true
