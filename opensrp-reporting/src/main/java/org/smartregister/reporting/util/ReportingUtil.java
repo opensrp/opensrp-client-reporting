@@ -46,7 +46,7 @@ public class ReportingUtil {
         return new NumericIndicatorDisplayOptions(label, getCount(countType, indicatorCode, indicatorTallies));
     }
 
-    private static float getCount(CountType countType, String indicatorCode, List<Map<String, IndicatorTally>> indicatorTallies) {
+    public static float getCount(CountType countType, String indicatorCode, List<Map<String, IndicatorTally>> indicatorTallies) {
         float count = 0;
         if (countType == CountType.TOTAL_COUNT) {
             count = getTotalCount(indicatorTallies, indicatorCode);
@@ -66,12 +66,6 @@ public class ReportingUtil {
                 .chartHasCenterCircle(false)
                 .chartSlices(pieChartSlices)
                 .chartListener(pieChartSelectListener).build();
-    }
-
-    public static float getProgressPercentage(CountType countType, float target, String indicatorCode,
-                                              List<Map<String, IndicatorTally>> indicatorTallies) {
-        float count = getCount(countType, indicatorCode, indicatorTallies);
-        return (count / target) * 100;
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
