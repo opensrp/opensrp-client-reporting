@@ -3,8 +3,10 @@ package org.smartregister.reporting.domain;
 public class ProgressIndicatorConfig {
 
     private int progressVal;
-    private String title;
-    private String subtitle;
+    private String indicatorLabel;
+    private String progressIndicatorTitle;
+    private String progressIndicatorSubtitle;
+    private int progressIndicatorTitleColor;
     private int foregroundColor;
     private int backgroundColor;
 
@@ -19,20 +21,36 @@ public class ProgressIndicatorConfig {
         this.progressVal = progressVal;
     }
 
-    public String getTitle() {
-        return title;
+    public String getIndicatorLabel() {
+        return indicatorLabel;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setIndicatorLabel(String indicatorLabel) {
+        this.indicatorLabel = indicatorLabel;
     }
 
-    public String getSubtitle() {
-        return subtitle;
+    public String getProgressIndicatorTitle() {
+        return progressIndicatorTitle;
     }
 
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+    public void setProgressIndicatorTitle(String progressIndicatorTitle) {
+        this.progressIndicatorTitle = progressIndicatorTitle;
+    }
+
+    public String getProgressIndicatorSubtitle() {
+        return progressIndicatorSubtitle;
+    }
+
+    public void setProgressIndicatorSubtitle(String progressIndicatorSubtitle) {
+        this.progressIndicatorSubtitle = progressIndicatorSubtitle;
+    }
+
+    public int getProgressIndicatorTitleColor() {
+        return progressIndicatorTitleColor;
+    }
+
+    public void setProgressIndicatorTitleColor(int progressIndicatorTitleColor) {
+        this.progressIndicatorTitleColor = progressIndicatorTitleColor;
     }
 
     public int getForegroundColor() {
