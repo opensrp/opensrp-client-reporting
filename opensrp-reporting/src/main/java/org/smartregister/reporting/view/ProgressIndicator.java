@@ -32,6 +32,7 @@ public class ProgressIndicator extends LinearLayout {
 
     private int progressBarBackgroundColor;
     private int progressBarForegroundColor;
+    private int progressBarTitleColor;
     private int progressDrawable;
     private String title;
     private String subTitle;
@@ -42,6 +43,7 @@ public class ProgressIndicator extends LinearLayout {
     private static final String PROGRESSBAR_FOREGROUND_COLOR = "progressbar_foreground_color";
     private static final String PROGRESSBAR_BACKGROUND_COLOR = "progressbar_background_color";
     private static final String PROGRESSBAR_TITLE = "progressbar_title";
+    private static final String PROGRESSBAR_TITLE_COLOR = "progressbar_title_color";
     private static final String PROGRESSBAR_SUB_TITLE = "progressbar_sub_title";
     private static final String PROGRESSBAR_PROGRESS = "progressbar_progress";
     private static final String PROGRESSBAR_INSTANCE_STATE = "progressbar_instance_state";
@@ -123,19 +125,20 @@ public class ProgressIndicator extends LinearLayout {
 
         setResourceValues(typedArray);
 
-        processProgressBarLayoutReset(progress, progressBarForegroundColor, progressBarBackgroundColor, progressDrawable);
+        processProgressBarLayoutReset(progress, progressBarTitleColor, progressBarForegroundColor, progressBarBackgroundColor, progressDrawable);
 
     }
 
     private void setResourceValues(TypedArray typedArray) {
 
+        progressBarTitleColor = progressBarTitleColor != 0 ? progressBarTitleColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarTitleColor, 0);
         progressBarForegroundColor = progressBarForegroundColor != 0 ? progressBarForegroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarForegroundColor, 0);
         progressBarBackgroundColor = progressBarBackgroundColor != 0 ? progressBarBackgroundColor : typedArray.getColor(R.styleable.ProgressIndicatorView_progressBarBackgroundColor, 0);
         progressDrawable = progressDrawable != 0 ? progressDrawable : typedArray.getResourceId(R.styleable.ProgressIndicatorView_progressDrawable, 0);
 
     }
 
-    private void processProgressBarLayoutReset(int progress, int progressBarForegroundColor, int progressBarBackgroundColor, int progressDrawable) {
+    private void processProgressBarLayoutReset(int progress, int progressBarTitleColor, int progressBarForegroundColor, int progressBarBackgroundColor, int progressDrawable) {
 
         ProgressBar progressBarView = findViewById(R.id.progressbar_view);
         progressBarView.setProgressDrawable(progressDrawable > 0 ? getContext().getResources().getDrawable(progressDrawable) : progressBarView.getProgressDrawable());
@@ -143,6 +146,15 @@ public class ProgressIndicator extends LinearLayout {
 
         programmaticallyResetProgressBarBackgroundDrawable(progressBarView, progressBarForegroundColor, progressBarBackgroundColor);
 
+        resetProgressBarTitleColor(progressBarTitleColor);
+
+    }
+
+    protected void resetProgressBarTitleColor(int progressBarTitleColor) {
+        if (progressBarTitleColor != 0) {
+            TextView titleTextView = findViewById(R.id.title_textview);
+            titleTextView.setTextColor(progressBarTitleColor);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -194,6 +206,7 @@ public class ProgressIndicator extends LinearLayout {
             Bundle bundle = (Bundle) state;
             // Load back our custom view state
 
+            this.progressBarTitleColor = bundle.getInt(PROGRESSBAR_TITLE_COLOR);
             this.progressBarForegroundColor = bundle.getInt(PROGRESSBAR_FOREGROUND_COLOR);
             this.progressBarBackgroundColor = bundle.getInt(PROGRESSBAR_BACKGROUND_COLOR);
             this.title = bundle.getString(PROGRESSBAR_TITLE);
@@ -224,6 +237,15 @@ public class ProgressIndicator extends LinearLayout {
         } finally {
             typedArray.recycle();
         }
+    }
+
+    public int getProgressBarTitleColor() {
+        return progressBarTitleColor;
+    }
+
+    public void setProgressBarTitleColor(int progressBarTitleColor) {
+        this.progressBarTitleColor = progressBarTitleColor;
+        refreshLayout();
     }
 
     public int getProgressBarBackgroundColor() {

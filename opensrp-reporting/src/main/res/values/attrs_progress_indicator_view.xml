@@ -3,6 +3,7 @@
     <declare-styleable name="ProgressIndicatorView">
         <attr name="progressBarBackgroundColor" format="color" />
         <attr name="progressBarForegroundColor" format="color" />
+        <attr name="progressBarTitleColor" format="color" />
         <attr name="title" format="string" />
         <attr name="subTitle" format="string" />
         <attr name="progress" format="integer" />
