@@ -26,12 +26,6 @@ android {
 
     defaultPublishConfig !isReleaseBuild() ? "debug" : "release"
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-
     defaultConfig {
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
@@ -149,10 +143,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
     executionData.setFrom(fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
     ]))
-}
-
-tasks.coveralls {
-    dependsOn 'jacocoTestReport'
 }
 
 coveralls {
