@@ -26,6 +26,11 @@ android {
 
     defaultPublishConfig !isReleaseBuild() ? "debug" : "release"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
@@ -80,6 +85,15 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+artifacts {
+    archives sourceJar
+}
+
 dependencies {
     implementation('org.smartregister:opensrp-client-core:1.15.4-SNAPSHOT@aar') {
         transitive = true
@@ -124,6 +138,10 @@ dependencies {
 
 }
 
+tasks.coveralls {
+    dependsOn 'jacocoTestReport'
+}
+
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
     reports {
@@ -151,3 +169,4 @@ coveralls {
 }
 
 apply from: '../maven.gradle'
+// apply from: '../bintray.gradle'

@@ -1,12 +1,3 @@
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
-
-artifacts {
-    archives sourceJar
-}
-
 bintray {
     version = project.VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim()
     group = 'org.smartregister'
