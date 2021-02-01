@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${androidToolsBuildGradleVersion}"
+        classpath "com.android.tools.build:gradle:${androidToolsBuildGradle}"
     }
 }
 
@@ -61,6 +61,8 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/NOTICE.md'
         exclude 'META-INF/LGPL2.1'
         exclude 'LICENSE.txt'
     }
@@ -75,7 +77,7 @@ android {
 }
 
 dependencies {
-    implementation('org.smartregister:opensrp-client-core:1.9.3-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-core:1.15.4-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'
@@ -84,7 +86,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.github.johnkil.print', module: 'print'
         exclude group: 'org.apache.httpcomponents', module: 'httpmime'
+        exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
+    compileOnly 'com.ibm.fhir:fhir-model:4.2.3'
 
     implementation project(":opensrp-reporting")
 
