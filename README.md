@@ -1,8 +1,7 @@
 # opensrp-client-reporting
 
 OpenSRP Client Reporting Library
-
-![Build status](https://github.com/OpenSRP/opensrp-client-reporting/.github/workflows/Android%20CI%20with%20Gradle/badge.svg) (https://travis-ci.org/OpenSRP/opensrp-client-reporting) [![Coverage Status](https://coveralls.io/repos/github/OpenSRP/opensrp-client-reporting/badge.svg?branch=master)](https://coveralls.io/github/OpenSRP/opensrp-client-reporting?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/642391cacc03450b894b662eac7f30a3)](https://www.codacy.com/app/OpenSRP/opensrp-client-reporting?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenSRP/opensrp-client-reporting&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/OpenSRP/opensrp-client-reporting.svg?branch=master)](https://travis-ci.org/OpenSRP/opensrp-client-reporting) [![Coverage Status](https://coveralls.io/repos/github/OpenSRP/opensrp-client-reporting/badge.svg?branch=master)](https://coveralls.io/github/OpenSRP/opensrp-client-reporting?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/642391cacc03450b894b662eac7f30a3)](https://www.codacy.com/app/OpenSRP/opensrp-client-reporting?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OpenSRP/opensrp-client-reporting&amp;utm_campaign=Badge_Grade)
 
 ## Introduction
 
