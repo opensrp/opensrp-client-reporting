@@ -4,12 +4,14 @@ package org.smartregister.reporting.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.snackbar.ContentViewCallback;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 
 import org.smartregister.reporting.R;
 
@@ -18,7 +20,7 @@ import org.smartregister.reporting.R;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 2019-06-27
  */
 
-public class ReportingProcessingView extends LinearLayout implements ContentViewCallback {
+public class ReportingProcessingView extends LinearLayout implements BaseTransientBottomBar.ContentViewCallback {
 
     public ReportingProcessingView(Context context) {
         super(context);

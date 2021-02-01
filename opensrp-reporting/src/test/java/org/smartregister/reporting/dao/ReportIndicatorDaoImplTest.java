@@ -1,6 +1,6 @@
 package org.smartregister.reporting.dao;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import net.sqlcipher.MatrixCursor;
 import net.sqlcipher.database.SQLiteDatabase;
