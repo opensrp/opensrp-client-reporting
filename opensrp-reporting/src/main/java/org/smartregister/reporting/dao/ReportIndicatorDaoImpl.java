@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
 import org.smartregister.reporting.domain.IndicatorQuery;
@@ -20,6 +21,7 @@ import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
 import org.smartregister.reporting.util.Constants;
+import org.smartregister.reporting.util.ReportingUtils;
 import org.smartregister.repository.EventClientRepository;
 import org.smartregister.util.Utils;
 
@@ -47,8 +49,9 @@ import timber.log.Timber;
 
 public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
-    public static String DAILY_TALLY_DATE_FORMAT = "yyyy-MM-dd";
 
+    public static String DAILY_TALLY_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String MIN_REPORT_DATE = ReportingUtils.getAllSharedPreferences().getPreference(Constants.ReportingConfig.MIN_REPORT_DATE);
     public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
             + EventClientRepository.Table.event.name();
 
@@ -172,13 +175,22 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     @VisibleForTesting
     @NonNull
     protected LinkedHashMap<String, Date> getReportEventDates(@NonNull Date timeNow, @Nullable String lastProcessedDate, @NonNull SQLiteDatabase database) {
+        String monthLimitQueryFilter = StringUtils.isNotBlank(MIN_REPORT_DATE) ?
+                EventClientRepository.event_column.eventDate + " > '" + MIN_REPORT_DATE + "'" : "";
 
         ArrayList<HashMap<String, String>> values;
+        String resultQuery;
+        boolean hasMonthLimitFilter = StringUtils.isNotBlank(monthLimitQueryFilter);
         if (lastProcessedDate == null || lastProcessedDate.isEmpty()) {
-            values = dailyIndicatorCountRepository.rawQuery(database, PREVIOUS_REPORT_DATES_QUERY);
+            resultQuery = hasMonthLimitFilter ? String.format("%s where %s", PREVIOUS_REPORT_DATES_QUERY, monthLimitQueryFilter) : PREVIOUS_REPORT_DATES_QUERY;
         } else {
-            values = dailyIndicatorCountRepository.rawQuery(database, PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " > '" + lastProcessedDate + "'" + " order by eventDate asc"));
+            if (hasMonthLimitFilter)
+                monthLimitQueryFilter = " and " + monthLimitQueryFilter;
+
+            resultQuery = PREVIOUS_REPORT_DATES_QUERY.concat(" where " + EventClientRepository.event_column.updatedAt + " > '" + lastProcessedDate + "'" + monthLimitQueryFilter + " order by eventDate asc");
         }
+
+        values = dailyIndicatorCountRepository.rawQuery(database, resultQuery);
 
         LinkedHashMap<String, Date> reportEventDates = new LinkedHashMap<>();
 
