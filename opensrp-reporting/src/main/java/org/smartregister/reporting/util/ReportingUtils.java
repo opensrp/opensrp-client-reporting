@@ -1,6 +1,6 @@
 package org.smartregister.reporting.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;

@@ -5,13 +5,13 @@
     android:background="@drawable/table_view_border"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tableViewHeaderRecyclerViewGridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorSecondaryGreen" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tableViewRecyclerViewGridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
