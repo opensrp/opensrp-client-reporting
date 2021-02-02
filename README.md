@@ -7,7 +7,7 @@ OpenSRP Client Reporting Library
 ## Introduction
 
 The Reporting library allows creating of visualizations for display in an application for instance on a dashboard.  
-The library provides a custom numeric value display to show a lable and a numeric value and extends [HelloCharts Android library](https://github.com/lecho/hellocharts-android)
+The library provides a custom numeric value display to show a label and a numeric value and extends [HelloCharts Android library](https://github.com/lecho/hellocharts-android)
 to show Charts e.g. PieCharts
 
 ## Supported visualizations

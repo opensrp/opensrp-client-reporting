@@ -11,9 +11,9 @@ import android.widget.TextView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
@@ -23,12 +23,14 @@ import org.smartregister.reporting.R;
  */
 public class ProgressIndicatorTest extends BaseUnitTest {
 
-    @Mock
     private AttributeSet attributeSet;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        attributeSet = Robolectric.buildAttributeSet()
+                .addAttribute(R.attr.subtitle, "subtitle")
+                .build();
     }
 
     @Test
