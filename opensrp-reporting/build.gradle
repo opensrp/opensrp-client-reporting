@@ -13,9 +13,11 @@ buildscript {
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.bintray"
 
 jacoco {
-    toolVersion = "0.8.0"
+    toolVersion = "0.8.5"
 }
 
 android {
@@ -81,6 +83,15 @@ android {
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+artifacts {
+    archives sourceJar
 }
 
 dependencies {
@@ -158,3 +169,4 @@ coveralls {
 }
 
 apply from: '../maven.gradle'
+// apply from: '../bintray.gradle'

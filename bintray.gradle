@@ -1,0 +1,48 @@
+bintray {
+    version = project.VERSION_NAME.replaceAll("[-a-zA-Z]+", "").trim()
+    group = 'org.smartregister'
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv("BINTRAY_USER")
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv("BINTRAY_KEY")
+    configurations = ['archives']
+    pkg {
+        repo = 'android-libraries'
+        name = project.name
+        userOrg = 'opensrp'
+        publish = true
+        licenses = ['Apache-2.0']
+        websiteUrl = "https://smartregister.org/"
+        desc = 'A simple library for generating & visualizing Android client reports'
+        vcsUrl = 'https://github.com/OpenSRP/opensrp-client-reporting.git'
+        version {
+            name = this.version
+            desc = "OpenSRP Client Reporting ${this.version}"
+            released = new Date()
+            vcsTag = this.version
+        }
+    }
+    publications = ['ReportingLibPublication']
+}
+
+publishing {
+    publications {
+        ReportingLibPublication(MavenPublication) {
+            artifact("$buildDir/outputs/aar/opensrp-reporting-debug.aar")
+            artifact(sourceJar)
+            groupId this.group
+            artifactId 'opensrp-reporting'
+            version this.version
+
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+}
