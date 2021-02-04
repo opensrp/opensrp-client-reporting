@@ -9,7 +9,6 @@ import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.domain.ProgressIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.ReportingIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;

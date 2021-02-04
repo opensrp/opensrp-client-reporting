@@ -10,9 +10,6 @@ public class ProgressIndicatorConfig {
     private int foregroundColor;
     private int backgroundColor;
 
-    public ProgressIndicatorConfig() {
-    }
-
     public int getProgressVal() {
         return progressVal;
     }
