@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
 import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
@@ -100,18 +102,18 @@ public class ReportingUtilTest {
         slices.add(indicator2_2);
         PieChartIndicatorDisplayOptions options = ReportingUtil.getPieChartDisplayOptions(slices, "Test Chart", "", null);
 
-        Assert.assertEquals("Test Chart", options.getIndicatorLabel());
-        Assert.assertNotNull(options.getPieChartConfig().getSlices());
-        Assert.assertEquals("slice 2", options.getPieChartConfig().getSlices().get(1).getLabel());
-        Assert.assertTrue(options.getPieChartConfig().hasLabels());
-        Assert.assertFalse(options.getPieChartConfig().hasCenterCircle());
+        assertEquals("Test Chart", options.getIndicatorLabel());
+        assertNotNull(options.getPieChartConfig().getSlices());
+        assertEquals("slice 2", options.getPieChartConfig().getSlices().get(1).getLabel());
+        assertTrue(options.getPieChartConfig().hasLabels());
+        assertFalse(options.getPieChartConfig().hasCenterCircle());
     }
 
     @Test
     public void canFormatDecimals() {
-        Assert.assertEquals("12.301", ReportingUtil.formatDecimal(12.30123));
-        Assert.assertEquals("12.301", ReportingUtil.formatDecimal(12.301));
-        Assert.assertEquals("12.3", ReportingUtil.formatDecimal(12.3001));
-        Assert.assertEquals("12", ReportingUtil.formatDecimal(12.0));
+        assertEquals("12.301", ReportingUtil.formatDecimal(12.30123));
+        assertEquals("12.301", ReportingUtil.formatDecimal(12.301));
+        assertEquals("12.3", ReportingUtil.formatDecimal(12.3001));
+        assertEquals("12", ReportingUtil.formatDecimal(12.0));
     }
 }
