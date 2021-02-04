@@ -1,5 +1,6 @@
 package org.smartregister.reporting.impl;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,8 +9,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
+import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.util.ReportingUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +23,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
+import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportingUtilTest {
@@ -83,5 +89,29 @@ public class ReportingUtilTest {
         assertNotNull(displayOptions2);
         assertEquals(13, displayOptions2.getValue(), 0);
         assertEquals("second indicator", displayOptions2.getIndicatorLabel());
+    }
+
+    @Test
+    public void getPieChartDisplayOptionsReturnsCorrectOptions() {
+        PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, "IND-1", "slice 1", 0, null);
+        PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, "IND-2", "slice 2", 0, null);
+        List<PieChartSlice> slices = new ArrayList<>();
+        slices.add(indicator2_1);
+        slices.add(indicator2_2);
+        PieChartIndicatorDisplayOptions options = ReportingUtil.getPieChartDisplayOptions(slices, "Test Chart", "", null);
+
+        Assert.assertEquals("Test Chart", options.getIndicatorLabel());
+        Assert.assertNotNull(options.getPieChartConfig().getSlices());
+        Assert.assertEquals("slice 2", options.getPieChartConfig().getSlices().get(1).getLabel());
+        Assert.assertTrue(options.getPieChartConfig().hasLabels());
+        Assert.assertFalse(options.getPieChartConfig().hasCenterCircle());
+    }
+
+    @Test
+    public void canFormatDecimals() {
+        Assert.assertEquals("12.301", ReportingUtil.formatDecimal(12.30123));
+        Assert.assertEquals("12.301", ReportingUtil.formatDecimal(12.301));
+        Assert.assertEquals("12.3", ReportingUtil.formatDecimal(12.3001));
+        Assert.assertEquals("12", ReportingUtil.formatDecimal(12.0));
     }
 }
