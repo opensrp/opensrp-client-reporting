@@ -1,6 +1,5 @@
 package org.smartregister.reporting.impl;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
-import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
 import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -95,8 +93,8 @@ public class ReportingUtilTest {
 
     @Test
     public void getPieChartDisplayOptionsReturnsCorrectOptions() {
-        PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, "IND-1", "slice 1", 0, null);
-        PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, "IND-2", "slice 2", 0, null);
+        PieChartSlice indicator2_1 = getPieChartSlice(ReportContract.IndicatorView.CountType.LATEST_COUNT, "IND-1", "slice 1", 0, null);
+        PieChartSlice indicator2_2 = getPieChartSlice(ReportContract.IndicatorView.CountType.LATEST_COUNT, "IND-2", "slice 2", 0, null);
         List<PieChartSlice> slices = new ArrayList<>();
         slices.add(indicator2_1);
         slices.add(indicator2_2);
