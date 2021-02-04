@@ -19,7 +19,7 @@ public class PieChartIndicatorView implements ReportContract.IndicatorView {
 
     private Context context;
     private PieChartFactory pieChartFactory;
-    PieChartIndicatorDisplayOptions displayOptions;
+    private PieChartIndicatorDisplayOptions displayOptions;
 
     public PieChartIndicatorView(Context context, PieChartIndicatorDisplayOptions displayOptions) {
         pieChartFactory = new PieChartFactory();
