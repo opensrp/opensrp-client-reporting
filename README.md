@@ -103,7 +103,7 @@ using the property **progressDrawable** listed above, you can set the progressDr
                     .withForegroundColor(progressColor)
                     .build();
 
-    mainLayout.addView(new ProgressIndicatorView(mainLayout.getContext(), displayOptions).createView());
+    mainLayout.addView(new ProgressIndicatorView(getContext(), displayOptions).createView());
 
 ```
 
