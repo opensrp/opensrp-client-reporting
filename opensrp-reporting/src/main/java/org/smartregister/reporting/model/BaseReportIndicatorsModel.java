@@ -1,8 +1,11 @@
-package org.smartregister.reporting.domain;
+package org.smartregister.reporting.model;
 
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
+import org.smartregister.reporting.domain.IndicatorQuery;
+import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.domain.ReportIndicator;
 
 import java.util.List;
 import java.util.Map;

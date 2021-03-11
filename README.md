@@ -31,7 +31,7 @@ The **mainLayout** is the root view you want the visualizations to be shown.
 To display a numeric value use the code snippet below. 
 ```Java
 
-  NumericDisplayModel indicator1 = getIndicatorDisplayModel(TOTAL_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
+  NumericIndicatorDisplayOptions indicator1 = getNumericIndicatorDisplayOptions(TOTAL_COUNT, ChartUtil.numericIndicatorKey, R.string.total_under_5_count, indicatorTallies);
   mainLayout.addView(new NumericIndicatorView(getContext(), indicator1).createView());
 
 ```
@@ -43,7 +43,7 @@ For pie charts display. You can use the following code snippet.
 ```Java
    PieChartSlice indicator2_1 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartYesIndicatorKey, getResources().getString(R.string.yes_slice_label), getResources().getColor(R.color.colorPieChartGreen), indicatorTallies);
    PieChartSlice indicator2_2 = getPieChartSlice(LATEST_COUNT, ChartUtil.pieChartNoIndicatorKey, getResources().getString(R.string.no_button_label), getResources().getColor(R.color.colorPieChartRed), indicatorTallies);
-   mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayModel(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note)).createView());
+   mainLayout.addView(new PieChartIndicatorView(getContext(), getPieChartDisplayOptions(addPieChartSlices(indicator2_1, indicator2_2), R.string.num_of_lieterate_children_0_60_label, R.string.sample_note, null)).createView());
 ```
 ### Progress indicator
 This indicator widget basically has a progressbar, main title(Label) and a sub title. 
@@ -67,7 +67,7 @@ using the property **progressDrawable** listed above, you can set the progressDr
 
 **Programmatically:** 
 ```
-        ProgressIndicatorView progressWidget = getActivity().findViewById(R.id.progressIndicatorView);
+        ProgressIndicator progressWidget = getActivity().findViewById(R.id.progressIndicatorView);
         progressWidget.setProgress(42);
         progressWidget.setTitle("Users registered - 42%");
         progressWidget.setProgressDrawable(R.drawable.progress_indicator_bg);
@@ -78,7 +78,7 @@ using the property **progressDrawable** listed above, you can set the progressDr
 **Via XML:**
 
 ```
- <org.smartregister.reporting.view.ProgressIndicatorView
+ <org.smartregister.reporting.view.ProgressIndicator
             android:id="@+id/progressIndicatorView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,6 +88,24 @@ using the property **progressDrawable** listed above, you can set the progressDr
             app:subTitle="Coverage"
             app:progressDrawable="@drawable/custom_progress_indicator_bg"
 ``` 
+
+**Adding a progress indicator view to a layout using the ProgressIndicatorDisplayOptions:**
+
+```java
+
+    ProgressIndicatorDisplayOptions displayOptions = new ProgressIndicatorDisplayOptions.ProgressIndicatorBuilder()
+                    .withIndicatorLabel(label)
+                    .withProgressIndicatorTitle(titleString)
+                    .withProgressIndicatorTitleColor(progressColor)
+                    .withProgressValue(percentage)
+                    .withProgressIndicatorSubtitle("")
+                    .withBackgroundColor(defaultBackgroundColor)
+                    .withForegroundColor(progressColor)
+                    .build();
+
+    mainLayout.addView(new ProgressIndicatorView(getContext(), displayOptions).createView());
+
+```
 
 ### Table View
 This table widget basically has a header with column head values and rows to display data in a tabular format.

@@ -13,7 +13,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.dao.ReportIndicatorDaoImpl;
-import org.smartregister.reporting.domain.BaseReportIndicatorsModel;
 import org.smartregister.reporting.domain.IndicatorQuery;
 import org.smartregister.reporting.domain.ReportIndicator;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;

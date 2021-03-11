@@ -6,67 +6,46 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.Nullable;
 import org.smartregister.reporting.contract.ReportContract;
-import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.factory.PieChartFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;
-import org.smartregister.reporting.model.PieChartDisplayModel;
+import org.smartregister.reporting.util.ReportingUtil;
 
 import timber.log.Timber;
 
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorView;
 
 public class PieChartIndicatorView implements ReportContract.IndicatorView {
 
     private Context context;
     private PieChartFactory pieChartFactory;
-    private PieChartDisplayModel pieChartDisplayModel;
+    private PieChartIndicatorDisplayOptions displayOptions;
 
-    public PieChartIndicatorView(Context context, PieChartDisplayModel pieChartDisplayModel) {
+    public PieChartIndicatorView(Context context, PieChartIndicatorDisplayOptions displayOptions) {
         pieChartFactory = new PieChartFactory();
-        this.pieChartDisplayModel = pieChartDisplayModel;
+        this.displayOptions = displayOptions;
         this.context = context;
     }
 
     /**
      * Generating a pie chart is memory intensive in lower end devices.
      * Allow @java.lang.OutOfMemoryError is recorded in some devices
+     *
      * @return view
      */
     @Override
     @Nullable
     public View createView() {
         try {
-            PieChartIndicatorVisualization pieChartIndicatorVisualization = getPieChartVisualization();
-
-            if (pieChartDisplayModel.getIndicatorLabel() != null) {
-                pieChartIndicatorVisualization.setIndicatorLabel(context.getResources().getString(pieChartDisplayModel.getIndicatorLabel()));
+            if (displayOptions.getPieChartConfig().getListener() == null) {
+                displayOptions.getPieChartConfig().setListener(new ChartListener());
             }
-
-            if (pieChartDisplayModel.getIndicatorNote() != null) {
-                pieChartIndicatorVisualization.setIndicatorNote(context.getResources().getString(pieChartDisplayModel.getIndicatorNote()));
-            }
-            return getIndicatorView(pieChartIndicatorVisualization, pieChartFactory, context);
-        }catch (OutOfMemoryError e){
+            return ReportingUtil.getIndicatorView(displayOptions, pieChartFactory, context);
+        } catch (OutOfMemoryError e) {
             Timber.e(e);
         }
 
         return null;
-    }
-
-    private PieChartIndicatorVisualization getPieChartVisualization() {
-        // Build the chart
-        String pieChartLabel = "No label provided"; //to avoid crash when string resource not provide
-        if (pieChartDisplayModel.getIndicatorLabel() != null) {
-            pieChartLabel = context.getResources().getString(pieChartDisplayModel.getIndicatorLabel());
-        }
-        return new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
-                .indicatorLabel(pieChartLabel)
-                .chartHasLabels(true)
-                .chartHasLabelsOutside(true)
-                .chartHasCenterCircle(false)
-                .chartSlices(pieChartDisplayModel.getPieChartSlices())
-                .chartListener(pieChartDisplayModel.getPieChartSelectListener() == null ? new ChartListener() : pieChartDisplayModel.getPieChartSelectListener()).build();
     }
 
     public class ChartListener implements PieChartSelectListener {

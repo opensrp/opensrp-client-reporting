@@ -6,12 +6,12 @@ import android.view.View;
 
 import org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType;
 import org.smartregister.reporting.domain.IndicatorTally;
+import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
-import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
+import org.smartregister.reporting.domain.ReportingIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.IndicatorVisualisationFactory;
 import org.smartregister.reporting.listener.PieChartSelectListener;
-import org.smartregister.reporting.model.NumericDisplayModel;
-import org.smartregister.reporting.model.PieChartDisplayModel;
 
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -35,17 +35,17 @@ public class ReportingUtil {
         return getLatestIndicatorCount(indicatorTallies, indicatorKey);
     }
 
-    public static View getIndicatorView(ReportingIndicatorVisualization reportingIndicatorVisualization,
+    public static View getIndicatorView(ReportingIndicatorDisplayOptions displayOptions,
                                         IndicatorVisualisationFactory visualisationFactory, Context context) {
-        return visualisationFactory.getIndicatorView(reportingIndicatorVisualization, context);
+        return visualisationFactory.getIndicatorView(displayOptions, context);
     }
 
-    public static NumericDisplayModel getIndicatorDisplayModel(CountType countType, String indicatorCode,
-                                                               int labelResource, List<Map<String, IndicatorTally>> indicatorTallies) {
-        return new NumericDisplayModel(countType, indicatorCode, labelResource, getCount(countType, indicatorCode, indicatorTallies));
+    public static NumericIndicatorDisplayOptions getNumericIndicatorDisplayOptions(CountType countType, String indicatorCode,
+                                                                                   String label, List<Map<String, IndicatorTally>> indicatorTallies) {
+        return new NumericIndicatorDisplayOptions(label, getCount(countType, indicatorCode, indicatorTallies));
     }
 
-    private static float getCount(CountType countType, String indicatorCode, List<Map<String, IndicatorTally>> indicatorTallies) {
+    public static float getCount(CountType countType, String indicatorCode, List<Map<String, IndicatorTally>> indicatorTallies) {
         float count = 0;
         if (countType == CountType.TOTAL_COUNT) {
             count = getTotalCount(indicatorTallies, indicatorCode);
@@ -55,19 +55,26 @@ public class ReportingUtil {
         return count;
     }
 
-    public static PieChartDisplayModel getPieChartDisplayModel(List<PieChartSlice> pieChartSlices,
-                                                               Integer indicatorLabel, Integer indicatorNote, PieChartSelectListener pieChartSelectListener) {
-        return new PieChartDisplayModel(pieChartSlices, indicatorLabel, indicatorNote, pieChartSelectListener);
+    public static PieChartIndicatorDisplayOptions getPieChartDisplayOptions(List<PieChartSlice> pieChartSlices,
+                                                                            String indicatorLabel, String indicatorNote, PieChartSelectListener pieChartSelectListener) {
+        return new PieChartIndicatorDisplayOptions.PieChartIndicatorVisualizationBuilder()
+                .indicatorLabel(indicatorLabel)
+                .indicatorNote(indicatorNote)
+                .chartHasLabels(true)
+                .chartHasLabelsOutside(true)
+                .chartHasCenterCircle(false)
+                .chartSlices(pieChartSlices)
+                .chartListener(pieChartSelectListener).build();
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
                                                  List<Map<String, IndicatorTally>> indicatorTallies, String key) {
-        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, key);
+        return new PieChartSlice(getCount(countType, indicatorCode, indicatorTallies), label, color, key);
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
                                                  List<Map<String, IndicatorTally>> indicatorTallies) {
-        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, indicatorCode);
+        return new PieChartSlice(getCount(countType, indicatorCode, indicatorTallies), label, color, indicatorCode);
     }
 
     public static List<PieChartSlice> addPieChartSlices(PieChartSlice... chartSlices) {
@@ -90,7 +97,7 @@ public class ReportingUtil {
     }
 
     /**
-     *  Formats a double to a maximum of two decimal places or min of an integer representation eg. 2.457, 3.2, 189
+     * Formats a double to a maximum of two decimal places or min of an integer representation eg. 2.457, 3.2, 189
      */
     public static String formatDecimal(double no) {
         DecimalFormat twoDForm = new DecimalFormat("0.###");

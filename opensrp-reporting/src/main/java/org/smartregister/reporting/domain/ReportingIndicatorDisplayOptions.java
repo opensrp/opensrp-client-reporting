@@ -1,7 +1,7 @@
 package org.smartregister.reporting.domain;
 
 /**
- * The ReportingIndicatorVisualization base class models reporting indicator visualizations with
+ * The ReportingIndicatorDisplay base class models reporting indicator visualizations with
  * common properties.
  * For instance, the different visualizations will always have a label (description)
  * of the specific chart.
@@ -10,14 +10,14 @@ package org.smartregister.reporting.domain;
  * @author allan
  */
 
-public class ReportingIndicatorVisualization {
+public class ReportingIndicatorDisplayOptions {
     private String indicatorLabel;
     private String indicatorNote;
 
-    public ReportingIndicatorVisualization() {
+    public ReportingIndicatorDisplayOptions() {
     }
 
-    public ReportingIndicatorVisualization(String indicatorLabel) {
+    public ReportingIndicatorDisplayOptions(String indicatorLabel) {
         this.indicatorLabel = indicatorLabel;
     }
 

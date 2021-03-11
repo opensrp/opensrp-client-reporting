@@ -19,8 +19,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.domain.PieChartIndicatorData;
-import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartConfig;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.factory.PieChartFactory;
 
 import lecho.lib.hellocharts.view.PieChartView;
@@ -32,7 +32,7 @@ public class PieChartFactoryTest extends BaseUnitTest {
     public PowerMockRule rule = new PowerMockRule();
 
     @Mock
-    private PieChartIndicatorVisualization visualization;
+    private PieChartIndicatorDisplayOptions visualization;
 
     @Mock
     private Context context;
@@ -56,7 +56,7 @@ public class PieChartFactoryTest extends BaseUnitTest {
     private LinearLayout rootLayout;
 
     @Mock
-    private PieChartIndicatorData chartConfiguration;
+    private PieChartConfig chartConfiguration;
 
     @InjectMocks
     private PieChartFactory pieChartFactory;
@@ -76,7 +76,7 @@ public class PieChartFactoryTest extends BaseUnitTest {
         Mockito.doReturn(chartNoteTextView).when(rootLayout).findViewById(R.id.pie_note_label);
         Mockito.doReturn(numericValueTextView).when(rootLayout).findViewById(R.id.numeric_indicator_value);
         Mockito.doReturn(pieChartView).when(rootLayout).findViewById(R.id.pie_chart);
-        Mockito.doReturn(chartConfiguration).when(visualization).getChartData();
+        Mockito.doReturn(chartConfiguration).when(visualization).getPieChartConfig();
         View view = pieChartFactorySpy.getIndicatorView(visualization, context);
         Assert.assertNotNull(view);
         Assert.assertTrue(view instanceof LinearLayout);

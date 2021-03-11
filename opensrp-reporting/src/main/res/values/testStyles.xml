@@ -5,6 +5,7 @@
         <item name="subTitle">Sub Title</item>
         <item name="progress">25</item>
         <item name="progressDrawable">@drawable/progress_indicator_bg</item>
+        <item name="progressBarTitleColor">@color/colorReportingIndicatorLabel</item>
         <item name="progressBarForegroundColor">@color/colorPastelGreen</item>
         <item name="progressBarBackgroundColor">@color/colorSecondaryGreen</item>
     </style>

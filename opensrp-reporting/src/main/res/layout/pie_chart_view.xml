@@ -36,8 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/pie_indicator_label"
-            android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
             android:text="Sample Note" />
 
     </RelativeLayout>
@@ -45,8 +45,7 @@
     <lecho.lib.hellocharts.view.PieChartView
         android:id="@+id/pie_chart"
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        />
+        android:layout_height="250dp" />
 
     <View
         android:id="@+id/pie_chart_split_line"

@@ -46,7 +46,7 @@ public class PieChartIndicatorVisualizationTest {
         chartSlices.add(noSlice);
 
         // Build the chart
-        PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization.PieChartIndicatorVisualizationBuilder()
+        PieChartIndicatorDisplayOptions pieChartIndicatorVisualization = new PieChartIndicatorDisplayOptions.PieChartIndicatorVisualizationBuilder()
                 .indicatorLabel(indicatorLabel)
                 .chartHasLabels(true)
                 .indicatorNote("Note")
@@ -56,11 +56,11 @@ public class PieChartIndicatorVisualizationTest {
                 .chartListener(null).build();
 
         Assert.assertEquals(indicatorLabel, pieChartIndicatorVisualization.getIndicatorLabel());
-        Assert.assertTrue(pieChartIndicatorVisualization.getChartData().hasLabels());
-        Assert.assertTrue(pieChartIndicatorVisualization.getChartData().hasLabelsOutside());
-        Assert.assertFalse(pieChartIndicatorVisualization.getChartData().hasCenterCircle());
-        Assert.assertEquals(indicatorValue1, pieChartIndicatorVisualization.getChartData().getSlices().get(0).getValue(), 0.0001);
-        Assert.assertEquals(indicatorValue2, pieChartIndicatorVisualization.getChartData().getSlices().get(1).getValue(), 0.0001);
+        Assert.assertTrue(pieChartIndicatorVisualization.getPieChartConfig().hasLabels());
+        Assert.assertTrue(pieChartIndicatorVisualization.getPieChartConfig().hasLabelsOutside());
+        Assert.assertFalse(pieChartIndicatorVisualization.getPieChartConfig().hasCenterCircle());
+        Assert.assertEquals(indicatorValue1, pieChartIndicatorVisualization.getPieChartConfig().getSlices().get(0).getValue(), 0.0001);
+        Assert.assertEquals(indicatorValue2, pieChartIndicatorVisualization.getPieChartConfig().getSlices().get(1).getValue(), 0.0001);
     }
 
 }

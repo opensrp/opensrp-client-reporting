@@ -4,29 +4,20 @@ import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.List;
 
-/**
- * PieChartIndicatorVisualization is the base class for indicator visualizations that display
- * pie chart data
- * The pie chart indicator visualization consists the indicator label (text description) and the chart data that
- * defines configuration of the chart that is to be displayed
- *
- * @author allan
- */
+public class PieChartIndicatorDisplayOptions extends ReportingIndicatorDisplayOptions {
 
-public class PieChartIndicatorVisualization extends ReportingIndicatorVisualization {
+    private PieChartConfig pieChartConfig;
 
-    private PieChartIndicatorData chartData;
-
-    public PieChartIndicatorVisualization(PieChartIndicatorData chartData) {
-        this.chartData = chartData;
+    public PieChartIndicatorDisplayOptions(PieChartConfig pieChartConfig) {
+        this.pieChartConfig = pieChartConfig;
     }
 
-    public PieChartIndicatorData getChartData() {
-        return chartData;
+    public PieChartConfig getPieChartConfig() {
+        return pieChartConfig;
     }
 
-    public void setChartData(PieChartIndicatorData chartData) {
-        this.chartData = chartData;
+    public void setPieChartConfig(PieChartConfig pieChartConfig) {
+        this.pieChartConfig = pieChartConfig;
     }
 
     public static class PieChartIndicatorVisualizationBuilder {
@@ -74,17 +65,17 @@ public class PieChartIndicatorVisualization extends ReportingIndicatorVisualizat
             return this;
         }
 
-        public PieChartIndicatorVisualization build() {
-            PieChartIndicatorData chartData = new PieChartIndicatorData();
-            chartData.setHasLabels(this.hasLabels);
-            chartData.setHasLabelsOutside(this.hasLabelsOutside);
-            chartData.setHasCenterCircle(this.hasCenterCircle);
-            chartData.setSlices(this.slices);
-            chartData.setListener(this.listener);
-            PieChartIndicatorVisualization pieChartIndicatorVisualization = new PieChartIndicatorVisualization(chartData);
-            pieChartIndicatorVisualization.setIndicatorLabel(this.indicatorLabel);
-            pieChartIndicatorVisualization.setIndicatorNote(this.indicatorNote);
-            return pieChartIndicatorVisualization;
+        public PieChartIndicatorDisplayOptions build() {
+            PieChartConfig chartConfig = new PieChartConfig();
+            chartConfig.setHasLabels(this.hasLabels);
+            chartConfig.setHasLabelsOutside(this.hasLabelsOutside);
+            chartConfig.setHasCenterCircle(this.hasCenterCircle);
+            chartConfig.setSlices(this.slices);
+            chartConfig.setListener(this.listener);
+            PieChartIndicatorDisplayOptions pieChartIndicatorDisplayOptions = new PieChartIndicatorDisplayOptions(chartConfig);
+            pieChartIndicatorDisplayOptions.setIndicatorLabel(this.indicatorLabel);
+            pieChartIndicatorDisplayOptions.setIndicatorNote(this.indicatorNote);
+            return pieChartIndicatorDisplayOptions;
         }
 
     }

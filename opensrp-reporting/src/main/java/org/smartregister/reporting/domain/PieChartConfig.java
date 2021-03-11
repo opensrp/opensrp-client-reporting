@@ -4,21 +4,21 @@ import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.List;
 
-public class PieChartIndicatorData {
+public class PieChartConfig {
     private boolean hasLabels;
     private boolean hasLabelsOutside;
     private boolean hasCenterCircle;
     private List<PieChartSlice> slices;
     private PieChartSelectListener listener;
 
-    public PieChartIndicatorData(boolean hasLabels, boolean hasLabelsOutside, boolean hasCenterCircle, List<PieChartSlice> slices) {
+    public PieChartConfig(boolean hasLabels, boolean hasLabelsOutside, boolean hasCenterCircle, List<PieChartSlice> slices) {
         this.hasLabels = hasLabels;
         this.hasLabelsOutside = hasLabelsOutside;
         this.hasCenterCircle = hasCenterCircle;
         this.slices = slices;
     }
 
-    public PieChartIndicatorData() {}
+    public PieChartConfig() {}
 
     public boolean hasLabels() {
         return hasLabels;

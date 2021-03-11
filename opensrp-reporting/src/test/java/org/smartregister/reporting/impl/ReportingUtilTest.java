@@ -7,9 +7,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
-import org.smartregister.reporting.model.NumericDisplayModel;
+import org.smartregister.reporting.domain.NumericIndicatorDisplayOptions;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
+import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.util.ReportingUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.smartregister.reporting.BaseUnitTest.getDateTime;
-import static org.smartregister.reporting.util.ReportingUtil.getIndicatorDisplayModel;
+import static org.smartregister.reporting.util.ReportingUtil.getPieChartSlice;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportingUtilTest {
@@ -70,17 +75,43 @@ public class ReportingUtilTest {
         List indicatorTallies = Collections.unmodifiableList(Collections.unmodifiableList(Arrays.asList(tally1, tally2, tally3, tally4)));
 
         //Test get model with total count
-        NumericDisplayModel NumericDisplayModel = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.TOTAL_COUNT, "indicator1", 182998, indicatorTallies);
-        assertNotNull(NumericDisplayModel);
-        assertEquals(12, NumericDisplayModel.getCount(), 0);
-        assertEquals("indicator1", NumericDisplayModel.getIndicatorCode());
-        assertEquals(182998, NumericDisplayModel.getLabelStringResource());
+        NumericIndicatorDisplayOptions displayOptions1 = ReportingUtil.getNumericIndicatorDisplayOptions(ReportContract.IndicatorView.CountType.TOTAL_COUNT,
+                "indicator1",
+                "first indicator", indicatorTallies);
+        assertNotNull(displayOptions1);
+        assertEquals(12, displayOptions1.getValue(), 0);
+        assertEquals("first indicator", displayOptions1.getIndicatorLabel());
 
-        //Test get model with total count
-        NumericDisplayModel NumericDisplayModel2 = getIndicatorDisplayModel(ReportContract.IndicatorView.CountType.LATEST_COUNT, "indicator2", 182999, indicatorTallies);
-        assertNotNull(NumericDisplayModel2);
-        assertEquals(13, NumericDisplayModel2.getCount(), 0);
-        assertEquals("indicator2", NumericDisplayModel2.getIndicatorCode());
-        assertEquals(182999, NumericDisplayModel2.getLabelStringResource());
+        //Test get model with latest count
+        NumericIndicatorDisplayOptions displayOptions2 = ReportingUtil.getNumericIndicatorDisplayOptions(ReportContract.IndicatorView.CountType.LATEST_COUNT,
+                "indicator2",
+                "second indicator", indicatorTallies);
+        assertNotNull(displayOptions2);
+        assertEquals(13, displayOptions2.getValue(), 0);
+        assertEquals("second indicator", displayOptions2.getIndicatorLabel());
+    }
+
+    @Test
+    public void getPieChartDisplayOptionsReturnsCorrectOptions() {
+        PieChartSlice indicator2_1 = getPieChartSlice(ReportContract.IndicatorView.CountType.LATEST_COUNT, "IND-1", "slice 1", 0, null);
+        PieChartSlice indicator2_2 = getPieChartSlice(ReportContract.IndicatorView.CountType.LATEST_COUNT, "IND-2", "slice 2", 0, null);
+        List<PieChartSlice> slices = new ArrayList<>();
+        slices.add(indicator2_1);
+        slices.add(indicator2_2);
+        PieChartIndicatorDisplayOptions options = ReportingUtil.getPieChartDisplayOptions(slices, "Test Chart", "", null);
+
+        assertEquals("Test Chart", options.getIndicatorLabel());
+        assertNotNull(options.getPieChartConfig().getSlices());
+        assertEquals("slice 2", options.getPieChartConfig().getSlices().get(1).getLabel());
+        assertTrue(options.getPieChartConfig().hasLabels());
+        assertFalse(options.getPieChartConfig().hasCenterCircle());
+    }
+
+    @Test
+    public void canFormatDecimals() {
+        assertEquals("12.301", ReportingUtil.formatDecimal(12.30123));
+        assertEquals("12.301", ReportingUtil.formatDecimal(12.301));
+        assertEquals("12.3", ReportingUtil.formatDecimal(12.3001));
+        assertEquals("12", ReportingUtil.formatDecimal(12.0));
     }
 }

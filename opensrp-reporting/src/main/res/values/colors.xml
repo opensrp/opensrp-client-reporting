@@ -8,4 +8,6 @@
     <color name="indicatorSplitLine">#DEDEDE</color>
     <color name="colorSecondaryGreen">#00b253</color>
     <color name="colorPastelGreen">#b2f395</color>
+    <color name="hr_grey">#ecf1f7</color>
+
 </resources>

@@ -7,11 +7,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.smartregister.reporting.R;
-import org.smartregister.reporting.domain.PieChartIndicatorData;
-import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
+import org.smartregister.reporting.domain.PieChartConfig;
+import org.smartregister.reporting.domain.PieChartIndicatorDisplayOptions;
 import org.smartregister.reporting.domain.PieChartSlice;
 import org.smartregister.reporting.domain.PieSliceValue;
-import org.smartregister.reporting.domain.ReportingIndicatorVisualization;
+import org.smartregister.reporting.domain.ReportingIndicatorDisplayOptions;
 import org.smartregister.reporting.listener.PieChartSelectListener;
 
 import java.util.ArrayList;
@@ -30,19 +30,19 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 public class PieChartFactory implements IndicatorVisualisationFactory {
     @Override
-    public View getIndicatorView(ReportingIndicatorVisualization visualization, Context context) {
+    public View getIndicatorView(ReportingIndicatorDisplayOptions displayOptions, Context context) {
 
         LinearLayout rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pie_chart_view, null);
         TextView chartLabelTextView = rootLayout.findViewById(R.id.pie_indicator_label);
         TextView chartNoteTextView = rootLayout.findViewById(R.id.pie_note_label);
         TextView numericValueTextView = rootLayout.findViewById(R.id.numeric_indicator_value);
 
-        PieChartIndicatorVisualization indicatorVisualization = (PieChartIndicatorVisualization) visualization;
-        PieChartIndicatorData chartConfiguration = indicatorVisualization.getChartData();
+        PieChartIndicatorDisplayOptions pieChartIndicatorDisplayOptions = (PieChartIndicatorDisplayOptions) displayOptions;
+        PieChartConfig chartConfiguration = pieChartIndicatorDisplayOptions.getPieChartConfig();
 
-        chartLabelTextView.setText(indicatorVisualization.getIndicatorLabel());
-        if (indicatorVisualization.getIndicatorNote() != null) {
-            chartNoteTextView.setText(indicatorVisualization.getIndicatorNote());
+        chartLabelTextView.setText(pieChartIndicatorDisplayOptions.getIndicatorLabel());
+        if (pieChartIndicatorDisplayOptions.getIndicatorNote() != null) {
+            chartNoteTextView.setText(pieChartIndicatorDisplayOptions.getIndicatorNote());
         } else {
             // Nothing to show
             chartNoteTextView.setVisibility(View.GONE);
