@@ -170,3 +170,4 @@ coveralls {
 
 apply from: '../maven.gradle'
 // apply from: '../bintray.gradle'
+apply from: '../githubpackages.gradle'
