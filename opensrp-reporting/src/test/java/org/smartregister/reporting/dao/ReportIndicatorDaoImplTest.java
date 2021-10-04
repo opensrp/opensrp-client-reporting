@@ -116,8 +116,8 @@ public class ReportIndicatorDaoImplTest {
 
         Mockito.when(coreLibrary.context()).thenReturn(context);
         Mockito.when(context.getAppProperties()).thenReturn(appProperties);
-        Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
-        Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+//      Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+//      Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
 
         ReportingLibrary reportingLibrarySpy = Mockito.mock(ReportingLibrary.class);
         ReflectionHelpers.setStaticField(ReportingLibrary.class, "instance", reportingLibrarySpy);
@@ -161,8 +161,8 @@ public class ReportIndicatorDaoImplTest {
 
         Mockito.when(coreLibrary.context()).thenReturn(context);
         Mockito.when(context.getAppProperties()).thenReturn(appProperties);
-        Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
-        Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+//        Mockito.when(appProperties.hasProperty(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
+//        Mockito.when(appProperties.getPropertyBoolean(Constants.ReportingConfig.SHOULD_ALLOW_ZERO_TALLIES)).thenReturn(true);
 
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
