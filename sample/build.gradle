@@ -64,6 +64,7 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/NOTICE.md'
         exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/INDEX.LIST'
         exclude 'LICENSE.txt'
     }
 
@@ -88,7 +89,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpmime'
         exclude group: 'com.ibm.fhir', module: 'fhir-model'
     }
-    compileOnly 'com.ibm.fhir:fhir-model:4.2.3'
+    compileOnly 'com.ibm.fhir:fhir-model:4.7.0'
 
     implementation project(":opensrp-reporting")
 
