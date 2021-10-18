@@ -49,7 +49,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     public static final String REPORT_LAST_PROCESSED_DATE = "REPORT_LAST_PROCESSED_DATE";
     public static String DAILY_TALLY_DATE_FORMAT = "yyyy-MM-dd";
 
-    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt + " from "
+    public static String PREVIOUS_REPORT_DATES_QUERY = "select distinct eventDate, " + EventClientRepository.event_column.updatedAt +", "+ EventClientRepository.event_column.dateCreated + " from "
             + EventClientRepository.Table.event.name();
 
     private static String eventDateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -185,7 +185,12 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         Date eventDate;
         Date updateDate;
         for (HashMap<String, String> val : values) {
-            eventDate = formatDate(val.get(EventClientRepository.event_column.eventDate.name()), eventDateFormat);
+            String eventDateString = val.get(EventClientRepository.event_column.eventDate.name());
+            if(eventDateString == null)
+                eventDateString = val.get(EventClientRepository.event_column.dateCreated.name());
+
+
+            eventDate = formatDate(eventDateString, eventDateFormat);
             updateDate = formatDate(val.get(EventClientRepository.event_column.updatedAt.name()), eventDateFormat);
 
             String keyDate = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).format(eventDate);

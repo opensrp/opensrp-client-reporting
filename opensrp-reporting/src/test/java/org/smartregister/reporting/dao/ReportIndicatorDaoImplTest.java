@@ -97,6 +97,7 @@ public class ReportIndicatorDaoImplTest {
         Assert.assertEquals(67F, actualResult, 0);
     }
 
+    @Test
     public void getReportEventDatesShouldReturnCurrentDateWhenNoDatesRetrievedFromEventTable() {
         Date timeNow = Calendar.getInstance().getTime();
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
@@ -156,6 +157,7 @@ public class ReportIndicatorDaoImplTest {
 
     @Test
     public void saveTalliesGeneratesTallyObject() {
+
 
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
