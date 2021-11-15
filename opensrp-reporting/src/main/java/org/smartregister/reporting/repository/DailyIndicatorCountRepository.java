@@ -108,6 +108,30 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
+    public void updateIndicatorValue(String id, String Value)
+    {
+        SQLiteDatabase database = getWritableDatabase();
+        Object[] queryArgs = {
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
+                Constants.DailyIndicatorCountRepository.ID,
+        };
+
+        Cursor cursor = null;
+        try{
+            cursor = database.rawQuery(String.format("UPDATE %s SET %s = "+Value+" WHERE %s = "+ id, queryArgs),null);
+            cursor.moveToFirst();
+        }
+        catch (Exception ex) {
+            Timber.e(ex.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+    }
+
     public List<Map<String, IndicatorTally>> getAllDailyTallies() {
         List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
         Map<String, IndicatorTally> tallyMap;
