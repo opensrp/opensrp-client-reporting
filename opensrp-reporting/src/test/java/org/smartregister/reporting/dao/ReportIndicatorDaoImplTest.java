@@ -76,9 +76,6 @@ public class ReportIndicatorDaoImplTest {
     @Mock
     private CommonFtsObject commonFtsObject;
 
-    @Mock
-    private AllSharedPreferences sharedPreferences;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
