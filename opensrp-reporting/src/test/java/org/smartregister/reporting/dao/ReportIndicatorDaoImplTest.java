@@ -197,7 +197,6 @@ public class ReportIndicatorDaoImplTest {
         Mockito.doReturn(matrixCursor).when(database).rawQuery(Mockito.anyString(), Mockito.isNull(String[].class));
 
         ReportingLibrary.init(context,repository,commonFtsObject,0,0);
-        Mockito.when(reportingLibrary.getContext()).thenReturn(context);
         Mockito.when(context.allSharedPreferences()).thenReturn(allSharedPreferences);
         Mockito.when(allSharedPreferences.fetchPioneerUser()).thenReturn("testUser");
         Mockito.when(allSharedPreferences.fetchDefaultLocalityId(Mockito.anyString())).thenReturn("testLoc");
