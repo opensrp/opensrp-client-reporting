@@ -111,7 +111,7 @@ public class DailyIndicatorCountRepositoryTest {
         matrixCursor.addRow(new Object[]{"1","2.0"});
         Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
-                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
+                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull());
 
 
 
