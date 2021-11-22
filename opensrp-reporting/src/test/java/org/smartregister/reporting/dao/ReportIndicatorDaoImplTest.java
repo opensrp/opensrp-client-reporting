@@ -65,9 +65,6 @@ public class ReportIndicatorDaoImplTest {
     private Context context;
 
     @Mock
-    private ReportingLibrary reportingLibrary;
-
-    @Mock
     private Repository repository;
 
     @Mock
