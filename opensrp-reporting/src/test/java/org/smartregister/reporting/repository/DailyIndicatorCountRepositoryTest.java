@@ -6,6 +6,7 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.MatrixCursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.tools.ant.taskdefs.Length;
 import org.hamcrest.collection.IsArrayWithSize;
 import org.junit.After;
 import org.junit.Assert;
@@ -102,6 +103,21 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.verify(sqLiteDatabase, Mockito.times(1)).insert(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String.class), ArgumentMatchers.any(ContentValues.class));
     }
 
+    @Test
+    public void updateDailyTalliesTest()
+    {
+        dailyIndicatorCountRepositorySpy.updateIndicatorValue("1","2.0");
+        Mockito.verify(dailyIndicatorCountRepositorySpy,Mockito.times(1)).getWritableDatabase();
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id","value"}, 1);
+        matrixCursor.addRow(new Object[]{"1","2.0"});
+        Cursor cursor = Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
+        Mockito.verify(sqLiteDatabase, Mockito.times(1))
+                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
+
+
+
+
+    }
     @Test
     public void getAllDailyTalliesInvokesReadableDBQuery() {
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
