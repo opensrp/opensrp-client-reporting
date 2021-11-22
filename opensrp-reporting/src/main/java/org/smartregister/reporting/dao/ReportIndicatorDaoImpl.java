@@ -144,7 +144,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 if (date != null)
                     queryString = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
                 if(defaultLocID != null)
-                    queryString = queryString.contains("%facility_location%") ? queryString.replaceAll("%facility_location%", defaultLocID) : queryString;
+                    queryString = queryString.contains(Constants.DailyIndicatorCountRepository.FACILITY_LOCATION_PLACEHOLDER) ? queryString.replaceAll(Constants.DailyIndicatorCountRepository.FACILITY_LOCATION_PLACEHOLDER, defaultLocID) : queryString;
 
                 if (!executedQueries.contains(queryString)) {
                     Timber.i("QUERY : %s", queryString);
