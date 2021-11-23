@@ -139,8 +139,12 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
                 String queryString = indicatorQuery.getQuery();
                 String date = dates.getKey();
+                String userName = ReportingLibrary.getInstance().getContext().allSharedPreferences().fetchPioneerUser();
+                String defaultLocID = ReportingLibrary.getInstance().getContext().allSharedPreferences().fetchDefaultLocalityId(userName);
                 if (date != null)
                     queryString = queryString.contains("%s") ? queryString.replaceAll("%s", date) : queryString;
+                if(defaultLocID != null)
+                    queryString = queryString.contains(Constants.DailyIndicatorCountRepository.FACILITY_LOCATION_PLACEHOLDER) ? queryString.replaceAll(Constants.DailyIndicatorCountRepository.FACILITY_LOCATION_PLACEHOLDER, defaultLocID) : queryString;
 
                 if (!executedQueries.contains(queryString)) {
                     Timber.i("QUERY : %s", queryString);

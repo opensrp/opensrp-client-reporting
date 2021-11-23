@@ -103,6 +103,21 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
+    public void updateDailyTalliesTest()
+    {
+        dailyIndicatorCountRepositorySpy.updateIndicatorValue("1","2.0");
+        Mockito.verify(dailyIndicatorCountRepositorySpy,Mockito.times(1)).getWritableDatabase();
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id","value"}, 1);
+        matrixCursor.addRow(new Object[]{"1","2.0"});
+        Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
+        Mockito.verify(sqLiteDatabase, Mockito.times(1))
+                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull());
+
+
+
+
+    }
+    @Test
     public void getAllDailyTalliesInvokesReadableDBQuery() {
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
         Mockito.verify(sqLiteDatabase, Mockito.times(1))

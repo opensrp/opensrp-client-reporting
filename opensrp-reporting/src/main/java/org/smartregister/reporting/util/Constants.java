@@ -23,6 +23,7 @@ public interface Constants {
         String INDICATOR_VALUE_SET_FLAG = "indicator_is_value_set";
         String INDICATOR_DAILY_TALLY_TABLE = "indicator_daily_tally";
         String INDICATOR_GROUPING = "indicator_grouping";
+        String FACILITY_LOCATION_PLACEHOLDER = "%facility_location%";
     }
 
     interface IndicatorQueryRepository {

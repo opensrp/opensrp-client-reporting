@@ -64,6 +64,15 @@ public class ReportIndicatorDaoImplTest {
     @Mock
     private Context context;
 
+    @Mock
+    private Repository repository;
+
+    @Mock
+    private  AllSharedPreferences allSharedPreferences;
+
+    @Mock
+    private CommonFtsObject commonFtsObject;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -125,13 +134,13 @@ public class ReportIndicatorDaoImplTest {
         ReportingLibrary reportingLibrary = Mockito.mock(ReportingLibrary.class);
         Mockito.doReturn(repository).when(reportingLibrary).getRepository();
 
-
         Context context = Mockito.mock(Context.class);
         Mockito.doReturn(context).when(reportingLibrary).getContext();
 
 
         AllSharedPreferences allSharedPreferences = Mockito.mock(AllSharedPreferences.class);
         Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
+
 
         Whitebox.setInternalState(reportIndicatorDao, "reportingLibrary", reportingLibrary);
 
@@ -149,7 +158,7 @@ public class ReportIndicatorDaoImplTest {
         values.put("0003", query);
 
         Mockito.doReturn(values).when(indicatorQueryRepository).getAllIndicatorQueries();
-
+        Mockito.doNothing().when(reportIndicatorDao).saveTallies(Mockito.<String, IndicatorQuery>anyMap(), Mockito.<Map.Entry<String, Date>>any(), Mockito.any(SQLiteDatabase.class),Mockito.<String>anySet());
         reportIndicatorDao.generateDailyIndicatorTallies("2019-12-11");
 
         Mockito.verify(reportIndicatorDao, Mockito.times(dates.size())).saveTallies(Mockito.<String, IndicatorQuery>anyMap(), Mockito.<Map.Entry<String, Date>>any(), Mockito.any(SQLiteDatabase.class), Mockito.<String>anySet());
@@ -183,6 +192,11 @@ public class ReportIndicatorDaoImplTest {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"count(*)"});
         matrixCursor.addRow(new Object[]{67F});
         Mockito.doReturn(matrixCursor).when(database).rawQuery(Mockito.anyString(), Mockito.isNull(String[].class));
+
+        ReportingLibrary.init(context,repository,commonFtsObject,0,0);
+        Mockito.when(context.allSharedPreferences()).thenReturn(allSharedPreferences);
+        Mockito.when(allSharedPreferences.fetchPioneerUser()).thenReturn("testUser");
+        Mockito.when(allSharedPreferences.fetchDefaultLocalityId(Mockito.anyString())).thenReturn("testLoc");
 
         IndicatorQuery query = new IndicatorQuery();
         query.setMultiResult(false);
