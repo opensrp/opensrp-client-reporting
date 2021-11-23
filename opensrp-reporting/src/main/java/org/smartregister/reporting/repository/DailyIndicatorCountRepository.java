@@ -114,12 +114,6 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     public void updateIndicatorValue(String id, String Value)
     {
         SQLiteDatabase database = getWritableDatabase();
-        Object[] queryArgs = {
-                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE,
-                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
-                Constants.DailyIndicatorCountRepository.ID,
-        };
-
         Cursor cursor = null;
         try{
             cursor = database.rawQuery("UPDATE "+Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE+" SET "+ Constants.DailyIndicatorCountRepository.INDICATOR_VALUE+" = ? WHERE "+ Constants.DailyIndicatorCountRepository.ID+" = ?",new Object[]{Value,id});
