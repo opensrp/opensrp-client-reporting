@@ -109,12 +109,21 @@ public class DailyIndicatorCountRepositoryTest {
         Mockito.verify(dailyIndicatorCountRepositorySpy,Mockito.times(1)).getWritableDatabase();
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id","value"}, 1);
         matrixCursor.addRow(new Object[]{"1","2.0"});
-        Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull(String[].class));
+        Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull(Object[].class));
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
-                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull());
+                .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull(Object[].class));
 
 
 
+
+    }
+
+    @Test
+    public void testCreatTable()
+    {
+        DailyIndicatorCountRepository.createTable(sqLiteDatabase);
+        Mockito.verify(sqLiteDatabase, Mockito.times(2))
+               .execSQL(ArgumentMatchers.anyString());
 
     }
     @Test
