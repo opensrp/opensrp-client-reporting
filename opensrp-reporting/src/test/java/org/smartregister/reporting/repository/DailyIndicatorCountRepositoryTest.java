@@ -117,6 +117,15 @@ public class DailyIndicatorCountRepositoryTest {
 
 
     }
+
+    @Test
+    public void testCreatTable()
+    {
+        DailyIndicatorCountRepository.createTable(sqLiteDatabase);
+        Mockito.verify(sqLiteDatabase, Mockito.times(2))
+               .execSQL(ArgumentMatchers.anyString());
+
+    }
     @Test
     public void getAllDailyTalliesInvokesReadableDBQuery() {
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
