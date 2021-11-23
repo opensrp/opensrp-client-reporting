@@ -35,8 +35,6 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-import static org.smartregister.reporting.util.Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE;
-import static org.smartregister.reporting.util.Constants.DailyIndicatorCountRepository.INDICATOR_VALUE;
 
 /**
  * This DailyIndicatorCountRepository class handles saving daily computed indicator values
@@ -47,29 +45,29 @@ import static org.smartregister.reporting.util.Constants.DailyIndicatorCountRepo
 
 public class DailyIndicatorCountRepository extends BaseRepository {
 
-    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + INDICATOR_DAILY_TALLY_TABLE
+    public static String CREATE_DAILY_TALLY_TABLE = "CREATE TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
             + "(" + Constants.DailyIndicatorCountRepository.ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             + Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " TEXT NOT NULL, "
-            + INDICATOR_VALUE + " REAL, "
+            + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE + " REAL, "
             + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET + " TEXT, "
             + Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING + " TEXT, "
             + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, "
             + Constants.DailyIndicatorCountRepository.DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
     private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " +
-            INDICATOR_DAILY_TALLY_TABLE + " ( " +
+            Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " ( " +
             Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " , "
             + Constants.DailyIndicatorCountRepository.DAY + " ) ";
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
-        if (ReportingUtils.isTableExists(database, INDICATOR_DAILY_TALLY_TABLE)
-                && !ReportingUtils.isColumnExists(database, INDICATOR_DAILY_TALLY_TABLE
+        if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)
+                && !ReportingUtils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)) {
             addValueSetColumns(database);
         }
 
-        if (ReportingUtils.isTableExists(database, INDICATOR_DAILY_TALLY_TABLE)) {
+        if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE)) {
             // If there are multiple indicator tallies for a single day the we need to aggregate
             ArrayList<Object[]> results = ReportingUtils.performQuery(database,
                     "SELECT count(*) AS total_count FROM indicator_daily_tally GROUP BY indicator_code" +
@@ -81,8 +79,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             }
         }
 
-        if (ReportingUtils.isTableExists(database, INDICATOR_DAILY_TALLY_TABLE) &&
-                !ReportingUtils.isColumnExists(database, INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING)) {
+        if (ReportingUtils.isTableExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE) &&
+                !ReportingUtils.isColumnExists(database, Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING)) {
             addGroupingColumn(database);
         }
     }
@@ -98,7 +96,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         }
 
         SQLiteDatabase database = getWritableDatabase();
-        database.delete(INDICATOR_DAILY_TALLY_TABLE
+        database.delete(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND "
                         + Constants.DailyIndicatorCountRepository.DAY + " = ? "
                 , new String[]{
@@ -108,7 +106,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
                                 Locale.getDefault()).format(indicatorTally.getCreatedAt()
                         )
                 });
-        database.insert(INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
+        database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
     public void updateIndicatorValue(String id, String Value)
@@ -135,17 +133,17 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         SQLiteDatabase database = getReadableDatabase();
         Object[] queryArgs = {
-                INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
-                , INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
         };
 
@@ -199,7 +197,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         try {
             Object[] queryArgs = {
                     Constants.DailyIndicatorCountRepository.DAY
-                    , INDICATOR_DAILY_TALLY_TABLE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                     , Constants.DailyIndicatorCountRepository.DAY
                     , dateFormat.format(minDate)
                     , Constants.DailyIndicatorCountRepository.DAY
@@ -245,21 +243,21 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         Cursor cursor = null;
         try {
             Object[] queryArgs = {
-                    INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                    , INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
-                    , INDICATOR_DAILY_TALLY_TABLE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
                     , dateFormat.format(queryDate)
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
                     , (reportGrouping == null ? "IS NULL" : "= '" + reportGrouping + "'")
             };
 
@@ -412,20 +410,20 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         SQLiteDatabase database = getReadableDatabase();
 
         Object[] queryArgs = {
-                INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
-                , INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                 , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
-                , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
         };
 
         Cursor cursor = null;
@@ -495,21 +493,21 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             SQLiteDatabase database = getReadableDatabase();
 
             Object[] queryArgs = {
-                    INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                    , INDICATOR_DAILY_TALLY_TABLE, INDICATOR_VALUE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
-                    , INDICATOR_DAILY_TALLY_TABLE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
                     , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
-                    , INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+                    , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
                     , reportGrouping == null ? "IS NULL" : "= '" + reportGrouping + "'"
             };
 
@@ -580,7 +578,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             compositeIndicatorTally.setValueSet(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET)));
         } else {
-            compositeIndicatorTally.setCount(cursor.getFloat(cursor.getColumnIndex(INDICATOR_VALUE)));
+            compositeIndicatorTally.setCount(cursor.getFloat(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE)));
         }
 
         if (cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS) != -1) {
@@ -609,7 +607,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (compositeIndicatorTally.isValueSet()) {
             values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET, compositeIndicatorTally.getValueSet());
         } else {
-            values.put(INDICATOR_VALUE, compositeIndicatorTally.getFloatCount());
+            values.put(Constants.DailyIndicatorCountRepository.INDICATOR_VALUE, compositeIndicatorTally.getFloatCount());
         }
 
         values.put(Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING, compositeIndicatorTally.getGrouping());
@@ -625,23 +623,23 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL("PRAGMA foreign_keys=off");
         database.beginTransaction();
 
-        database.execSQL("ALTER TABLE " + INDICATOR_DAILY_TALLY_TABLE
-                + " RENAME TO old_" + INDICATOR_DAILY_TALLY_TABLE);
+        database.execSQL("ALTER TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+                + " RENAME TO old_" + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
         database.execSQL(CREATE_DAILY_TALLY_TABLE);
 
         String copyDataSQL = String.format("INSERT INTO %s(%s, %s, %s) SELECT %s, %s, %s FROM old_%s",
-                INDICATOR_DAILY_TALLY_TABLE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE,
                 Constants.DailyIndicatorCountRepository.INDICATOR_CODE,
-                INDICATOR_VALUE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
                 Constants.DailyIndicatorCountRepository.DAY,
                 Constants.DailyIndicatorCountRepository.INDICATOR_CODE,
-                INDICATOR_VALUE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_VALUE,
                 Constants.DailyIndicatorCountRepository.DAY,
-                INDICATOR_DAILY_TALLY_TABLE);
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
 
         // Copy over the data
         database.execSQL(copyDataSQL);
-        database.execSQL("DROP TABLE old_" + INDICATOR_DAILY_TALLY_TABLE);
+        database.execSQL("DROP TABLE old_" + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE);
 
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -661,14 +659,14 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         // Delete the old values
         database.execSQL("DELETE FROM indicator_daily_tally");
         database.execSQL(String.format("INSERT INTO %s(%s, %s, %s, %s) SELECT %s, sum(%s), %s, strftime('%%Y-%%m-%%d', %s) FROM %s GROUP BY %s, strftime('%%Y-%%m-%%d', %s), %s"
-                , INDICATOR_DAILY_TALLY_TABLE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
                 , Constants.DailyIndicatorCountRepository.DAY
                 // SELECT args START HERE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , INDICATOR_VALUE
+                , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
                 , Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
                 , Constants.DailyIndicatorCountRepository.DAY
                 , "indicator_daily_tally_old"
@@ -688,7 +686,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.execSQL("PRAGMA foreign_keys=off");
         database.beginTransaction();
 
-        database.execSQL("ALTER TABLE " + INDICATOR_DAILY_TALLY_TABLE
+        database.execSQL("ALTER TABLE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
                 + " ADD COLUMN " + Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING + " TEXT");
         database.setTransactionSuccessful();
         database.endTransaction();
