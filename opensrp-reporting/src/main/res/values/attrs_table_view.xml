@@ -11,5 +11,7 @@
         <attr name="rowTextColor" format="color" />
         <attr name="borderColor" format="color" />
         <attr name="rowBorderHidden" format="boolean" />
+        <attr name="headerHidden" format="boolean" />
+        <attr name="tableHeight" format="integer" />
     </declare-styleable>
 </resources>
