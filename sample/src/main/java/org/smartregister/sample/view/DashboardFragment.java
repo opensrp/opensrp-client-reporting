@@ -16,15 +16,21 @@ import androidx.loader.content.Loader;
 import org.smartregister.reporting.contract.ReportContract;
 import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.domain.PieChartSlice;
+import org.smartregister.reporting.domain.TabularVisualization;
 import org.smartregister.reporting.model.NumericDisplayModel;
 import org.smartregister.reporting.view.NumericIndicatorView;
 import org.smartregister.reporting.view.PieChartIndicatorView;
+import org.smartregister.reporting.view.ReportingTableView;
 import org.smartregister.sample.R;
 import org.smartregister.sample.presenter.SamplePresenter;
 import org.smartregister.sample.utils.ChartUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.LATEST_COUNT;
 import static org.smartregister.reporting.contract.ReportContract.IndicatorView.CountType.TOTAL_COUNT;
@@ -38,6 +44,7 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
     private static ReportContract.Presenter presenter;
     private ViewGroup visualizationsViewGroup;
     private List<Map<String, IndicatorTally>> indicatorTallies;
+    Random random = new Random();
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -113,6 +120,33 @@ public class DashboardFragment extends Fragment implements ReportContract.View, 
 
         NumericDisplayModel floatIndicatorCount = getIndicatorDisplayModel(TOTAL_COUNT, "S_IND_005", R.string.float_count, indicatorTallies);
         mainLayout.addView(new NumericIndicatorView(getContext(), floatIndicatorCount).createView());
+
+        int tableTitleStringResource = R.string.table_data_title;
+        List<String> tableHeaderList = Arrays.asList("Vaccine Name", "Gender", "Value");
+        TabularVisualization tabularVisualization = new TabularVisualization(tableTitleStringResource, tableHeaderList, getDummyData(), true);
+        mainLayout.addView(new ReportingTableView(getContext(), tabularVisualization).createView());
+    }
+
+    private List<String> getDummyData() {
+        List<String> list = new ArrayList<>();
+        for (Integer i = 0; i < 10; i++) {
+            list.add((i < 3 ? "BCG " : i > 6 ? "OPV " : "PENTA ") + i);
+            list.add(getRange(1, 2) == 2 ? "Female" : "Male");
+            list.add(String.valueOf(getRange(500, 3000)));
+        }
+        return list;
+    }
+
+    private List<String> getDummyDataIds() {
+        List<String> list = new ArrayList<>();
+        for (Integer i = 0; i < 10; i++) {
+            list.add(UUID.randomUUID().toString());
+        }
+        return list;
+    }
+
+    private int getRange(int min, int max) {
+        return random.nextInt((max - min) + 1) + min;
     }
 
     @NonNull
