@@ -29,4 +29,10 @@ public class BaseReportIndicatorsModel implements ReportContract.Model {
         dao.setDailyIndicatorCountRepository(reportingLibrary.dailyIndicatorCountRepository());
         return dao.getIndicatorsDailyTallies();
     }
+
+    @Override
+    public List<Map<String, IndicatorTally>> getLatestIndicatorTallies() {
+        dao.setDailyIndicatorCountRepository(reportingLibrary.dailyIndicatorCountRepository());
+        return dao.getLatestIndicatorTallies();
+    }
 }

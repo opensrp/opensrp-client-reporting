@@ -84,6 +84,10 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
         return dailyIndicatorCountRepository.getAllDailyTallies();
     }
 
+    public List<Map<String, IndicatorTally>> getLatestIndicatorTallies() {
+        return dailyIndicatorCountRepository.getLatestIndicatorTallies();
+    }
+
     @Override
     public void generateDailyIndicatorTallies(String lastProcessedDate) {
         SQLiteDatabase database = getReportingLibrary().getRepository().getWritableDatabase();
