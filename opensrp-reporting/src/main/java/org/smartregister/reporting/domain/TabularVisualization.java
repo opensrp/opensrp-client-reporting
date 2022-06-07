@@ -8,7 +8,6 @@ public class TabularVisualization extends ReportingIndicatorVisualization {
     private List<String> tableHeaderList;
     private List<String> tableDataList;
     private boolean tableHeaderHidden;
-    private int colorResource;
 
     public TabularVisualization(int titleLabelStringResource, List<String> tableHeaderList, List<String> tableDataList, boolean tableHeaderHidden) {
         this.titleLabelStringResource = titleLabelStringResource;
