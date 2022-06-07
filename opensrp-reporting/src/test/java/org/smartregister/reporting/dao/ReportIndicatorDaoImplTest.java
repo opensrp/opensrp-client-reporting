@@ -166,8 +166,6 @@ public class ReportIndicatorDaoImplTest {
 
     @Test
     public void saveTalliesGeneratesTallyObject() {
-
-
         SQLiteDatabase database = Mockito.mock(SQLiteDatabase.class);
         Map<String, IndicatorQuery> indicatorQueries = new HashMap<>();
         Map.Entry<String, Date> dates = new Map.Entry<String, Date>() {
@@ -212,24 +210,30 @@ public class ReportIndicatorDaoImplTest {
     }
 
     @Test
-    public void testAddReportIndicator() {
+    public void testCanAddReportIndicator() {
         reportIndicatorDao.addReportIndicator(reportIndicator);
-        Assert.assertNotNull(indicatorRepository);
+        Mockito.verify(indicatorRepository).add(Mockito.any(ReportIndicator.class));
     }
 
     @Test
-    public void testAddIndicatorQuery() {
+    public void testCanAddIndicatorQuery() {
         @Nullable List<String> expectedIndicators = new ArrayList<>();
         expectedIndicators.add(0, "indicator1");
 
         IndicatorQuery indicatorQuery = new IndicatorQuery();
         indicatorQuery.setDbVersion(2);
         indicatorQuery.setExpectedIndicators(expectedIndicators);
-        indicatorQuery.setId(Mockito.anyLong());
+        indicatorQuery.setId(2L);
         indicatorQuery.setIndicatorCode("indicatorCode");
 
         reportIndicatorDao.addIndicatorQuery(indicatorQuery);
-        Assert.assertNotNull(indicatorQueryRepository);
+        Mockito.verify(indicatorQueryRepository).add(Mockito.any(IndicatorQuery.class));
     }
 
+
+    @Test
+    public void canGetLatestIndicatorTallies() {
+        reportIndicatorDao.getLatestIndicatorTallies();
+        Mockito.verify(dailyIndicatorCountRepository).getLatestIndicatorTallies();
+    }
 }
