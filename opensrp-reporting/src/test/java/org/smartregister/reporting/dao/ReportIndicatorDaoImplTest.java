@@ -230,7 +230,6 @@ public class ReportIndicatorDaoImplTest {
         Mockito.verify(indicatorQueryRepository).add(Mockito.any(IndicatorQuery.class));
     }
 
-
     @Test
     public void canGetLatestIndicatorTallies() {
         reportIndicatorDao.getLatestIndicatorTallies();

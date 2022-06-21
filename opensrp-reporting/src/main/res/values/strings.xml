@@ -3,4 +3,5 @@
     <string name="title_activity_reports">Dashboard</string>
     <string name="some_reports_might_not_be_inaccurate">Some reports might be inaccurate</string>
     <string name="currently_generating_in_app_reporting_indicators">Currently generating in-app reporting indicators</string>
+    <string name="table_data_title">Table data</string>
 </resources>
