@@ -134,6 +134,12 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
+    public void getLatestIndicatorTalliesInvokesReadableDBQuery() {
+        dailyIndicatorCountRepositorySpy.getLatestIndicatorTallies();
+        Mockito.verify(sqLiteDatabase, Mockito.times(1)).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNull());
+    }
+
+    @Test
     public void getAllDailyTalliesShouldProcessAndReturnIndicatorTallies() {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{"_id", "indicator_code", "indicator_value"
                 , "indicator_value_set", "indicator_is_value_set", "indicator_grouping", "day", "expected_indicators"}, 1);
