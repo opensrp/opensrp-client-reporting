@@ -17,11 +17,10 @@ import org.smartregister.reporting.view.TableView;
 import java.util.ArrayList;
 
 public class TableDisplayFactory implements IndicatorVisualisationFactory {
-   private LinearLayout rootLayout;
 
     @Override
     public View getIndicatorView(ReportingIndicatorVisualization visualization, Context context) {
-        rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.table_view_layout, null);
+        LinearLayout rootLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.table_view_layout, null);
         TextView tableTitle = rootLayout.findViewById(R.id.tableViewTitle);
         TableView tableView = rootLayout.findViewById(R.id.tableView);
 

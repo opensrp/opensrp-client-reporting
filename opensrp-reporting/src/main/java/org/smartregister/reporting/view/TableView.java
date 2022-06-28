@@ -337,7 +337,7 @@ public class TableView extends LinearLayout {
     }
 
     public void setTableHeight(int tableHeight) {
-        tableHeight= tableHeight;
+        this.tableHeight = tableHeight;
         refreshLayout();
     }
 
