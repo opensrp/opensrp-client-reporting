@@ -1,4 +1,4 @@
-package org.smartregister.reporting.view;
+package org.smartregister.reporting.factory;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,7 +17,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.domain.TabularVisualization;
-import org.smartregister.reporting.factory.TableDisplayFactory;
+import org.smartregister.reporting.view.TableView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
