@@ -62,12 +62,12 @@ public class ReportingUtil {
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
                                                  List<Map<String, IndicatorTally>> indicatorTallies, String key) {
-        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, key);
+        return new PieChartSlice(getCount(countType, indicatorCode, indicatorTallies), label, color, key);
     }
 
     public static PieChartSlice getPieChartSlice(CountType countType, String indicatorCode, String label, int color,
                                                  List<Map<String, IndicatorTally>> indicatorTallies) {
-        return new PieChartSlice((float) getCount(countType, indicatorCode, indicatorTallies), label, color, indicatorCode);
+        return new PieChartSlice(getCount(countType, indicatorCode, indicatorTallies), label, color, indicatorCode);
     }
 
     public static List<PieChartSlice> addPieChartSlices(PieChartSlice... chartSlices) {

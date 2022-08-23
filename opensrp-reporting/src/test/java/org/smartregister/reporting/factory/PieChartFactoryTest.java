@@ -1,4 +1,4 @@
-package org.smartregister.reporting.view;
+package org.smartregister.reporting.factory;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,7 +21,6 @@ import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.domain.PieChartIndicatorData;
 import org.smartregister.reporting.domain.PieChartIndicatorVisualization;
-import org.smartregister.reporting.factory.PieChartFactory;
 
 import lecho.lib.hellocharts.view.PieChartView;
 

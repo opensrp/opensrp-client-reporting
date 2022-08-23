@@ -29,7 +29,6 @@ public class TableViewTest extends BaseUnitTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(this);
         attributeSet = Robolectric.buildAttributeSet()
                 .addAttribute(R.attr.subtitle, "subtitle")
                 .build();

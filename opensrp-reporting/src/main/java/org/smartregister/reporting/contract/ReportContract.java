@@ -54,6 +54,8 @@ public interface ReportContract {
 
         List<Map<String, IndicatorTally>> getIndicatorsDailyTallies();
 
+        List<Map<String, IndicatorTally>> getLatestIndicatorTallies();
+
     }
 
     interface IndicatorView {

@@ -1,4 +1,4 @@
-package org.smartregister.reporting.view;
+package org.smartregister.reporting.factory;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,7 +21,6 @@ import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.smartregister.reporting.BaseUnitTest;
 import org.smartregister.reporting.R;
 import org.smartregister.reporting.domain.NumericIndicatorVisualization;
-import org.smartregister.reporting.factory.NumericDisplayFactory;
 
 @PrepareForTest(LayoutInflater.class)
 public class NumericDisplayFactoryTest extends BaseUnitTest {

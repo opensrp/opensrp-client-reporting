@@ -54,10 +54,25 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG + " BOOLEAN NOT NULL default 0, "
             + Constants.DailyIndicatorCountRepository.DAY + " DATETIME NOT NULL DEFAULT (DATETIME('now')))";
 
-    private static String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " +
+    private static final String CREATE_UNIQUE_CONSTRAINT = "CREATE UNIQUE INDEX indicator_daily_tally_ix ON " +
             Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " ( " +
             Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " , "
             + Constants.DailyIndicatorCountRepository.DAY + " ) ";
+
+    private static final Object[] dailyIndicatorQueryArgs = {
+            Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
+            , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
+            , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
+            , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
+            , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
+    };
 
     public static void performMigrations(@NonNull SQLiteDatabase database) {
         // Perform migrations
@@ -109,15 +124,13 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
-    public void updateIndicatorValue(String id, String Value)
-    {
+    public void updateIndicatorValue(String id, String Value) {
         SQLiteDatabase database = getWritableDatabase();
         Cursor cursor = null;
-        try{
-            cursor = database.rawQuery("UPDATE "+Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE+" SET "+ Constants.DailyIndicatorCountRepository.INDICATOR_VALUE+" = ? WHERE "+ Constants.DailyIndicatorCountRepository.ID+" = ?",new Object[]{Value,id});
+        try {
+            cursor = database.rawQuery("UPDATE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " SET " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE + " = ? WHERE " + Constants.DailyIndicatorCountRepository.ID + " = ?", new Object[]{Value, id});
             cursor.moveToFirst();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Timber.e(ex.toString());
         } finally {
             if (cursor != null) {
@@ -129,49 +142,13 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public List<Map<String, IndicatorTally>> getAllDailyTallies() {
         List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
-        Map<String, IndicatorTally> tallyMap;
-
         SQLiteDatabase database = getReadableDatabase();
-        Object[] queryArgs = {
-                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.ID
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_GROUPING
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_VALUE_SET_FLAG
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.DAY
-                , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
-                , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE
-                , Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, Constants.DailyIndicatorCountRepository.INDICATOR_CODE
-                , Constants.IndicatorQueryRepository.INDICATOR_QUERY_TABLE, Constants.IndicatorQueryRepository.INDICATOR_CODE
-        };
 
         Cursor cursor = null;
         try {
-            cursor = database.rawQuery(String.format("SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s", queryArgs)
+            cursor = database.rawQuery(String.format("SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s", dailyIndicatorQueryArgs)
                     , null);
-            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-                MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
-                ArrayList<MultiResultProcessor> multiResultProcessors = ReportingLibrary.getInstance().getMultiResultProcessors();
-
-                while (!cursor.isAfterLast()) {
-                    tallyMap = new HashMap<>();
-                    CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
-
-                    if (compositeIndicatorTally.isValueSet()) {
-                        extractIndicatorTalliesFromMultiResult(tallyMap, defaultMultiResultProcessor, multiResultProcessors, compositeIndicatorTally);
-                    } else {
-                        tallyMap.put(compositeIndicatorTally.getIndicatorCode(), compositeIndicatorTally);
-                    }
-
-                    if (tallyMap.size() > 0) {
-                        indicatorTallies.add(tallyMap);
-                    }
-
-                    cursor.moveToNext();
-                }
-            }
+            indicatorTallies = processDailyTalliesQueryResults(cursor);
         } catch (Exception ex) {
             Timber.e(ex.toString());
         } finally {
@@ -182,6 +159,52 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         return indicatorTallies;
     }
 
+    public List<Map<String, IndicatorTally>> getLatestIndicatorTallies() {
+        List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
+        SQLiteDatabase database = getReadableDatabase();
+
+        Cursor cursor = null;
+        try {
+            cursor = database.rawQuery(String.format("SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, max(" + Constants.DailyIndicatorCountRepository.DAY + ") as newest_date FROM %s INNER JOIN %s ON %s.%s = %s.%s " +
+                            "GROUP BY " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + "." + Constants.DailyIndicatorCountRepository.INDICATOR_CODE, dailyIndicatorQueryArgs)
+                    , null);
+            indicatorTallies = processDailyTalliesQueryResults(cursor);
+        } catch (Exception ex) {
+            Timber.e(ex.toString());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return indicatorTallies;
+    }
+
+    private List<Map<String, IndicatorTally>> processDailyTalliesQueryResults(Cursor cursor) {
+        List<Map<String, IndicatorTally>> indicatorTallies = new ArrayList<>();
+        Map<String, IndicatorTally> tallyMap;
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+            MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
+            ArrayList<MultiResultProcessor> multiResultProcessors = ReportingLibrary.getInstance().getMultiResultProcessors();
+
+            while (!cursor.isAfterLast()) {
+                tallyMap = new HashMap<>();
+                CompositeIndicatorTally compositeIndicatorTally = processCursorRow(cursor);
+
+                if (compositeIndicatorTally.isValueSet()) {
+                    extractIndicatorTalliesFromMultiResult(tallyMap, defaultMultiResultProcessor, multiResultProcessors, compositeIndicatorTally);
+                } else {
+                    tallyMap.put(compositeIndicatorTally.getIndicatorCode(), compositeIndicatorTally);
+                }
+
+                if (tallyMap.size() > 0) {
+                    indicatorTallies.add(tallyMap);
+                }
+
+                cursor.moveToNext();
+            }
+        }
+        return indicatorTallies;
+    }
 
     @NonNull
     public ArrayList<Date> findDaysWithIndicatorCounts(@NonNull SimpleDateFormat dateFormat, @NonNull Date minDate, @NonNull Date maxDate) {

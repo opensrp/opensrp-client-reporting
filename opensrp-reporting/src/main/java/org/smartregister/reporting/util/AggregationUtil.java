@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class AggregationUtil {
     public static float getTotalIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
-                                              String indicatorKey) {
+                                               String indicatorKey) {
         float count = 0;
         if (indicatorTallies != null && !indicatorTallies.isEmpty()) {
             for (Map<String, IndicatorTally> indicatorTallyMap : indicatorTallies) {
@@ -27,7 +27,7 @@ public class AggregationUtil {
     }
 
     public static float getLatestIndicatorCount(List<Map<String, IndicatorTally>> indicatorTallies,
-                                               String indicatorKey) {
+                                                String indicatorKey) {
         float count = 0;
         //Back date
         Date currentDate = new Date(Long.MIN_VALUE);
