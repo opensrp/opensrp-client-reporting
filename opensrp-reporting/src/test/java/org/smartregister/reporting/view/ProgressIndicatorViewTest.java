@@ -34,7 +34,7 @@ public class ProgressIndicatorViewTest extends BaseUnitTest {
     }
 
     @Test
-    public void testConstructorsInstantiateSuccesfully() {
+    public void testConstructorsInstantiateSuccessfully() {
 
         ProgressIndicatorView view = new ProgressIndicatorView(RuntimeEnvironment.application);
         Assert.assertNotNull(view);
