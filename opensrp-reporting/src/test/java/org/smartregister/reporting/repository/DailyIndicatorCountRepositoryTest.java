@@ -94,7 +94,7 @@ public class DailyIndicatorCountRepositoryTest {
         CompositeIndicatorTally indicatorTally = Mockito.mock(CompositeIndicatorTally.class);
 
         Mockito.when(reportingLibraryInstance.getDateFormat()).thenReturn(dateFormat);
-        Mockito.when(indicatorTally.getCreatedAt()).thenReturn(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).parse("2019-04-13 12:19:37"));
+        Mockito.when(indicatorTally.getCreatedAt()).thenReturn(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH).parse("2019-04-13 12:19:37"));
 
         dailyIndicatorCountRepositorySpy.add(indicatorTally);
 
@@ -103,29 +103,26 @@ public class DailyIndicatorCountRepositoryTest {
     }
 
     @Test
-    public void updateDailyTalliesTest()
-    {
-        dailyIndicatorCountRepositorySpy.updateIndicatorValue("1","2.0");
-        Mockito.verify(dailyIndicatorCountRepositorySpy,Mockito.times(1)).getWritableDatabase();
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id","value"}, 1);
-        matrixCursor.addRow(new Object[]{"1","2.0"});
+    public void updateDailyTalliesTest() {
+        dailyIndicatorCountRepositorySpy.updateIndicatorValue("1", "2.0");
+        Mockito.verify(dailyIndicatorCountRepositorySpy, Mockito.times(1)).getWritableDatabase();
+        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id", "value"}, 1);
+        matrixCursor.addRow(new Object[]{"1", "2.0"});
         Mockito.doReturn(matrixCursor).when(sqLiteDatabase).rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull(Object[].class));
         Mockito.verify(sqLiteDatabase, Mockito.times(1))
                 .rawQuery(ArgumentMatchers.anyString(), ArgumentMatchers.isNotNull(Object[].class));
 
 
-
-
     }
 
     @Test
-    public void testCreatTable()
-    {
+    public void testCreatTable() {
         DailyIndicatorCountRepository.createTable(sqLiteDatabase);
         Mockito.verify(sqLiteDatabase, Mockito.times(2))
-               .execSQL(ArgumentMatchers.anyString());
+                .execSQL(ArgumentMatchers.anyString());
 
     }
+
     @Test
     public void getAllDailyTalliesInvokesReadableDBQuery() {
         dailyIndicatorCountRepositorySpy.getAllDailyTallies();
@@ -153,13 +150,13 @@ public class DailyIndicatorCountRepositoryTest {
                         ArgumentMatchers.eq("SELECT indicator_daily_tally._id, indicator_daily_tally.indicator_code, indicator_daily_tally.indicator_value, indicator_daily_tally.indicator_value_set, indicator_daily_tally.indicator_grouping, indicator_daily_tally.indicator_is_value_set, indicator_daily_tally.day, indicator_queries.expected_indicators FROM indicator_daily_tally INNER JOIN indicator_queries ON indicator_daily_tally.indicator_code = indicator_queries.indicator_code")
                         , Mockito.nullable(String[].class));
 
-        List<Map<String, IndicatorTally>> dailyTallies =  dailyIndicatorCountRepositorySpy.getAllDailyTallies();
+        List<Map<String, IndicatorTally>> dailyTallies = dailyIndicatorCountRepositorySpy.getAllDailyTallies();
         Assert.assertEquals(4, dailyTallies.size());
 
         HashMap<String, List<IndicatorTally>> summaryTallies = new HashMap<>();
 
-        for (Map<String, IndicatorTally> indicatorTallyMap: dailyTallies) {
-            for (String indicatorCode: indicatorTallyMap.keySet()) {
+        for (Map<String, IndicatorTally> indicatorTallyMap : dailyTallies) {
+            for (String indicatorCode : indicatorTallyMap.keySet()) {
                 List<IndicatorTally> indicatorTallyList = summaryTallies.get(indicatorCode);
                 if (indicatorTallyList == null) {
                     indicatorTallyList = new ArrayList<>();
@@ -283,7 +280,7 @@ public class DailyIndicatorCountRepositoryTest {
         compositeIndicatorTally.setIndicatorCode("ISN");
         compositeIndicatorTally.setCreatedAt(timeNow);
 
-        List<IndicatorTally> finalTallies =  dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, indicatorTally);
+        List<IndicatorTally> finalTallies = dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, indicatorTally);
 
         Assert.assertEquals(3, finalTallies.size());
         Assert.assertEquals("ISN_BCG", finalTallies.get(0).getIndicatorCode());
@@ -310,7 +307,7 @@ public class DailyIndicatorCountRepositoryTest {
         compositeIndicatorTally.setIndicatorCode("ISN");
         compositeIndicatorTally.setCreatedAt(timeNow);
 
-        List<IndicatorTally> finalTallies =  dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, null);
+        List<IndicatorTally> finalTallies = dailyIndicatorCountRepositorySpy.extractOnlyRequiredIndicatorTalliesAndProvideDefault(compositeIndicatorTally, null);
 
         Assert.assertEquals(3, finalTallies.size());
         Assert.assertEquals("ISN_BCG", finalTallies.get(0).getIndicatorCode());
@@ -407,7 +404,7 @@ public class DailyIndicatorCountRepositoryTest {
         Date startDate = yyyMMdd.parse("2017-03-01");
         Date endDate = yyyMMdd.parse("2017-03-31");
 
-        ArrayList<Date> dates =  dailyIndicatorCountRepositorySpy.findDaysWithIndicatorCounts(new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT), startDate, endDate);
+        ArrayList<Date> dates = dailyIndicatorCountRepositorySpy.findDaysWithIndicatorCounts(new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH), startDate, endDate);
 
         Assert.assertEquals(10, dates.size());
         Assert.assertEquals(yyyMMdd.parse("2017-03-01").getTime(), dates.get(0).getTime());
@@ -433,8 +430,8 @@ public class DailyIndicatorCountRepositoryTest {
         ArrayList<IndicatorTally> talliesForDay = dailyIndicatorCountRepositorySpy.getIndicatorTalliesForDay(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse("2017-03-10"));
 
         HashMap<String, IndicatorTally> indicatorTallyHashMap = new HashMap<>();
-        for (IndicatorTally indicatorTally: talliesForDay) {
-            indicatorTallyHashMap.put(indicatorTally.getIndicatorCode(),indicatorTally);
+        for (IndicatorTally indicatorTally : talliesForDay) {
+            indicatorTallyHashMap.put(indicatorTally.getIndicatorCode(), indicatorTally);
         }
 
         Set<String> indicatorCodes = indicatorTallyHashMap.keySet();

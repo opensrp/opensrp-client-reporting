@@ -1,17 +1,14 @@
 package org.smartregister.sample.repository;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.reporting.ReportingLibrary;
 import org.smartregister.reporting.domain.CompositeIndicatorTally;
-import org.smartregister.reporting.domain.IndicatorTally;
 import org.smartregister.reporting.repository.DailyIndicatorCountRepository;
 import org.smartregister.reporting.repository.IndicatorQueryRepository;
 import org.smartregister.reporting.repository.IndicatorRepository;
@@ -113,15 +110,13 @@ public class SampleRepository extends Repository {
         String eventDateFormat = "E MMM dd hh:mm:ss z yyyy";
         Date dateCreated = null;
         try {
-            dateCreated = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).parse(new Date().toString());
+            dateCreated = new SimpleDateFormat(eventDateFormat, Locale.ENGLISH).parse(new Date().toString());
         } catch (ParseException pe) {
             Timber.e(pe.toString());
         }
         dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 80, ChartUtil.numericIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 60, ChartUtil.pieChartYesIndicatorKey, dateCreated));
         dailyIndicatorCountRepository.add(new CompositeIndicatorTally(null, 20, ChartUtil.pieChartNoIndicatorKey, dateCreated));
-
-
     }
 
     private static void addSampleEvents() {
@@ -155,7 +150,7 @@ public class SampleRepository extends Repository {
         try {
             jsonObject = new JSONObject(eventJSONString);
         } catch (JSONException ex) {
-            Log.e(TAG, "Error creating Event JSONObject");
+            Timber.e(ex, "Error creating Event JSONObject");
         }
         eventClientRepository.addEvent(baseEntityId, jsonObject);
     }
@@ -166,12 +161,10 @@ public class SampleRepository extends Repository {
 
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("eventDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(new Date()));
+            jsonObject.put("eventDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH).format(new Date()));
             eventClientRepository.addEvent(baseEntityId, jsonObject);
         } catch (JSONException ex) {
-            Log.e(TAG, Log.getStackTraceString(ex));
+            Timber.e(ex);
         }
     }
-
-
 }
