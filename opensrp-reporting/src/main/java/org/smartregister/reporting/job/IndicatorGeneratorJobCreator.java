@@ -1,12 +1,12 @@
 package org.smartregister.reporting.job;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
+
+import timber.log.Timber;
 
 public class IndicatorGeneratorJobCreator implements JobCreator {
     @Nullable
@@ -16,9 +16,8 @@ public class IndicatorGeneratorJobCreator implements JobCreator {
             case RecurringIndicatorGeneratingJob.TAG:
                 return new RecurringIndicatorGeneratingJob();
             default:
-                Log.d(IndicatorGeneratorJobCreator.class.getCanonicalName(), "Looks like you tried to create a job " + tag + " that is not declared in the Job Creator");
+                Timber.d("Looks like you tried to create a job %s that is not declared in the Job Creator", tag);
                 return null;
-
         }
     }
 }
