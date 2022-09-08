@@ -11,10 +11,7 @@ import org.smartregister.repository.Repository;
 import org.smartregister.sample.repository.SampleRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
-
 import timber.log.Timber;
-
-import static org.smartregister.util.Log.logError;
 
 public class SampleApplication extends DrishtiApplication {
 
@@ -61,8 +58,7 @@ public class SampleApplication extends DrishtiApplication {
                 repository = new SampleRepository(getInstance().getApplicationContext(), context);
             }
         } catch (UnsatisfiedLinkError e) {
-            logError("Error on getRepository: " + e);
-
+            Timber.e(e, "Error on getRepository");
         }
         return repository;
     }

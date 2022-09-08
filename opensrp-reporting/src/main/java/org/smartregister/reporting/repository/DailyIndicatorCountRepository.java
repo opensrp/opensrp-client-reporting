@@ -96,28 +96,25 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         }
 
         SQLiteDatabase database = getWritableDatabase();
-        database.delete(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE
-                , Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND "
-                        + Constants.DailyIndicatorCountRepository.DAY + " = ? "
-                , new String[]{
+        database.delete(
+                Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE,
+                Constants.DailyIndicatorCountRepository.INDICATOR_CODE + " = ? AND "
+                        + Constants.DailyIndicatorCountRepository.DAY + " = ? ",
+                new String[]{
                         indicatorTally.getIndicatorCode(),
-                        new SimpleDateFormat(
-                                ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT,
-                                Locale.getDefault()).format(indicatorTally.getCreatedAt()
-                        )
-                });
+                        new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH).format(indicatorTally.getCreatedAt())
+                }
+        );
         database.insert(Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE, null, createContentValues(indicatorTally));
     }
 
-    public void updateIndicatorValue(String id, String Value)
-    {
+    public void updateIndicatorValue(String id, String Value) {
         SQLiteDatabase database = getWritableDatabase();
         Cursor cursor = null;
-        try{
-            cursor = database.rawQuery("UPDATE "+Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE+" SET "+ Constants.DailyIndicatorCountRepository.INDICATOR_VALUE+" = ? WHERE "+ Constants.DailyIndicatorCountRepository.ID+" = ?",new Object[]{Value,id});
+        try {
+            cursor = database.rawQuery("UPDATE " + Constants.DailyIndicatorCountRepository.INDICATOR_DAILY_TALLY_TABLE + " SET " + Constants.DailyIndicatorCountRepository.INDICATOR_VALUE + " = ? WHERE " + Constants.DailyIndicatorCountRepository.ID + " = ?", new Object[]{Value, id});
             cursor.moveToFirst();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Timber.e(ex.toString());
         } finally {
             if (cursor != null) {
@@ -182,7 +179,6 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         return indicatorTallies;
     }
 
-
     @NonNull
     public ArrayList<Date> findDaysWithIndicatorCounts(@NonNull SimpleDateFormat dateFormat, @NonNull Date minDate, @NonNull Date maxDate) {
         return findDaysWithIndicatorCounts(dateFormat, minDate, maxDate, null);
@@ -191,7 +187,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     @NonNull
     public ArrayList<Date> findDaysWithIndicatorCounts(@NonNull SimpleDateFormat dateFormat, @NonNull Date minDate, @NonNull Date maxDate, @Nullable String reportGrouping) {
         ArrayList<Date> daysWithCounts = new ArrayList<>();
-        SimpleDateFormat dayFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
+        SimpleDateFormat dayFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH);
 
         Cursor cursor = null;
         try {
@@ -239,7 +235,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public ArrayList<IndicatorTally> getIndicatorTalliesForDay(@NonNull Date queryDate, @Nullable String reportGrouping) {
         ArrayList<IndicatorTally> tallies = new ArrayList<>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH);
         Cursor cursor = null;
         try {
             Object[] queryArgs = {
@@ -442,8 +438,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
         try {
             cursor = database.rawQuery(String.format(
-                    "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s < ?"
-                    , queryArgs),
+                            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s < ?"
+                            , queryArgs),
                     new String[]{String.valueOf(dayStartMillis), String.valueOf(dayEndMillis)});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -468,7 +464,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     public Map<String, List<IndicatorTally>> findTalliesInMonth(@NonNull Date month, @Nullable String reportGrouping) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH);
         Map<String, List<IndicatorTally>> talliesFromMonth = new HashMap<>();
         Cursor cursor = null;
         try {
@@ -512,8 +508,8 @@ public class DailyIndicatorCountRepository extends BaseRepository {
             };
 
             cursor = database.rawQuery(String.format(
-                    "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s <= ? AND %s.%s %s"
-                    , queryArgs),
+                            "SELECT %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s FROM %s INNER JOIN %s ON %s.%s = %s.%s WHERE %s.%s >= ? AND %s.%s <= ? AND %s.%s %s"
+                            , queryArgs),
                     new String[]{dateFormat.format(startDate.getTime()), dateFormat.format(endDate.getTime())});
 
             MultiResultProcessor defaultMultiResultProcessor = ReportingLibrary.getInstance().getDefaultMultiResultProcessor();
@@ -568,7 +564,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
     }
 
     private CompositeIndicatorTally processCursorRow(@NonNull Cursor cursor) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH);
         CompositeIndicatorTally compositeIndicatorTally = new CompositeIndicatorTally();
         compositeIndicatorTally.setId(cursor.getLong(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.ID)));
         compositeIndicatorTally.setIndicatorCode(cursor.getString(cursor.getColumnIndex(Constants.DailyIndicatorCountRepository.INDICATOR_CODE)));
@@ -584,7 +580,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
         if (cursor.getColumnIndex(Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS) != -1) {
             compositeIndicatorTally.setExpectedIndicators(
                     (List<String>) new Gson().fromJson(cursor.getString(cursor.getColumnIndex(
-                            Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS))
+                                    Constants.IndicatorQueryRepository.INDICATOR_QUERY_EXPECTED_INDICATORS))
                             , new TypeToken<List<String>>() {
                             }.getType())
             );
@@ -601,7 +597,7 @@ public class DailyIndicatorCountRepository extends BaseRepository {
 
     public ContentValues createContentValues(@NonNull CompositeIndicatorTally compositeIndicatorTally) {
         ContentValues values = new ContentValues();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ReportIndicatorDaoImpl.DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH);
         values.put(Constants.DailyIndicatorCountRepository.INDICATOR_CODE, compositeIndicatorTally.getIndicatorCode());
 
         if (compositeIndicatorTally.isValueSet()) {

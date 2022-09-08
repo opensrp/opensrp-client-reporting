@@ -99,7 +99,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
 
             for (Map.Entry<String, Date> dates : reportEventDates.entrySet()) {
                 if (dates.getValue().getTime() != timeNow.getTime()) {
-                    lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.getDefault()).format(dates.getValue());
+                    lastUpdatedDate = new SimpleDateFormat(eventDateFormat, Locale.ENGLISH).format(dates.getValue());
                 }
                 saveTallies(indicatorQueries, dates, database, executedQueries);
             }
@@ -163,7 +163,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
                 tally.setGrouping(indicatorQuery.getGrouping());
 
                 try {
-                    tally.setCreatedAt(new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).parse(dates.getKey()));
+                    tally.setCreatedAt(new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH).parse(dates.getKey()));
                 } catch (ParseException e) {
                     tally.setCreatedAt(new Date());
                 }
@@ -197,7 +197,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             eventDate = formatDate(eventDateString, eventDateFormat);
             updateDate = formatDate(val.get(EventClientRepository.event_column.updatedAt.name()), eventDateFormat);
 
-            String keyDate = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).format(eventDate);
+            String keyDate = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH).format(eventDate);
 
             if (reportEventDates.get(keyDate) != null && updateDate != null) {
                 if (reportEventDates.get(keyDate).getTime() < updateDate.getTime()) {
@@ -208,7 +208,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
             }
         }
 
-        String dateToday = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.getDefault()).format(timeNow);
+        String dateToday = new SimpleDateFormat(DAILY_TALLY_DATE_FORMAT, Locale.ENGLISH).format(timeNow);
 
         if (reportEventDates.get(dateToday) == null) {
             reportEventDates.put(dateToday, timeNow);
@@ -307,7 +307,7 @@ public class ReportIndicatorDaoImpl implements ReportIndicatorDao {
     @Nullable
     private Date formatDate(String date, String format) {
         try {
-            return new SimpleDateFormat(format, Locale.getDefault()).parse(date);
+            return new SimpleDateFormat(format, Locale.ENGLISH).parse(date);
         } catch (ParseException pe) {
             // Oh no!
             Timber.e(pe);
